@@ -1,0 +1,86 @@
+"*****************************************************************************
+"" Quickmenu
+"*****************************************************************************
+" Clear all the items
+call quickmenu#reset()
+
+" Enable cursorline (:) and cmdline help (H)
+let g:quickmenu_options = "HL"
+
+call quickmenu#append("# Analysis", '')
+call quickmenu#append("Force compile with Clang", 'YcmDiags', "force compile with clang")
+
+call quickmenu#append("# Gtags", '')
+call quickmenu#append("Build tag", 'Gctags', "build tag")
+
+call quickmenu#append("# Tab/WindowBuffer", '')
+call quickmenu#append("Clear rest of buffers", 'BufOnly', "clear rest of buffers")
+
+call quickmenu#append("# File", '')
+call quickmenu#append("List all files in current project", 'FZF', "list all files in current project")
+
+call quickmenu#append("# Look", '')
+call quickmenu#append("Indent line", 'IndentLinesToggle', "show indent line")
+call quickmenu#append("Reset multi highlight", 'QuickhlManualReset', "Reset multi highlight")
+
+call quickmenu#append("# Config", '')
+call quickmenu#append("Refresh vimrc", 'Refresh', "refresh vimrc")
+
+call quickmenu#append("# help", '')
+call quickmenu#append("All commands", 'FzfCommands', "all commands")
+
+"*****************************************************************************
+"" Function
+"*****************************************************************************
+function! AsyncBlame() range
+    execute 'AsyncRun git blame -L ' . a:firstline . ',' . a:lastline . ' %'
+endfunction
+
+"*****************************************************************************
+"" Command
+"*****************************************************************************
+" Gtags
+:command! Gctags    :AsyncRun gctags
+
+" Source
+:command! Refresh   :source ~/.config/nvim/init.vim
+
+"*****************************************************************************
+"" Key
+"*****************************************************************************
+let mapleader = ","
+
+map <F1> :e ~/README.md<CR>
+map <F5> :NERDTreeToggle<CR>
+map <F6> :TagbarToggle<CR>
+map <F7> :BuffergatorToggle<CR>
+map <F8> :MRU<CR>
+
+map <silent><F12> :call quickmenu#toggle(0)<CR>
+
+" Quickhl
+nmap <leader>h <Plug>(quickhl-manual-this)
+nmap <leader>c <Plug>(quickhl-manual-clear)
+
+" Quickfix
+nnoremap <C-c>i     :ccl<CR>
+nnoremap <C-c>p     :cn<CR>
+nnoremap <C-c>o     :cp<CR>
+
+" Buffer
+nnoremap <C-c>l     :bn<CR>
+nnoremap <C-c>k     :bp<CR>
+nnoremap <C-c>j     :bd<CR>
+
+" Git blame
+vnoremap b          :call AsyncBlame()<CR>
+
+" Gtags
+nnoremap <leader>g  :GtagsCursor<CR>
+
+" YouCompleteMe
+nnoremap <leader>n  :YcmCompleter GoToInclude<CR>
+nnoremap <leader>y  :YcmCompleter GoTo<CR>
+nnoremap <leader>t  :YcmCompleter GetType<CR>
+nnoremap <leader>r  :YcmCompleter GetParent<CR>
+nnoremap <leader>f  :YcmCompleter FixIt<CR>

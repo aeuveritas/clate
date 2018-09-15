@@ -1,0 +1,32 @@
+# Vim plugins deps
+RUN apk add --update --no-cache \
+    libxt \
+    build-base \
+    cmake \
+    python-dev \
+    the_silver_searcher \
+    #cargo \
+    boost-dev
+
+#RUN cargo install fd-find
+
+# Create temp directories
+RUN mkdir -p \
+    /ext \
+    $HOME/.vim_runtime/temp_dirs
+
+# Install Vim-Plug
+RUN curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+# Install plugins for NeoVim
+COPY vim/init_init.vim $HOME/.config/nvim/init.vim
+RUN nvim +PlugInstall +qall
+
+# Cleanup
+RUN rm -rf \
+    /usr/lib/go \
+    /var/log/* \
+    /var/tmp/* \
+    && mkdir -p /var/cache/apk
+

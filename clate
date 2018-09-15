@@ -1,0 +1,292 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+import json
+import shutil
+import subprocess
+
+CLATE_JSON = os.getenv("HOME") + '/.clate.json'
+
+AVAILABLE_VERSION = [
+    '0.1',
+]
+
+class Clate_Manager:
+    def __init__(self):
+        self._data = None
+        self._pNames = None
+        self._version = None
+        self._update(False)
+
+        print("Clate - {0}".format(self._version))
+
+    def menu(self):
+        print('    \x1b[1;32;40m' + "[C]" + '\x1b[0m' + "reate new project")
+        print('    \x1b[1;32;40m' + "[L]" + '\x1b[0m' + "ist projects")
+        print('    \x1b[1;32;40m' + "[A]" + '\x1b[0m' + "ctivate project")
+        print('dele\x1b[1;32;40m' + "[T]" + '\x1b[0m' + "e project")
+        print('   s\x1b[1;32;40m' + "[E]" + '\x1b[0m' + "lect version")
+        print('')
+        print('   e\x1b[1;32;40m' + "[X]" + '\x1b[0m' + "it")
+
+        cmd = ""
+        try:
+            cmd = raw_input("Command: ")
+        except:
+            print("wrong command")
+            cmd = ""
+
+        return cmd
+
+    def console(self):
+        while True:
+            cmd = self.menu().lower()
+
+            if cmd == 'x':
+                return
+            elif cmd == 'l':
+                self._show()
+            elif cmd == 'c':
+                self._create()
+            elif cmd == 't':
+                self._delete()
+            elif cmd == 'e':
+                self._change_version()
+            elif cmd == 'a':
+                self._run()
+                return
+            else:
+                print("wrong command")
+                return
+
+            print("")
+
+    def _is_running(self, project):
+        output = subprocess.Popen(["docker", "container", "ls"],
+                                  stdout=subprocess.PIPE).communicate()[0]
+
+        words = output.split()
+
+        if "clate_{}".format(project) in words:
+            return True
+        else:
+            return False
+
+    def _show_version(self):
+        global AVAILABLE_VERSION
+        for (i, item) in enumerate(AVAILABLE_VERSION, start=1):
+            print("{0}: {1}".format(i, item))
+
+    def _update(self, isFlush=True):
+        if isFlush:
+            clate_json = open(CLATE_JSON, 'w')
+            clate_json.write(json.dumps(self._data, sort_keys=True, indent=4))
+            clate_json.close()
+
+        del self._data
+        del self._pNames
+
+        clate_json = open(CLATE_JSON, 'r')
+        self._data = json.loads(clate_json.read())
+        clate_json.close()
+
+        self._pNames = list()
+        for project in self._data['project']:
+            self._pNames.append(project['name'])
+
+        self._version = self._data['version']
+
+    def _mkdir(self, t_dir):
+        try:
+            os.mkdir(t_dir)
+        except OSError as e:
+            print("Warning: {}".format(e))
+
+    def _rmdir(self, t_dir):
+        try:
+            shutil.rmtree(t_dir)
+        except shutil.Error as e:
+            print("Warning: {}".format(e))
+
+    def _exdir(self, new_dir):
+        if os.path.exists(new_dir):
+            return True
+        return False
+
+    def _endSlash(self, new_dir):
+        if new_dir[-1] is not '/':
+            new_dir += '/'
+
+    def _show(self):
+        print(json.dumps(self._data, indent=4, sort_keys=True))
+
+    def _show_name(self):
+        for (i, item) in enumerate(self._pNames):
+            print("{0}: {1}".format(i, item))
+
+    def _create(self):
+        try:
+            project_name = raw_input("Project name: ")
+
+            if project_name in self._pNames:
+                print("Already existed: {}".format(project_name))
+                return
+
+            project_path = raw_input("Project directory: ")
+            if not self._exdir(project_path):
+                print("Not existed: {}".format(project_path))
+                return
+            self._endSlash(project_path)
+
+            dirs = dict()
+            dirs['Workspace'] = project_path
+
+            while True:
+                need_more = raw_input("Do you have additional directory? (y/N) ")
+                if need_more == 'y':
+                    name = raw_input("Name in target: ")
+
+                    path = raw_input("Directory in host: ")
+                    if not self._exdir(path):
+                        print("Not existed: {}".format(path))
+                        return
+
+                    self._endSlash(path)
+                    dirs[name] = path
+                else:
+                    break
+
+            project_dir = self._data['path'] + project_name + "/"
+            dirs['Base'] = project_dir
+            self._mkdir(project_dir)
+
+            new_project = dict()
+            new_project['name'] = project_name
+            new_project['directory'] = dirs
+            self._data['project'].append(new_project)
+
+            print("Created: {}".format(new_project))
+
+            self._update()
+        except KeyboardInterrupt:
+            pass
+
+    def _delete(self):
+        self._show_name()
+
+        ret = True
+        try:
+            num = int(raw_input("Which project: "))
+
+            if num == 0:
+                print("Debug is not erasable.")
+            elif num < len(self._pNames) and num > 0:
+                project = self._pNames[num]
+                if not self._is_running(project):
+                    confirm = raw_input("Confirm delete: {} (y/N)".format(project))
+                    if confirm == 'y':
+                        self._rmdir(self._data['project'][num]['directory']['Base'])
+                        del self._data['project'][num]
+                        print("Deleted: {}".format(project))
+                        self._update()
+                    else:
+                        print("Canceled")
+                else:
+                    print("Still running: {}".format(project))
+            else:
+                ret = False
+
+        except (TypeError, ValueError, KeyboardInterrupt):
+            ret = False
+
+        if not ret:
+            print("Invalid input")
+
+    def _run_project(self, project):
+        common = self._data['common']
+        dockercmd = "docker run -ti --rm "
+
+        dockercmd += "--name clate_{} ".format(project['name'])
+
+        for target, host in project['directory'].items():
+            dockercmd += "-v {0}:/{1} ".format(host, target)
+
+        for target, host in common.items():
+            dockercmd += "-v {0}:/{1} ".format(host, target)
+
+        dockercmd += "clate:{0}".format(self._version)
+
+        print("Docker: {}".format(dockercmd))
+        os.system(dockercmd)
+
+    def _run(self):
+        self._show_name()
+
+        ret = True
+        try:
+            num = int(raw_input("Which project: "))
+
+            if num <= len(self._pNames) and num >= 0:
+                self._run_project(self._data['project'][num])
+            else:
+                ret = False
+        except (TypeError, ValueError, KeyboardInterrupt):
+            ret = False
+
+        if not ret:
+            print("Invalid input")
+
+    def _change_version(self):
+        global AVAILABLE_VERSION
+        self._show_version()
+
+        try:
+            num = int(raw_input("Which version: "))
+
+            if num > 0 and num <= len(AVAILABLE_VERSION):
+                self._data['version'] = AVAILABLE_VERSION[num - 1]
+                self._update()
+        except (TypeError, ValueError, KeyboardInterrupt):
+            ret = False
+
+    def run(self, project_name):
+        idx = None
+        try:
+            idx = self._pNames.index(project_name)
+        except ValueError:
+            print("No project: {0}".format(project_name))
+            return
+
+        self._run_project(self._data['project'][idx])
+
+def parse():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--console', help='console', action='store_true')
+    parser.add_argument('-p', '--project', help='run project', default=None)
+
+    return parser.parse_args()
+
+def main():
+    if not os.path.exists(CLATE_JSON):
+        print("[ ERROR ] ~/.clate.json is not existed.")
+        return
+
+    params = parse()
+
+    if params.console:
+        if params.project:
+            print("[ ERROR ] console and project cannot be together.")
+            return
+
+    cm = Clate_Manager()
+
+    if params.project:
+        cm.run(params.project)
+    else:
+        cm.console()
+
+    print("Clate is closed")
+
+if __name__ == '__main__':
+    main()

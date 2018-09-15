@@ -1,0 +1,22 @@
+ENV TERM=xterm-256color
+
+ENTRYPOINT ["bash", "/usr/local/bin/run"]
+
+# Copy artifact
+## YouCompleteMe
+COPY artifact/youcompleteme/ycm_extra_conf.py $HOME
+
+## GNU Global
+COPY artifact/gnu-global/gctags /usr/local/bin
+
+# Set running enviroment
+COPY shell/bashrc $HOME/.bashrc
+COPY shell/run /usr/local/bin
+
+# Set vimrc
+COPY vim/init_proc.vim $HOME/.config/nvim/init.vim
+RUN nvim +PlugInstall +qall
+
+COPY vim/init.vim $HOME/.config/nvim/init.vim 
+COPY artifact/README.md $HOME
+

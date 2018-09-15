@@ -1,0 +1,30 @@
+#Install NeoVim
+RUN apk add --update --no-cache \
+    libx11-dev \
+    libxpm-dev \
+    libxt-dev \
+    python3 \
+    python3-dev \
+    gperf \
+    texinfo \
+    cmake \
+    linux-headers \
+    lua-dev \
+    perl-dev \
+    py-pip \
+    xz \
+    luarocks \
+    diffutils \
+    libice \
+    libsm \
+    neovim
+
+# Install neovim python support
+RUN pip3 install neovim pep8 clang
+
+# Environment for NeoVim
+ENV PLUGIN=$HOME/.config/nvim/plugin \
+    AUTOLOAD=$HOME/.config/nvim/autoload
+
+RUN mkdir -p $PLUGIN
+
