@@ -157,6 +157,7 @@ def config():
 
     if os.path.exists(DOCKERDIR + '/' + GLOBALRC):
         os.system("echo 'COPY {0} $HOME/.globalrc' >> {1}".format(GLOBALRC, DOCKERFILE))
+        os.system("echo 'RUN chown $UNAME:$GROUP $HOME -R' >> {0}".format(DOCKERFILE))
 
     # Build init vimrc
     os.system("cat {0} > {1}".format(VIMPLUGININIT,     VIMRCINIT))

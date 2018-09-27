@@ -15,8 +15,11 @@ COPY shell/run /usr/local/bin
 
 # Set vimrc
 COPY vim/init_proc.vim $HOME/.config/nvim/init.vim
-RUN nvim +PlugInstall +qall
+RUN chown $UNAME:$GROUP $HOME -R \
+    && su - $UNAME -c "nvim +PlugInstall +qall"
 
-COPY vim/init.vim $HOME/.config/nvim/init.vim 
+COPY vim/init.vim $HOME/.config/nvim/init.vim
 COPY artifact/README.md $HOME
+
+RUN chown $UNAME:$GROUP $HOME -R
 

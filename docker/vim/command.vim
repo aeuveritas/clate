@@ -13,7 +13,8 @@ call quickmenu#append("Force compile with Clang", 'YcmDiags', "force compile wit
 call quickmenu#append("# Gtags", '')
 call quickmenu#append("Build tag", 'Gctags', "build tag")
 
-call quickmenu#append("# Tab/WindowBuffer", '')
+call quickmenu#append("# Tab/Window/Buffer", '')
+call quickmenu#append("Clear windows", 'call Clear()', "clear all windows and open last buffer")
 call quickmenu#append("Clear rest of buffers", 'BufOnly', "clear rest of buffers")
 
 call quickmenu#append("# File", '')
@@ -34,6 +35,12 @@ call quickmenu#append("All commands", 'FzfCommands', "all commands")
 "*****************************************************************************
 function! AsyncBlame() range
     execute 'AsyncRun git blame -L ' . a:firstline . ',' . a:lastline . ' %'
+endfunction
+
+function! Clear()
+    execute 'on'
+    execute 'blast'
+    execute 'set number'
 endfunction
 
 "*****************************************************************************

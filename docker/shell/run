@@ -1,9 +1,7 @@
 #!/bin/bash
 cp /Config/init.vim ~/.config/nvim/
 
-cd /Workspace
-
-nvim ~/README.md
+sudo -u $UNAME -H bash -c "cd /Workspace && nvim ~/README.md"
 
 cp ~/.config/nvim/init.vim /Config/
 

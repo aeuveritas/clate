@@ -26,5 +26,6 @@ RUN pip3 install neovim pep8 clang
 ENV PLUGIN=$HOME/.config/nvim/plugin \
     AUTOLOAD=$HOME/.config/nvim/autoload
 
-RUN mkdir -p $PLUGIN
+RUN mkdir -p $PLUGIN \
+    && chown $UNAME:$GROUP $HOME -R
 

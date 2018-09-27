@@ -13,15 +13,17 @@ RUN apk add --update --no-cache \
 # Create temp directories
 RUN mkdir -p \
     /ext \
-    $HOME/.vim_runtime/temp_dirs
+    $HOME/.vim_runtime/temp_dirs \
+    && chown $UNAME:$GROUP $HOME -R
 
 # Install Vim-Plug
-RUN curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+RUN su - $UNAME -c "curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
 
 # Install plugins for NeoVim
 COPY vim/init_init.vim $HOME/.config/nvim/init.vim
-RUN nvim +PlugInstall +qall
+RUN chown $UNAME:$GROUP $HOME -R \
+    && su - $UNAME -c "nvim +PlugInstall +qall"
 
 # Cleanup
 RUN rm -rf \
