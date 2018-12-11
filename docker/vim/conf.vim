@@ -45,7 +45,12 @@ set lazyredraw
 set magic
 
 " Underline for cursor
-set cursorline
+"set cursorline
+augroup BgHighlight
+    autocmd!
+    autocmd WinEnter * set cursorline
+    autocmd WinEnter * set nocursorline
+augroup END
 
 "*****************************************************************************
 "" Text, tab and indent related
