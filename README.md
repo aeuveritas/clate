@@ -1,5 +1,5 @@
 # Clate
-VIM as C/C++ on Docker
+VIM for C/C++ on Docker
 
 # Installation
 1. You can find your information with **id** linux command.
