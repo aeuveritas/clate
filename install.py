@@ -75,6 +75,7 @@ def clate_manager():
     os.system("sudo cp {0} {1}init.origin.vim".format(VIMRCACT, config_dir))
 
     common_dict = dict()
+    common_dict['path'] = COMMON_PATH
     common_dict['Share'] = share_dir
     common_dict['Snippet'] = snippet_dir
     common_dict['Config'] = config_dir
@@ -84,22 +85,20 @@ def clate_manager():
         clate_json = open(CLATE_JSON).read()
         clate_data = json.loads(clate_json)
     else:
-        debug_dir = COMMON_PATH + 'Debug/'
-        mkdir(debug_dir)
+        clate_dir = COMMON_PATH + 'Clate/'
+        mkdir(clate_dir)
         
-        debug_dirs = dict()
-        debug_dirs['Base'] = debug_dir
-        debug_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__))
+        clate_dirs = dict()
+        clate_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__))
 
-        debug_project = dict()
-        debug_project['name'] = 'debug'
-        debug_project['directory'] = debug_dirs
+        clate_project = dict()
+        clate_project['name'] = 'clate'
+        clate_project['directory'] = clate_dirs
 
         project_list = list()
-        project_list.append(debug_project)
+        project_list.append(clate_project)
         
         clate_data = dict()
-        clate_data['path'] = COMMON_PATH
         clate_data['project'] = project_list
 
     clate_data['common'] = common_dict

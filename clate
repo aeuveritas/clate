@@ -28,6 +28,8 @@ class Clate_Manager:
         print('dele\x1b[1;32;40m' + "[T]" + '\x1b[0m' + "e project")
         print('   s\x1b[1;32;40m' + "[E]" + '\x1b[0m' + "lect version")
         print('')
+        print('debu\x1b[1;32;40m' + "[G]" + '\x1b[0m' + "")
+        print('')
         print('   e\x1b[1;32;40m' + "[X]" + '\x1b[0m' + "it")
 
         cmd = ""
@@ -53,6 +55,8 @@ class Clate_Manager:
                 self._delete()
             elif cmd == 'e':
                 self._change_version()
+            elif cmd == 'g':
+                self._run(True)
             elif cmd == 'a':
                 self._run()
                 return
@@ -121,7 +125,7 @@ class Clate_Manager:
     def _show(self):
         print(json.dumps(self._data, indent=4, sort_keys=True))
 
-    def _show_name(self):
+    def _show_project_name(self):
         for (i, item) in enumerate(self._pNames):
             print("{0}: {1}".format(i, item))
 
@@ -157,10 +161,6 @@ class Clate_Manager:
                 else:
                     break
 
-            project_dir = self._data['path'] + project_name + "/"
-            dirs['Base'] = project_dir
-            self._mkdir(project_dir)
-
             new_project = dict()
             new_project['name'] = project_name
             new_project['directory'] = dirs
@@ -173,7 +173,7 @@ class Clate_Manager:
             pass
 
     def _delete(self):
-        self._show_name()
+        self._show_project_name()
 
         ret = True
         try:
@@ -186,7 +186,6 @@ class Clate_Manager:
                 if not self._is_running(project):
                     confirm = raw_input("Confirm delete: {} (y/N)".format(project))
                     if confirm == 'y':
-                        self._rmdir(self._data['project'][num]['directory']['Base'])
                         del self._data['project'][num]
                         print("Deleted: {}".format(project))
                         self._update()
@@ -203,7 +202,7 @@ class Clate_Manager:
         if not ret:
             print("Invalid input")
 
-    def _run_project(self, project):
+    def _run_project(self, project, is_debug=False):
         common = self._data['common']
         dockercmd = "docker run -ti --rm "
 
@@ -215,20 +214,23 @@ class Clate_Manager:
         for target, host in common.items():
             dockercmd += "-v {0}:/{1} ".format(host, target)
 
+        if is_debug:
+            dockercmd += "--entrypoint /bin/bash "
+
         dockercmd += "clate:{0}".format(self._version)
 
-        print("Docker: {}".format(dockercmd))
+        print("{}".format(dockercmd))
         os.system(dockercmd)
 
-    def _run(self):
-        self._show_name()
+    def _run(self, is_debug=False):
+        self._show_project_name()
 
         ret = True
         try:
             num = int(raw_input("Which project: "))
 
             if num <= len(self._pNames) and num >= 0:
-                self._run_project(self._data['project'][num])
+                self._run_project(self._data['project'][num], is_debug)
             else:
                 ret = False
         except (TypeError, ValueError, KeyboardInterrupt):
@@ -250,7 +252,7 @@ class Clate_Manager:
         except (TypeError, ValueError, KeyboardInterrupt):
             ret = False
 
-    def run(self, project_name):
+    def run(self, project_name, is_debug=False):
         idx = None
         try:
             idx = self._pNames.index(project_name)
@@ -258,12 +260,12 @@ class Clate_Manager:
             print("No project: {0}".format(project_name))
             return
 
-        self._run_project(self._data['project'][idx])
+        self._run_project(self._data['project'][idx], is_debug)
 
 def parse():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--console', help='console', action='store_true')
     parser.add_argument('-p', '--project', help='run project', default=None)
+    parser.add_argument('-d', '--debug', help='run project with debug mode', default=None)
 
     return parser.parse_args()
 
@@ -274,17 +276,18 @@ def main():
 
     params = parse()
 
-    if params.console:
+    if params.debug:
         if params.project:
             print("[ ERROR ] console and project cannot be together.")
             return
 
     cm = Clate_Manager()
 
+    if params.debug:
+        cm.run(params.project, True)
     if params.project:
         cm.run(params.project)
-    else:
-        cm.console()
+    cm.console()
 
     print("Clate is closed")
 
