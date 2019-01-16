@@ -252,7 +252,7 @@ class Clate_Manager:
         except (TypeError, ValueError, KeyboardInterrupt):
             ret = False
 
-    def run(self, project_name, is_debug=False):
+    def run(self, project_name='clate', is_debug=False):
         idx = None
         try:
             idx = self._pNames.index(project_name)
@@ -265,7 +265,7 @@ class Clate_Manager:
 def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--project', help='run project', default=None)
-    parser.add_argument('-d', '--debug', help='run project with debug mode', default=None)
+    parser.add_argument('-d', '--debug', help='run project with debug mode', action='store_true')
 
     return parser.parse_args()
 
@@ -283,11 +283,12 @@ def main():
 
     cm = Clate_Manager()
 
-    if params.debug:
-        cm.run(params.project, True)
     if params.project:
         cm.run(params.project)
-    cm.console()
+    elif params.debug:
+        cm.run(is_debug=True)
+    else:
+        cm.console()
 
     print("Clate is closed")
 
