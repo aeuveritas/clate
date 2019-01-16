@@ -224,35 +224,53 @@ class Clate_Manager:
         print("{}".format(dockercmd))
         os.system(dockercmd)
 
-    def _run(self, is_debug=False):
+    def _select_project(self):
         self._show_project_name()
 
-        ret = True
+        ret = -1
         try:
             num = int(raw_input("Which project: "))
 
             if num <= len(self._pNames) and num >= 0:
-                self._run_project(self._data['project'][num], is_debug)
-            else:
-                ret = False
+                ret = num
         except (TypeError, ValueError, KeyboardInterrupt):
-            ret = False
+            pass
 
-        if not ret:
+        if num == -1:
             print("Invalid input")
-
-    def _change_version(self):
+        
+        return num
+    
+    def _select_version(self):
         global AVAILABLE_VERSION
         self._show_version()
 
+        ret = -1
         try:
             num = int(raw_input("Which version: "))
 
             if num > 0 and num <= len(AVAILABLE_VERSION):
-                self._data['project']['version'] = AVAILABLE_VERSION[num - 1]
-                self._update()
+                ret = num
         except (TypeError, ValueError, KeyboardInterrupt):
-            ret = False
+            pass
+
+        if num == -1:
+            print("Invalid input")
+        
+        return num
+        
+
+    def _run(self, is_debug=False):
+        project_num = self._select_project()
+        self._run_project(self._data['project'][project_num], is_debug)
+
+    def _change_version(self):
+        project_num = self._select_project()
+        if project_num != -1:
+            version_num = self._select_version()
+            if version_num != -1:
+                self._data['project'][project_num]['version'] = AVAILABLE_VERSION[version_num - 1]
+                self._update()
 
     def run(self, project_name='clate', is_debug=False):
         idx = None
