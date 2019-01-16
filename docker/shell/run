@@ -1,7 +1,0 @@
-#!/bin/bash
-cp /Config/init.vim ~/.config/nvim/
-
-sudo -u $UNAME -H bash -c "cd /Workspace && nvim ~/README.md"
-
-cp ~/.config/nvim/init.vim /Config/
-

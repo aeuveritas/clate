@@ -16,21 +16,21 @@ class Clate_Manager:
     def __init__(self):
         self._data = None
         self._pNames = None
-        self._version = None
+        self._default_version = None
         self._update(False)
 
-        print("Clate - {0}".format(self._version))
+        print("Clate - {0}".format(self._default_version))
 
     def menu(self):
-        print('    \x1b[1;32;40m' + "[C]" + '\x1b[0m' + "reate new project")
-        print('    \x1b[1;32;40m' + "[L]" + '\x1b[0m' + "ist projects")
-        print('    \x1b[1;32;40m' + "[A]" + '\x1b[0m' + "ctivate project")
-        print('dele\x1b[1;32;40m' + "[T]" + '\x1b[0m' + "e project")
-        print('   s\x1b[1;32;40m' + "[E]" + '\x1b[0m' + "lect version")
+        print('     \x1b[1;32;40m' + "[C]" + '\x1b[0m' + "reate new project")
+        print('     \x1b[1;32;40m' + "[L]" + '\x1b[0m' + "ist projects")
+        print('     \x1b[1;32;40m' + "[A]" + '\x1b[0m' + "ctivate project")
+        print(' dele\x1b[1;32;40m' + "[T]" + '\x1b[0m' + "e project")
+        print('chang\x1b[1;32;40m' + "[E]" + '\x1b[0m' + " version")
         print('')
-        print('debu\x1b[1;32;40m' + "[G]" + '\x1b[0m' + "")
+        print(' debu\x1b[1;32;40m' + "[G]" + '\x1b[0m' + "")
         print('')
-        print('   e\x1b[1;32;40m' + "[X]" + '\x1b[0m' + "it")
+        print('    e\x1b[1;32;40m' + "[X]" + '\x1b[0m' + "it")
 
         cmd = ""
         try:
@@ -99,7 +99,8 @@ class Clate_Manager:
         for project in self._data['project']:
             self._pNames.append(project['name'])
 
-        self._version = self._data['version']
+        if not isFlush:
+            self._default_version = self._data['default_version']
 
     def _mkdir(self, t_dir):
         try:
@@ -163,6 +164,7 @@ class Clate_Manager:
 
             new_project = dict()
             new_project['name'] = project_name
+            new_project['version'] = self._default_version
             new_project['directory'] = dirs
             self._data['project'].append(new_project)
 
@@ -217,7 +219,7 @@ class Clate_Manager:
         if is_debug:
             dockercmd += "--entrypoint /bin/bash "
 
-        dockercmd += "clate:{0}".format(self._version)
+        dockercmd += "clate:{0}".format(project['version'])
 
         print("{}".format(dockercmd))
         os.system(dockercmd)
@@ -247,7 +249,7 @@ class Clate_Manager:
             num = int(raw_input("Which version: "))
 
             if num > 0 and num <= len(AVAILABLE_VERSION):
-                self._data['version'] = AVAILABLE_VERSION[num - 1]
+                self._data['project']['version'] = AVAILABLE_VERSION[num - 1]
                 self._update()
         except (TypeError, ValueError, KeyboardInterrupt):
             ret = False

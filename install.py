@@ -32,6 +32,7 @@ VIMPLUGIN       = "{}/plugin.vim".format(VIMDIR)
 VIMCONF         = "{}/conf.vim".format(VIMDIR)
 VIMCMD          = "{}/command.vim".format(VIMDIR)
 
+RUN_SCRIPT = "./docker/shell/run"
 GLOBALRC = "artifact/gnu-global/globalrc"
 
 COMMON_PATH = ""
@@ -71,8 +72,9 @@ def clate_manager():
 
     config_dir = COMMON_PATH + 'Config/'
     mkdir(config_dir)
-    os.system("sudo cp {0} {1}".format(VIMRCACT, config_dir))
-    os.system("sudo cp {0} {1}init.origin.vim".format(VIMRCACT, config_dir))
+    version_dir = config_dir + '/' + VERSION
+    mkdir(version_dir)
+    os.system("sudo cp {0} {1}".format(VIMRCACT, version_dir))
 
     common_dict = dict()
     common_dict['path'] = COMMON_PATH
@@ -87,22 +89,23 @@ def clate_manager():
     else:
         clate_dir = COMMON_PATH + 'Clate/'
         mkdir(clate_dir)
-        
+
         clate_dirs = dict()
         clate_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__))
 
         clate_project = dict()
         clate_project['name'] = 'clate'
+        clate_project['version'] = VERSION
         clate_project['directory'] = clate_dirs
 
         project_list = list()
         project_list.append(clate_project)
-        
+
         clate_data = dict()
         clate_data['project'] = project_list
 
     clate_data['common'] = common_dict
-    clate_data['version'] = VERSION
+    clate_data['default_version'] = VERSION
     write_clate_json(clate_data)
     
     # Install execute file
@@ -172,6 +175,15 @@ def config():
     os.system("cat {0} >> {1}".format(VIMCONF,          VIMRCACT))
     os.system("cat {0} >> {1}".format(VIMCMD,           VIMRCACT))
 
+    # Run shell script
+    run = open(RUN_SCRIPT, 'w')
+    run.write("""#!/bin/bash
+rm ~/.config/nvim/init.vim
+ln -s /Config/{}/init.vim ~/.config/nvim/init.vim
+sudo -u $UNAME -H bash -c "cd /Workspace && nvim ~/README.md"
+    """.format(VERSION))
+    run.close()
+
     return True
 
 def install():
@@ -187,6 +199,7 @@ def cleanup():
     os.system("rm {0}".format(VIMRCACT))
     os.system("rm {0}".format(DOCKERUSERDATA))
     os.system("rm {0}".format(DOCKERFILE))
+    os.system("rm {0}".format(RUN_SCRIPT))
     os.system("rm docker/artifact/README.md")
 
 if __name__ == "__main__":
