@@ -1,27 +1,5 @@
 # Environment
-ENV GCC_VERSION=8.2.0 \
-    GLOBAL_VERSION=6.6.2
-
-WORKDIR $HOME
-
-# Install dependencies
-RUN apk add --update --no-cache \
-    bash \
-    build-base \
-    git \
-    make \
-    bison \
-    flex \
-    ncurses-dev \
-    ncurses-libs \
-    ncurses-terminfo \
-    libtool \
-    curl \
-    mpfr-dev \
-    mpc1-dev \
-    autoconf \
-    automake \
-    isl-dev
+ENV GCC_VERSION=8.2.0
 
 # Build GCC
 RUN wget https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.gz \
@@ -178,3 +156,19 @@ RUN export BUILD_DEPS='alpine-sdk patchelf' \
     #    /packages/lldb-dev-6.0.1-r0.apk \
     #    /packages/py2-lldb-6.0.1-r0.apk \
     && rm -rf /packages $HOME/aports/
+
+# Build RTags
+#RUN apk add --update \
+#    lua \
+#    zlib-dev \
+#    openssl-dev \
+#    linux-headers \
+#    cppunit-dev \
+#RUN git clone --recursive https://github.com/Andersbakken/rtags.git \
+#    && cd rtags \
+#    && mkdir -p build && cd build \
+#    && cmake -DRTAGS_NO_ELISP_FILES=1 .. \
+#    && make -j $(nproc) && make install-strip \
+#    && cd .. \
+#    && rm -rf rtags
+

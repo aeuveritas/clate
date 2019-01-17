@@ -1,7 +1,6 @@
 # Vim plugins deps
 RUN apk add --update --no-cache \
     libxt \
-    build-base \
     cmake \
     python-dev \
     the_silver_searcher \

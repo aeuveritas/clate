@@ -12,14 +12,15 @@ DOCKERFILE      = "{}/Dockerfile".format(DOCKERDIR)
 DOCKERFILEDIR   = "{}/dockerfile".format(DOCKERDIR)
 DOCKERINIT      = "{}/01_init".format(DOCKERFILEDIR)
 DOCKERUSER      = "{}/02_user".format(DOCKERFILEDIR)
-DOCKERBASE      = "{}/03_cpp".format(DOCKERFILEDIR)
+DOCKERBASE      = "{}/03_base".format(DOCKERFILEDIR)
+DOCKERCPP       = "{}/03_01_cpp".format(DOCKERFILEDIR)
 DOCKERVIM       = "{}/04_vim".format(DOCKERFILEDIR)
 DOCKERTAG       = "{}/05_tag".format(DOCKERFILEDIR)
 DOCKERPLUGIN    = "{}/06_plugin".format(DOCKERFILEDIR)
 DOCKERSETUP     = "{}/07_setup".format(DOCKERFILEDIR)
 
 DOCKERUSERDATA  = "{}/userdata".format(DOCKERFILEDIR)
-USER_JSON       = "./user_info.json"
+CONFIG_JSON     = "./config.json"
 
 VIMDIR          = "{}/vim".format(DOCKERDIR)
 VIMRCINIT       = "{}/init_init.vim".format(VIMDIR)
@@ -120,15 +121,15 @@ def clate_manager():
 def config():
     global COMMON_PATH
     # Build dockerfile
-    user_info = open(USER_JSON).read()
-    user = json.loads(user_info)
+    config_json = open(CONFIG_JSON).read()
+    config_info = json.loads(config_json)
 
-    if user['UID'] == "USER_ID" \
-        or user['UID'] == 'USER_ID_NUMBER' \
-        or user['GROUP'] == 'GROUP_ID' \
-        or user['GID'] == 'GROUP_ID_NUMBER' \
-        or user['COMMON_PATH'] == 'CLATE_DIRECTORY':
-        print("Please fill your info in user_info.json")
+    if config_info['UID'] == "USER_ID" \
+        or config_info['UID'] == 'USER_ID_NUMBER' \
+        or config_info['GROUP'] == 'GROUP_ID' \
+        or config_info['GID'] == 'GROUP_ID_NUMBER' \
+        or config_info['COMMON_PATH'] == 'CLATE_DIRECTORY':
+        print("Please fill your info in config_info.json")
         return False
 
     USER_ENV = \
@@ -141,8 +142,8 @@ ENV UID="{0}" \\\n\
     SHELL="/bin/bash" \\\n\
     HOME=/home/{1}\n\
 \n
-    """.format(user['UID'], user['ID'], user['GID'], user['GROUP'])
-    common = user['COMMON_PATH']
+    """.format(config_info['UID'], config_info['ID'], config_info['GID'], config_info['GROUP'])
+    common = config_info['COMMON_PATH']
     if common[-1] != '/':
         common += '/'
 
@@ -159,6 +160,8 @@ ENV UID="{0}" \\\n\
     os.system("cat {0} >> {1}".format(DOCKERUSERDATA,   DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERUSER,       DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERBASE,       DOCKERFILE))
+    if config_info['CPP']:
+        os.system("cat {0} >> {1}".format(DOCKERCPP,       DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERVIM,        DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERTAG,        DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERPLUGIN,     DOCKERFILE))

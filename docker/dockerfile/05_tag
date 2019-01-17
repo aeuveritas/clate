@@ -1,3 +1,6 @@
+# Environment
+ENV GLOBAL_VERSION=6.6.3
+
 # Build Ctags
 RUN git clone https://github.com/universal-ctags/ctags.git \
     && cd ctags \
@@ -20,19 +23,4 @@ RUN wget https://ftp.gnu.org/pub/gnu/global/global-${GLOBAL_VERSION}.tar.gz \
     && cp gtags.conf $HOME/.globalrc \
     && cd .. \
     && rm -rf global-${GLOBAL_VERSION}.tar.gz global-${GLOBAL_VERSION}
-
-# Build RTags
-#RUN apk add --update \
-#    lua \
-#    zlib-dev \
-#    openssl-dev \
-#    linux-headers \
-#    cppunit-dev \
-#RUN git clone --recursive https://github.com/Andersbakken/rtags.git \
-#    && cd rtags \
-#    && mkdir -p build && cd build \
-#    && cmake -DRTAGS_NO_ELISP_FILES=1 .. \
-#    && make -j $(nproc) && make install-strip \
-#    && cd .. \
-#    && rm -rf rtags
 

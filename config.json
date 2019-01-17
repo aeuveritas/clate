@@ -3,5 +3,6 @@
     "UID"           : "USER_ID_NUMBER",
     "GROUP"         : "GROUP_ID",
     "GID"           : "GROUP_ID_NUMBER",
-    "COMMON_PATH"   : "CLATE_DIRECTORY"
+    "COMMON_PATH"   : "CLATE_DIRECTORY",
+    "CPP"           : false
 }
