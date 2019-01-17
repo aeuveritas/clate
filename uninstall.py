@@ -1,10 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import json
 
 USER_JSON       = "./user_info.json"
 CLATE_JSON = os.getenv("HOME") + '/.clate.json'
+
 
 def main():
     user_info = open(USER_JSON).read()
@@ -15,6 +16,7 @@ def main():
     os.system("sudo rm /usr/local/bin/clate")
     os.system("rm -rf {}".format(common))
     os.system("rm -rf {}".format(CLATE_JSON))
+
 
 if __name__ == '__main__':
     main()

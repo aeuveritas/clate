@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import os
@@ -6,113 +6,91 @@ import json
 import shutil
 import subprocess
 
+import docker
+
 CLATE_JSON = os.getenv("HOME") + '/.clate.json'
 
 AVAILABLE_VERSION = [
     '0.1',
 ]
 
-class Clate_Manager:
+
+class Docker:
     def __init__(self):
-        self._data = None
-        self._pNames = None
-        self._default_version = None
-        self._update(False)
+        self._client = docker.from_env()
 
-        print("Clate - {0}".format(self._default_version))
+    def get_names(self):
+        names = list()
+        for container in self._client.containers.list():
+            if "clate_" in container.name:
+                names.append(container.name.replace("clate_", ""))
 
+        return names
+
+    def _traverse(self, name, func=None):
+        target_name = "clate_{}".format(name)
+        for container in self._client.containers.list():
+            if target_name == container.name:
+                if func:
+                    func(container)
+                return True
+
+        return False
+
+    def is_running(self, name):
+        return self._traverse(name)
+
+    def stop(self, name):
+        return self._traverse(name, lambda obj: obj.stop())
+
+
+class Interactor:
     def menu(self):
-        print('     \x1b[1;32;40m' + "[C]" + '\x1b[0m' + "reate new project")
-        print('     \x1b[1;32;40m' + "[L]" + '\x1b[0m' + "ist projects")
-        print('     \x1b[1;32;40m' + "[A]" + '\x1b[0m' + "ctivate project")
-        print(' dele\x1b[1;32;40m' + "[T]" + '\x1b[0m' + "e project")
-        print('chang\x1b[1;32;40m' + "[E]" + '\x1b[0m' + " version")
+        print('   \x1b[1;32;40m' + "[C]" + '\x1b[0m' + "reate new project")
+        print('   \x1b[1;32;40m' + "[L]" + '\x1b[0m' + "ist projects")
+        print('   \x1b[1;32;40m' + "[A]" + '\x1b[0m' + "ctivate project")
+        print('lis\x1b[1;32;40m' + "[T]" + '\x1b[0m' + " running project")
+        print('  d\x1b[1;32;40m' + "[E]" + '\x1b[0m' + "lete proect")
         print('')
-        print(' debu\x1b[1;32;40m' + "[G]" + '\x1b[0m' + "")
+        print('cha\x1b[1;32;40m' + "[N]" + '\x1b[0m' + "ge version")
+        print(' st\x1b[1;32;40m' + "[O]" + '\x1b[0m' + "p running project")
         print('')
-        print('    e\x1b[1;32;40m' + "[X]" + '\x1b[0m' + "it")
+        print('  e\x1b[1;32;40m' + "[X]" + '\x1b[0m' + "it")
 
         cmd = ""
         try:
-            cmd = raw_input("Command: ")
-        except:
-            print("wrong command")
-            cmd = ""
+            cmd = input("[ ASK ] command: ")
+        except (KeyboardInterrupt):
+            cmd = "x"
 
         return cmd
 
-    def console(self):
-        while True:
-            cmd = self.menu().lower()
-
-            if cmd == 'x':
-                return
-            elif cmd == 'l':
-                self._show()
-            elif cmd == 'c':
-                self._create()
-            elif cmd == 't':
-                self._delete()
-            elif cmd == 'e':
-                self._change_version()
-            elif cmd == 'g':
-                self._run(True)
-            elif cmd == 'a':
-                self._run()
-                return
-            else:
-                print("wrong command")
-                return
-
-            print("")
-
-    def _is_running(self, project):
-        output = subprocess.Popen(["docker", "container", "ls"],
-                                  stdout=subprocess.PIPE).communicate()[0]
-
-        words = output.split()
-
-        if "clate_{}".format(project) in words:
-            return True
-        else:
-            return False
-
-    def _show_version(self):
-        global AVAILABLE_VERSION
-        for (i, item) in enumerate(AVAILABLE_VERSION, start=1):
+    def print_list(self, items):
+        for (i, item) in enumerate(items):
             print("{0}: {1}".format(i, item))
 
-    def _update(self, isFlush=True):
-        if isFlush:
-            clate_json = open(CLATE_JSON, 'w')
-            clate_json.write(json.dumps(self._data, sort_keys=True, indent=4))
-            clate_json.close()
+    def list_select(self, items):
+        self.print_list(items)
 
-        del self._data
-        del self._pNames
-
-        clate_json = open(CLATE_JSON, 'r')
-        self._data = json.loads(clate_json.read())
-        clate_json.close()
-
-        self._pNames = list()
-        for project in self._data['project']:
-            self._pNames.append(project['name'])
-
-        if not isFlush:
-            self._default_version = self._data['default_version']
-
-    def _mkdir(self, t_dir):
+        ret = -1
         try:
-            os.mkdir(t_dir)
-        except OSError as e:
-            print("Warning: {}".format(e))
+            num = int(input("[ ASK ] select: "))
+            if num <= len(items) and num >= 0:
+                ret = num
+        except (TypeError, ValueError, KeyboardInterrupt):
+            print("[ WAR ] wrong input")
 
-    def _rmdir(self, t_dir):
+        return ret
+
+    def binary_select(self):
         try:
-            shutil.rmtree(t_dir)
-        except shutil.Error as e:
-            print("Warning: {}".format(e))
+            confirm = input("[ ASK ] confirm(y/N): ")
+            if confirm in ('y', 'Y'):
+                return True
+        except (TypeError, ValueError, KeyboardInterrupt):
+            print("[ WAR ] wrong input")
+
+        return False
 
     def _exdir(self, new_dir):
         if os.path.exists(new_dir):
@@ -123,24 +101,24 @@ class Clate_Manager:
         if new_dir[-1] is not '/':
             new_dir += '/'
 
-    def _show(self):
-        print(json.dumps(self._data, indent=4, sort_keys=True))
-
-    def _show_project_name(self):
-        for (i, item) in enumerate(self._pNames):
-            print("{0}: {1}".format(i, item))
-
-    def _create(self):
+    def fill_project(self, name_list, default_version):
         try:
-            project_name = raw_input("Project name: ")
+            project_name = input("[ ASK ] project name: ")
 
-            if project_name in self._pNames:
-                print("Already existed: {}".format(project_name))
+            if project_name in name_list:
+                print("[ WAR ] already existed: {}".format(project_name))
                 return
 
-            project_path = raw_input("Project directory: ")
+            import readline, glob
+            def complete(text, state):
+                return (glob.glob(text+'*')+[None])[state]
+            readline.set_completer_delims(' \t\n;')
+            readline.parse_and_bind("tab: complete")
+            readline.set_completer(complete)
+
+            project_path = input("[ ASK ] project directory: ")
             if not self._exdir(project_path):
-                print("Not existed: {}".format(project_path))
+                print("[ WAR ] not existed: {}".format(project_path))
                 return
             self._endSlash(project_path)
 
@@ -148,64 +126,148 @@ class Clate_Manager:
             dirs['Workspace'] = project_path
 
             while True:
-                need_more = raw_input("Do you have additional directory? (y/N) ")
-                if need_more == 'y':
-                    name = raw_input("Name in target: ")
+                need_more = input("[ ASK ] additonal directory(y/N): ")
+                if need_more in ('y', 'Y'):
+                    new_name = input("[ ASK ] directory name: ")
 
-                    path = raw_input("Directory in host: ")
-                    if not self._exdir(path):
-                        print("Not existed: {}".format(path))
-                        return
+                    new_path = input("[ ASK ] directory path: ")
+                    if not self._exdir(new_path):
+                        print("[ WAR ] not existed: {}".format(new_path))
+                        continue
 
-                    self._endSlash(path)
-                    dirs[name] = path
+                    self._endSlash(new_path)
+                    dirs[new_name] = new_path
                 else:
                     break
 
             new_project = dict()
             new_project['name'] = project_name
-            new_project['version'] = self._default_version
+            new_project['version'] = default_version
             new_project['directory'] = dirs
-            self._data['project'].append(new_project)
 
-            print("Created: {}".format(new_project))
-
-            self._update()
+            return new_project
         except KeyboardInterrupt:
             pass
 
-    def _delete(self):
-        self._show_project_name()
+        return None
 
-        ret = True
-        try:
-            num = int(raw_input("Which project: "))
 
-            if num == 0:
-                print("Debug is not erasable.")
-            elif num < len(self._pNames) and num > 0:
-                project = self._pNames[num]
-                if not self._is_running(project):
-                    confirm = raw_input("Confirm delete: {} (y/N)".format(project))
-                    if confirm == 'y':
-                        del self._data['project'][num]
-                        print("Deleted: {}".format(project))
-                        self._update()
-                    else:
-                        print("Canceled")
-                else:
-                    print("Still running: {}".format(project))
+class Setting_Manager:
+    def update(self):
+        clate_json = open(CLATE_JSON, 'r')
+        data = json.loads(clate_json.read())
+        clate_json.close()
+
+        return data['common'], data['project']
+
+    def flush(self, common, project):
+        data = dict()
+        data['common'] = common
+        data['project'] = project
+
+        clate_json = open(CLATE_JSON, 'w')
+        clate_json.write(json.dumps(data, sort_keys=True, indent=4))
+        clate_json.close()
+
+
+class Clate:
+    def __init__(self):
+        self._common = None
+        self._project = None
+        self._project_names = None
+
+        self._interactor = Interactor()
+        self._setting = Setting_Manager()
+        self._docker = Docker()
+        self._common, self._project = self._setting.update()
+        self._build_project_names()
+
+        print("[ INF ] Clate - {0}".format(self._common['default_version']))
+
+    def _build_project_names(self):
+        del self._project_names
+        self._project_names = list()
+        for project in self._project:
+            self._project_names.append(project['name'])
+
+    def console(self):
+        is_finish = False
+
+        while not is_finish:
+            cmd = self._interactor.menu()
+
+            if cmd == 'c':
+                self._create()
+            elif cmd == 'l':
+                self._show()
+            elif cmd == 'a':
+                self._run()
+            elif cmd == 't':
+                self._show_running_project()
+            elif cmd == 'e':
+                self._delete()
+            elif cmd == 'n':
+                self._change_version()
+            elif cmd == 'o':
+                self._stop()
+            elif cmd == 'x':
+                return
             else:
-                ret = False
+                print("[ WAR ] wrong command")
 
-        except (TypeError, ValueError, KeyboardInterrupt):
-            ret = False
+            print("")
 
-        if not ret:
-            print("Invalid input")
+    def _show_running_project(self):
+        names = self._docker.get_names()
+        self._interactor.print_list(names)
+
+    def _stop(self):
+        project_num = self._interactor.list_select(self._project_names)
+
+        if project_num != -1:
+            project_name = self._project_names[project_num]
+            ret = self._docker.stop(project_name)
+            if ret:
+                print("[ SUC ] stopped: {}".format(project_name))
+            else:
+                print("[ WAR ] cannot find running clate: {}".format(project_name))
+
+    def _show(self):
+        print("COMMON")
+        print(json.dumps(self._common, indent=4, sort_keys=True))
+        print("PROJECT")
+        print(json.dumps(self._project, indent=4, sort_keys=True))
+
+    def _create(self):
+        new_project = self._interactor.fill_project(self._project_names, self._common['default_version'])
+
+        if new_project:
+            self._project.append(new_project)
+            self._build_project_names()
+            print("[ SUC ] created: {}".format(new_project))
+            self._setting.flush(self._common, self._project)
+
+    def _delete(self):
+        project_num = self._interactor.list_select(self._project_names)
+
+        if project_num != -1:
+            if project_num == 0:
+                print("[ WAR ] project - Clate is not earasable.")
+            else:
+                project_name = self._project_names[project_num]
+                if not self._docker.is_running(project_name):
+                    confirm = self._interactor.binary_select()
+                    if confirm:
+                        del self._project[project_num]
+                        self._build_project_names()
+                        print("[ SUC ] deleted: {}".format(project_name))
+                        self._setting.flush(self._common, self._project)
+                    else:
+                        print("[ WAR ] canceled")
+                else:
+                    print("[ WAR ] cannot delete, because it is still running: {}".format(project_name))
 
     def _run_project(self, project, is_debug=False):
-        common = self._data['common']
         dockercmd = "docker run -ti --rm "
 
         dockercmd += "--name clate_{} ".format(project['name'])
@@ -213,7 +275,7 @@ class Clate_Manager:
         for target, host in project['directory'].items():
             dockercmd += "-v {0}:/{1} ".format(host, target)
 
-        for target, host in common.items():
+        for target, host in self._common['directory'].items():
             dockercmd += "-v {0}:/{1} ".format(host, target)
 
         if is_debug:
@@ -221,96 +283,78 @@ class Clate_Manager:
 
         dockercmd += "clate:{0}".format(project['version'])
 
-        print("{}".format(dockercmd))
+        print("[ SUC ] run: {}".format(dockercmd))
         os.system(dockercmd)
 
     def _select_project(self):
-        self._show_project_name()
+        return self._interactor.list_select(self._project_names)
 
-        ret = -1
-        try:
-            num = int(raw_input("Which project: "))
-
-            if num <= len(self._pNames) and num >= 0:
-                ret = num
-        except (TypeError, ValueError, KeyboardInterrupt):
-            pass
-
-        if num == -1:
-            print("Invalid input")
-        
-        return num
-    
     def _select_version(self):
         global AVAILABLE_VERSION
-        self._show_version()
-
-        ret = -1
-        try:
-            num = int(raw_input("Which version: "))
-
-            if num > 0 and num <= len(AVAILABLE_VERSION):
-                ret = num
-        except (TypeError, ValueError, KeyboardInterrupt):
-            pass
-
-        if num == -1:
-            print("Invalid input")
-        
-        return num
-        
+        return self._interactor.list_select(AVAILABLE_VERSION)
 
     def _run(self, is_debug=False):
         project_num = self._select_project()
-        self._run_project(self._data['project'][project_num], is_debug)
+        if project_num != -1:
+            self._run_project(self._project[project_num], is_debug)
 
     def _change_version(self):
         project_num = self._select_project()
         if project_num != -1:
+            project = self._project[project_num]
+            if self._docker.is_running(project['name']):
+                print("[ WAR ] cannot change version, because it is still running: {}".format(project['name']))
+                return
+
             version_num = self._select_version()
             if version_num != -1:
-                self._data['project'][project_num]['version'] = AVAILABLE_VERSION[version_num - 1]
-                self._update()
+                project['version'] = AVAILABLE_VERSION[version_num]
+                self._setting.flush(self._common, self._project)
+
+                print("[ SUC ] version is updated - project: {0}, version: {1}".format(project['name'], project['version']))
 
     def run(self, project_name='clate', is_debug=False):
         idx = None
         try:
-            idx = self._pNames.index(project_name)
+            idx = self._project_names.index(project_name)
         except ValueError:
-            print("No project: {0}".format(project_name))
+            print("[ WAR ] no project: {0}".format(project_name))
             return
 
-        self._run_project(self._data['project'][idx], is_debug)
+        self._run_project(self._project[idx], is_debug)
+
 
 def parse():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--project', help='run project', default=None)
+    parser.add_argument('-a', '--active', help='active project', default=None)
     parser.add_argument('-d', '--debug', help='run project with debug mode', action='store_true')
 
     return parser.parse_args()
 
+
 def main():
     if not os.path.exists(CLATE_JSON):
-        print("[ ERROR ] ~/.clate.json is not existed.")
+        print("[ ERR ] ~/.clate.json is not existed.")
         return
 
     params = parse()
 
     if params.debug:
         if params.project:
-            print("[ ERROR ] console and project cannot be together.")
+            print("[ ERR ] debug and project cannot be together.")
             return
 
-    cm = Clate_Manager()
+    clate = Clate()
 
-    if params.project:
-        cm.run(params.project)
+    if params.active:
+        clate.run(params.active)
     elif params.debug:
-        cm.run(is_debug=True)
+        clate.run(is_debug=True)
     else:
-        cm.console()
+        clate.console()
 
-    print("Clate is closed")
+    print("[ INF ] clate is closed")
+
 
 if __name__ == '__main__':
     main()

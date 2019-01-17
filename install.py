@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import json
@@ -46,11 +46,13 @@ def write_clate_json(clate_data):
     clate_json.write(json.dumps(clate_data, sort_keys=True, indent=4))
     clate_json.close()
 
+
 def mkdir(t_dir):
     try:
         os.makedirs(t_dir)
     except OSError as e:
         print(e)
+
 
 def clate_manager():
     global VERSION
@@ -77,10 +79,15 @@ def clate_manager():
     os.system("sudo cp {0} {1}".format(VIMRCACT, version_dir))
 
     common_dict = dict()
-    common_dict['path'] = COMMON_PATH
-    common_dict['Share'] = share_dir
-    common_dict['Snippet'] = snippet_dir
-    common_dict['Config'] = config_dir
+
+    common_dirs = dict()
+    common_dirs['Path'] = COMMON_PATH
+    common_dirs['Share'] = share_dir
+    common_dirs['Snippet'] = snippet_dir
+    common_dirs['Config'] = config_dir
+
+    common_dict['directory'] = common_dirs
+    common_dict['default_version'] = VERSION
 
     # Project
     if os.path.exists(CLATE_JSON):
@@ -105,11 +112,11 @@ def clate_manager():
         clate_data['project'] = project_list
 
     clate_data['common'] = common_dict
-    clate_data['default_version'] = VERSION
     write_clate_json(clate_data)
-    
+
     # Install execute file
     os.system("sudo cp clate /usr/local/bin")
+
 
 def config():
     global COMMON_PATH
@@ -141,7 +148,7 @@ def config():
 
     if not os.path.exists(common):
         mkdir(common)
-    
+
     COMMON_PATH = common
 
     user = open(DOCKERUSERDATA, "w")
@@ -169,7 +176,7 @@ def config():
     os.system("cat {0} > {1}".format(VIMPLUGININIT,     VIMRCPROC))
     os.system("cat {0} >> {1}".format(VIMPLUGINADD,     VIMRCPROC))
     os.system("cat {0} >> {1}".format(VIMPLUGINFIN,     VIMRCPROC))
-    
+
     # Build proc vimrc
     os.system("cp {0} {1}".format(VIMRCPROC,            VIMRCACT))
     os.system("cat {0} >> {1}".format(VIMCONF,          VIMRCACT))
@@ -186,12 +193,14 @@ sudo -u $UNAME -H bash -c "cd /Workspace && nvim ~/README.md"
 
     return True
 
+
 def install():
     # Build docker image
     os.system("cp README.md ./docker/artifact/")
     os.chdir(DOCKERDIR)
     os.system("docker build . -t {0}:{1}".format(NAME, VERSION))
     os.chdir("..")
+
 
 def cleanup():
     os.system("rm {0}".format(VIMRCINIT))
@@ -201,6 +210,7 @@ def cleanup():
     os.system("rm {0}".format(DOCKERFILE))
     os.system("rm {0}".format(RUN_SCRIPT))
     os.system("rm docker/artifact/README.md")
+
 
 if __name__ == "__main__":
     if config():
