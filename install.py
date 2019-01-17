@@ -10,13 +10,13 @@ VERSION         = "0.2"
 DOCKERDIR       = "./docker"
 DOCKERFILE      = "{}/Dockerfile".format(DOCKERDIR)
 DOCKERFILEDIR   = "{}/dockerfile".format(DOCKERDIR)
-DOCKERINIT      = "{}/init".format(DOCKERFILEDIR)
-DOCKERBASE      = "{}/base".format(DOCKERFILEDIR)
-DOCKERVIM       = "{}/vim".format(DOCKERFILEDIR)
-DOCKERTAG       = "{}/tag".format(DOCKERFILEDIR)
-DOCKERUSER      = "{}/user".format(DOCKERFILEDIR)
-DOCKERPLUGIN    = "{}/plugin".format(DOCKERFILEDIR)
-DOCKERSETUP     = "{}/setup".format(DOCKERFILEDIR)
+DOCKERINIT      = "{}/01_init".format(DOCKERFILEDIR)
+DOCKERUSER      = "{}/02_user".format(DOCKERFILEDIR)
+DOCKERBASE      = "{}/03_cpp".format(DOCKERFILEDIR)
+DOCKERVIM       = "{}/04_vim".format(DOCKERFILEDIR)
+DOCKERTAG       = "{}/05_tag".format(DOCKERFILEDIR)
+DOCKERPLUGIN    = "{}/06_plugin".format(DOCKERFILEDIR)
+DOCKERSETUP     = "{}/07_setup".format(DOCKERFILEDIR)
 
 DOCKERUSERDATA  = "{}/userdata".format(DOCKERFILEDIR)
 USER_JSON       = "./user_info.json"
@@ -25,12 +25,11 @@ VIMDIR          = "{}/vim".format(DOCKERDIR)
 VIMRCINIT       = "{}/init_init.vim".format(VIMDIR)
 VIMRCPROC       = "{}/init_proc.vim".format(VIMDIR)
 VIMRCACT        = "{}/init.vim".format(VIMDIR)
-VIMPLUGININIT   = "{}/plugin_init.vim".format(VIMDIR)
-VIMPLUGINADD    = "{}/plugin_add.vim".format(VIMDIR)
-VIMPLUGINFIN    = "{}/plugin_fin.vim".format(VIMDIR)
-VIMPLUGIN       = "{}/plugin.vim".format(VIMDIR)
-VIMCONF         = "{}/conf.vim".format(VIMDIR)
-VIMCMD          = "{}/command.vim".format(VIMDIR)
+VIMPLUGININIT   = "{}/01_plugin_init.vim".format(VIMDIR)
+VIMPLUGINADD    = "{}/02_plugin_add.vim".format(VIMDIR)
+VIMPLUGINFIN    = "{}/03_plugin_fin.vim".format(VIMDIR)
+VIMCONF         = "{}/04_conf.vim".format(VIMDIR)
+VIMCMD          = "{}/05_command.vim".format(VIMDIR)
 
 RUN_SCRIPT = "./docker/shell/run"
 GLOBALRC = "artifact/gnu-global/globalrc"
@@ -134,13 +133,14 @@ def config():
 
     USER_ENV = \
     """
-    # User info
-    ENV UID="{0}" \\\n\
-        UNAME="{1}" \\\n\
-        GID="{2}" \\\n\
-        GNAME="{3}" \\\n\
-        SHELL="/bin/bash" \\\n\
-        HOME=/home/{1}\n\
+# User info
+ENV UID="{0}" \\\n\
+    UNAME="{1}" \\\n\
+    GID="{2}" \\\n\
+    GNAME="{3}" \\\n\
+    SHELL="/bin/bash" \\\n\
+    HOME=/home/{1}\n\
+\n
     """.format(user['UID'], user['ID'], user['GID'], user['GROUP'])
     common = user['COMMON_PATH']
     if common[-1] != '/':
