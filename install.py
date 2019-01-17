@@ -5,7 +5,7 @@ import json
 
 # Variables
 NAME            = "clate"
-VERSION         = "0.1"
+VERSION         = "0.2"
 
 DOCKERDIR       = "./docker"
 DOCKERFILE      = "{}/Dockerfile".format(DOCKERDIR)

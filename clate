@@ -12,6 +12,7 @@ CLATE_JSON = os.getenv("HOME") + '/.clate.json'
 
 AVAILABLE_VERSION = [
     '0.1',
+    '0.2',
 ]
 
 
