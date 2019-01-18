@@ -8,7 +8,6 @@ call quickmenu#reset()
 let g:quickmenu_options = "HL"
 
 call quickmenu#append("# Analysis", '')
-call quickmenu#append("Force compile with Clang", 'YcmDiags', "force compile with clang")
 
 call quickmenu#append("# Gtags", '')
 call quickmenu#append("Build tag", 'Gctags', "build tag")
@@ -85,9 +84,3 @@ vnoremap b          :call AsyncBlame()<CR>
 " Gtags
 nnoremap <leader>g  :GtagsCursor<CR>
 
-" YouCompleteMe
-nnoremap <leader>n  :YcmCompleter GoToInclude<CR>
-nnoremap <leader>y  :YcmCompleter GoTo<CR>
-nnoremap <leader>t  :YcmCompleter GetType<CR>
-nnoremap <leader>r  :YcmCompleter GetParent<CR>
-nnoremap <leader>f  :YcmCompleter FixIt<CR>

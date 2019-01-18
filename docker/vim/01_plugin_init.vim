@@ -27,34 +27,31 @@ call plug#begin(expand('~/.config/nvim/plugged'))
 "*****************************************************************************
 " Utility
 Plug 'kana/vim-operator-user'
-Plug 'ervandew/supertab'
-
-" YouCompleteMe
-Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
-Plug 'Valloric/YouCompleteMe', {
-    \ 'dir': '~/.youcompleteme',
-    \ 'do' : 'python3 ./install.py --clang-completer --system-libclang --system-boost --clang-tidy'
-    \ }
 
 " Async worker
 Plug 'skywind3000/asyncrun.vim'
 
-" Active function
+" Git
 Plug 'tpope/vim-fugitive'
+Plug 'mhinz/vim-signify'
 Plug 'chrisbra/vim-diff-enhanced'
-Plug 'schickling/vim-bufonly'
+
+" Edit
 Plug 'mg979/vim-visual-multi'
 
+" Tab/Window/Buffer
+Plug 'schickling/vim-bufonly'
+
 " Passive function
-Plug 'mhinz/vim-signify'
 Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 
 " Highlight
-Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 Plug 'vim-python/python-syntax', { 'for': 'python' }
 Plug 't9md/vim-quickhl'
 Plug 'chrisbra/csv.vim', { 'for': 'csv' }
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'gabrielelana/vim-markdown', { 'for' : 'markdown' }
 
 " Sidebar
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
@@ -68,7 +65,6 @@ Plug 'dracula/vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'Yggdroot/indentLine', { 'on': 'IndentLinesToggle' }
-Plug 'yegappan/mru'
 
 " Search
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }

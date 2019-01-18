@@ -28,14 +28,14 @@ dele[T]e project
    s[E]lect version
 
    e[X]it
-Command: 
+Command:
 ```
 * Creates new project
 ```
 Command: c
 Project name: [PROJECT_NAME]
 Project directory: [PROJECT_PATH]
-Do you have additional directory? (y/N) 
+Do you have additional directory? (y/N)
 Created: {'directory': {'Base': u'[COMMON_PATH]/[PROJECT_NAME]/', 'Workspace': '[PROJECT_PATH]'}, 'name': '[PROJECT_NAME]'}
 ```
 * Lists up all projects
@@ -43,27 +43,27 @@ Created: {'directory': {'Base': u'[COMMON_PATH]/[PROJECT_NAME]/', 'Workspace': '
 Command: l
 {
     "common": {
-        "Config": "[COMMON_PATH]/Config/", 
-        "Share": "[COMMON_PATH]/Share/", 
+        "Config": "[COMMON_PATH]/Config/",
+        "Share": "[COMMON_PATH]/Share/",
         "Snippet": "[COMMON_PATH]/Snippet/"
-    }, 
-    "path": "[COMMON_PATH]/", 
+    },
+    "path": "[COMMON_PATH]/",
     "project": [
         {
             "directory": {
-                "Base": "[COMMON_PATH]/Debug/", 
+                "Base": "[COMMON_PATH]/Debug/",
                 "Workspace": "[PROJECT_PATH]"
-            }, 
+            },
             "name": "debug"
         },
         {
             "directory": {
-                "Base": "[COMMON_PATH]/[PROJECT_NAME]/", 
+                "Base": "[COMMON_PATH]/[PROJECT_NAME]/",
                 "Workspace": "[PROJECT_PATH]"
-            }, 
+            },
             "name": "test_clate"
         }
-    ], 
+    ],
     "version": "0.1"
 }
 ```
@@ -74,9 +74,6 @@ $ clate -p [PROJECT_NAME]
 
 # Plugin
 * kana/vim-operator-user
-* ervandew/supertab
-* rdnetto/YCM-Generator
-* Valloric/YouCompleteMe
 * skywind3000/asyncrun.vim
 * tpope/vim-fugitive
 * chrisbra/vim-diff-enhanced
@@ -85,8 +82,6 @@ $ clate -p [PROJECT_NAME]
 * mhinz/vim-signify
 * jiangmiao/auto-pairs
 * scrooloose/nerdcommenter
-* octol/vim-cpp-enhanced-highlight
-* vim-python/python-syntax
 * t9md/vim-quickhl
 * chrisbra/csv.vim
 * scrooloose/nerdtree
@@ -98,7 +93,6 @@ $ clate -p [PROJECT_NAME]
 * vim-airline/vim-airline
 * vim-airline/vim-airline-themes
 * Yggdroot/indentLine
-* yegappan/mru
 * junegunn/fzf
 * junegunn/fzf.vim
 * epmatsw/ag.vim
@@ -106,7 +100,7 @@ $ clate -p [PROJECT_NAME]
 * honza/vim-snippets
 * vim-scripts/confirm-quit
 * gabrielelana/vim-markdown
-* ntpeters/vim-better-whitespace 
+* ntpeters/vim-better-whitespace
 
 # Usage
 

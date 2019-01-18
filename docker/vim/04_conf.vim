@@ -146,12 +146,6 @@ let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status
 let g:asyncrun_open = 6
 
 "*****************************************************************************
-"" Supertab
-"*****************************************************************************
-let g:SuperTabDefaultCompletionType = '<C-n>'
-let g:SuperTabCrMapping = 0
-
-"*****************************************************************************
 "" Ultisnips
 "*****************************************************************************
 " Trigger configuration. Do no use <tab> if you use
@@ -164,27 +158,6 @@ let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 let g:UltiSnipsEditSplit = "vertical"
 
 let g:UltiSnipsSnippetDirectories = ['/Snippet/UltiSnips']
-
-"*****************************************************************************
-"" YouCompleteMe
-"*****************************************************************************
-let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'     " Project file
-let g:ycm_disable_for_files_larger_than_kb = 262144         " Max file size
-let g:ycm_collect_identifiers_from_tags_files = 1           " Combine ctags
-let g:ycm_min_num_of_chars_for_completion = 1               " Minimum chars to show completion
-let g:ycm_confirm_extra_conf = 0
-
-let g:ycm_add_preview_to_completeopt = 0
-set completeopt-=preview
-
-let g:ycm_key_list_stop_completion = ['<C-y>', '<Enter>']
-let g:ycm_key_list_select_completion = ['<Down>']
-let g:ycm_key_list_previous_completion = ['<Up>']
-
-let g:ycm_error_symbol = 'E>'
-let g:ycm_warning_symbol = 'W>'
-
-highlight Pmenu ctermfg=0 ctermbg=7 guifg=#ffffff guibg=#000000
 
 "*****************************************************************************
 "" GNU Global
@@ -216,11 +189,6 @@ let g:NERDTreeIndicatorMapCustom = {
 "" Tagbar
 "*****************************************************************************
 "let g:tagbar_left = 1
-
-"*****************************************************************************
-"" Vim-cpp-enhanced-highlight
-"*****************************************************************************
-let g:clighter8_global_compile_args = 1
 
 "*****************************************************************************
 "" Buffergator
@@ -259,14 +227,6 @@ if &diff
     endif
 
 "*****************************************************************************
-"" Clang-format
-"*****************************************************************************
-"let g:clang_format#detect_style_file = 1
-"let g:clang_format#auto_format_on_insert_leave = 1
-
-"autocmd FileType c,cpp ClangFormatAutoDisable
-
-"*****************************************************************************
 "" NERDCommenter
 "*****************************************************************************
 filetype plugin on
@@ -290,15 +250,6 @@ let g:clang_format#auto_format_on_insert_leave = 1
 "*****************************************************************************
 let g:python_highlight_all = 1
 let g:python_version_2 = 1
-
-"*****************************************************************************
-"" Fugitive
-"*****************************************************************************
-
-"*****************************************************************************
-"" MRU
-"*****************************************************************************
-let g:MRU_File = '/Share/.vim_mru_files'
 
 "*****************************************************************************
 "" Markdown
