@@ -17,6 +17,11 @@ RUN apk add --update --no-cache \
     mpc1-dev \
     autoconf \
     automake \
+    linux-headers \
+    libice \
+    libsm \
+    libxt \
+    zlib-dev \
     isl-dev
 
 

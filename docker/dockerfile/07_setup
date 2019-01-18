@@ -1,23 +1,33 @@
+# Set running environment
 ENV TERM=xterm-256color
 
 ENTRYPOINT ["bash", "/usr/local/bin/run"]
-
-# Copy artifact
-## GNU Global
-COPY artifact/gnu-global/gctags /usr/local/bin
 
 # Set running enviroment
 COPY shell/bashrc $HOME/.bashrc
 COPY shell/run /usr/local/bin
 RUN chmod 777 /usr/local/bin/run
 
-# Set vimrc
+# Set post nvim plugin
 COPY vim/init_proc.vim $HOME/.config/nvim/init.vim
 RUN chown $UNAME:$GROUP $HOME -R \
     && su - $UNAME -c "nvim +PlugInstall +qall"
 
-COPY vim/init.vim $HOME/.config/nvim/init.vim
+# Copy artifact
+## GNU Global
+COPY artifact/gnu-global/gctags /usr/local/bin
+
+## coc.nvim
+COPY artifact/coc.nvim/coc-settings.json $HOME/.config/nvim
+
+## README.ME
 COPY artifact/README.md $HOME
 
-RUN chown $UNAME:$GROUP $HOME -R
+## Set GNU Global
+RUN cp $TEMP/* $PLUGIN/
+
+# Set vimrc
+COPY vim/init.vim $HOME/.config/nvim/init.vim
+RUN chown $UNAME:$GROUP $HOME -R \
+    && su - $UNAME -c "nvim +PlugInstall +qall"
 

@@ -25,11 +25,15 @@ call plug#begin(expand('~/.config/nvim/plugged'))
 "*****************************************************************************
 "" Plug install packages
 "*****************************************************************************
+" LSP
+Plug 'neoclide/coc.nvim', { 'tag': '*', 'do': 'yarn install' }
+
 " Utility
 Plug 'kana/vim-operator-user'
 
 " Async worker
 Plug 'skywind3000/asyncrun.vim'
+Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
 
 " Git
 Plug 'tpope/vim-fugitive'
@@ -69,7 +73,6 @@ Plug 'Yggdroot/indentLine', { 'on': 'IndentLinesToggle' }
 " Search
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'epmatsw/ag.vim'
 
 " Snippets
 Plug 'SirVer/ultisnips'

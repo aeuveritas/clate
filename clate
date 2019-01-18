@@ -53,8 +53,8 @@ class Interactor:
         print('lis\x1b[1;32;40m' + "[T]" + '\x1b[0m' + " running project")
         print('  d\x1b[1;32;40m' + "[E]" + '\x1b[0m' + "lete proect")
         print('')
-        print('cha\x1b[1;32;40m' + "[N]" + '\x1b[0m' + "ge version")
         print(' st\x1b[1;32;40m' + "[O]" + '\x1b[0m' + "p running project")
+        print('cha\x1b[1;32;40m' + "[N]" + '\x1b[0m' + "ge version")
         print('')
         print('  e\x1b[1;32;40m' + "[X]" + '\x1b[0m' + "it")
 

@@ -60,7 +60,6 @@ map <F1> :e ~/README.md<CR>
 map <F5> :NERDTreeToggle<CR>
 map <F6> :TagbarToggle<CR>
 map <F7> :BuffergatorToggle<CR>
-map <F8> :MRU<CR>
 
 map <silent><F12> :call quickmenu#toggle(0)<CR>
 

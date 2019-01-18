@@ -1,6 +1,9 @@
 # Environment
 ENV GCC_VERSION=8.2.0
 
+RUN apk add --update --no-cache \
+    cmake
+
 # Build GCC
 RUN wget https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.gz \
     && tar -xzf gcc-${GCC_VERSION}.tar.gz \

@@ -18,8 +18,8 @@ RUN wget https://ftp.gnu.org/pub/gnu/global/global-${GLOBAL_VERSION}.tar.gz \
     && sh reconf.sh \
     && ./configure --with-universal-ctags=/usr/local/bin/ctags \
     && make -j $(nproc) && make install-strip \
-    && cp gtags.vim $PLUGIN \
-    && cp gtags-cscope.vim $PLUGIN \
+    && cp gtags.vim $TEMP \
+    && cp gtags-cscope.vim $TEMP \
     && cp gtags.conf $HOME/.globalrc \
     && cd .. \
     && rm -rf global-${GLOBAL_VERSION}.tar.gz global-${GLOBAL_VERSION}

@@ -9,28 +9,29 @@ RUN apk add --update --no-cache \
     npm \
     gperf \
     texinfo \
-    cmake \
-    linux-headers \
     lua-dev \
-    perl-dev \
     py3-pip \
-    xz \
     luarocks \
     diffutils \
-    libice \
-    libsm
+    boost-dev \
+    the_silver_searcher \
+    yarn
+
 RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
 RUN apk add --update --no-cache neovim==0.3.1-r1 neovim-doc==0.3.1-r1 neovim-lang==0.3.1-r1
 
 # Install neovim python support
-RUN pip3 install pynvim pep8 clang
+RUN pip3 install pynvim pep8 python-language-server
 
+# Install neovim node support
 RUN npm install -g neovim
 
 # Environment for NeoVim
-ENV PLUGIN=$HOME/.config/nvim/plugin \
+ENV TEMP=$HOME/TEMP \
+    PLUGIN=$HOME/.config/nvim/plugin \
     AUTOLOAD=$HOME/.config/nvim/autoload
 
-RUN mkdir -p $PLUGIN \
+RUN mkdir -p $TEMP \
+    && mkdir -p $PLUGIN \
     && chown $UNAME:$GROUP $HOME -R
 

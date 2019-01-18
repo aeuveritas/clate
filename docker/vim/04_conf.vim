@@ -1,6 +1,8 @@
 "*****************************************************************************
 "" Vim core
 "*****************************************************************************
+set hidden
+
 set number
 
 " Turn on the Wild menu
@@ -45,12 +47,12 @@ set lazyredraw
 set magic
 
 " Underline for cursor
-"set cursorline
-augroup BgHighlight
-    autocmd!
-    autocmd WinEnter * set cursorline
-    autocmd WinEnter * set nocursorline
-augroup END
+set cursorline
+"augroup BgHighlight
+"    autocmd!
+"    autocmd WinEnter * set cursorline
+"    autocmd WinEnter * set nocursorline
+"augroup END
 
 "*****************************************************************************
 "" Text, tab and indent related
@@ -110,6 +112,12 @@ set encoding=utf8
 
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
+
+"*****************************************************************************
+"" coc.nvim
+"*****************************************************************************
+set completeopt-=preview
+highlight Pmenu ctermfg=0 ctermbg=7 guifg=#ffffff guibg=#000000
 
 "*****************************************************************************
 "" Status line
