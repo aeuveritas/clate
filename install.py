@@ -13,11 +13,16 @@ DOCKERFILEDIR   = "{}/dockerfile".format(DOCKERDIR)
 DOCKERINIT      = "{}/01_init".format(DOCKERFILEDIR)
 DOCKERUSER      = "{}/02_user".format(DOCKERFILEDIR)
 DOCKERBASE      = "{}/03_base".format(DOCKERFILEDIR)
-DOCKERCPP       = "{}/03_01_cpp".format(DOCKERFILEDIR)
 DOCKERVIM       = "{}/04_vim".format(DOCKERFILEDIR)
 DOCKERTAG       = "{}/05_tag".format(DOCKERFILEDIR)
 DOCKERPLUGIN    = "{}/06_plugin".format(DOCKERFILEDIR)
-DOCKERSETUP     = "{}/07_setup".format(DOCKERFILEDIR)
+DOCKERCLEANUP   = "{}/07_cleanup".format(DOCKERFILEDIR)
+DOCKERSETUP     = "{}/08_setup".format(DOCKERFILEDIR)
+
+DOCKERCPP       = "{}/clang_cpp".format(DOCKERFILEDIR)
+DOCKERPIP       = "{}/pip".format(DOCKERFILEDIR)
+DOCKERNPM       = "{}/npm".format(DOCKERFILEDIR)
+DOCKERCOC       = "{}/coc".format(DOCKERFILEDIR)
 
 DOCKERUSERDATA  = "{}/userdata".format(DOCKERFILEDIR)
 CONFIG_JSON     = "./config.json"
@@ -132,6 +137,7 @@ def config():
         print("Please fill your info in config_info.json")
         return False
 
+    # User info
     USER_ENV = \
     """
 # User info
@@ -156,15 +162,50 @@ ENV UID="{0}" \\\n\
     user.write(USER_ENV)
     user.close()
 
+    # PIP command
+    PIP_CMD = "# Install neovim python support \nRUN pip3 install pynvim pep8"
+    if config_info['LANGUAGE']['CPP']:
+        PIP_CMD += " clang"
+    if config_info['LANGUAGE']['PYTHON']:
+        PIP_CMD += " python-language-server"
+    PIP_CMD += "\n\n"
+
+    pip = open(DOCKERPIP, "w")
+    pip.write(PIP_CMD)
+    pip.close()
+
+    # NPM command
+    NPM_CMD = "# Install neovim node support \nRUN npm install -g neovim\n\n"
+
+    npm = open(DOCKERNPM, "w")
+    npm.write(NPM_CMD)
+    npm.close()
+
+    # coc package
+    COC_PACKAGE = """RUN su - $UNAME -c 'nvim +"CocInstall coc-highlight coc-json coc-yaml coc-snippets coc-emmet"""
+    if config_info['LANGUAGE']['PYTHON']:
+        COC_PACKAGE += " coc-pyls"
+    if config_info['LANGUAGE']['JAVASCRIPT']:
+        COC_PACKAGE += " coc-tsserver coc-html coc-css"
+    COC_PACKAGE += """ "' & sleep 120\n\n"""
+
+    coc = open(DOCKERCOC, "w")
+    coc.write(COC_PACKAGE)
+    coc.close()
+
     os.system("cat {0} > {1}".format(DOCKERINIT,        DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERUSERDATA,   DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERUSER,       DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERBASE,       DOCKERFILE))
-    if config_info['CPP']:
-        os.system("cat {0} >> {1}".format(DOCKERCPP,       DOCKERFILE))
+    if config_info['LANGUAGE']['CPP']:
+        os.system("cat {0} >> {1}".format(DOCKERCPP,    DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERVIM,        DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERPIP,        DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERNPM,        DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERTAG,        DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERPLUGIN,     DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERCOC,        DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERCLEANUP,    DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERSETUP,      DOCKERFILE))
 
     if os.path.exists(DOCKERDIR + '/' + GLOBALRC):
@@ -210,6 +251,9 @@ def cleanup():
     os.system("rm {0}".format(VIMRCPROC))
     os.system("rm {0}".format(VIMRCACT))
     os.system("rm {0}".format(DOCKERUSERDATA))
+    os.system("rm {0}".format(DOCKERPIP))
+    os.system("rm {0}".format(DOCKERNPM))
+    os.system("rm {0}".format(DOCKERCOC))
     os.system("rm {0}".format(DOCKERFILE))
     os.system("rm {0}".format(RUN_SCRIPT))
     os.system("rm docker/artifact/README.md")

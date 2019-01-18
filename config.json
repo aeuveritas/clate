@@ -1,8 +1,12 @@
 {
-    "ID"            : "USER_ID",
-    "UID"           : "USER_ID_NUMBER",
-    "GROUP"         : "GROUP_ID",
-    "GID"           : "GROUP_ID_NUMBER",
-    "COMMON_PATH"   : "CLATE_DIRECTORY",
-    "CPP"           : false
+    "ID"             : "USER_ID",
+    "UID"            : "USER_ID_NUMBER",
+    "GROUP"          : "GROUP_ID",
+    "GID"            : "GROUP_ID_NUMBER",
+    "COMMON_PATH"    : "CLATE_DIRECTORY",
+    "LANGUAGE"       : {
+        "PYTHON"     : true,
+        "CPP"        : false,
+        "JAVASCRIPT" : true
+    }
 }
