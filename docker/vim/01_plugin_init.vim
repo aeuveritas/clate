@@ -42,6 +42,7 @@ Plug 'chrisbra/vim-diff-enhanced'
 
 " Edit
 Plug 'mg979/vim-visual-multi'
+Plug 'Shougo/neoyank.vim'
 
 " Tab/Window/Buffer
 Plug 'schickling/vim-bufonly'

@@ -341,8 +341,8 @@ def main():
     params = parse()
 
     if params.debug:
-        if params.project:
-            print("[ ERR ] debug and project cannot be together.")
+        if params.active:
+            print("[ ERR ] debug and active cannot be together.")
             return
 
     clate = Clate()
