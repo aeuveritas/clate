@@ -79,6 +79,7 @@ $ clate -p [PROJECT_NAME]
 * chrisbra/vim-diff-enhanced
 * schickling/vim-bufonly
 * mg979/vim-visual-multi
+* justinhoward/fzf-neoyank
 * mhinz/vim-signify
 * jiangmiao/auto-pairs
 * scrooloose/nerdcommenter
@@ -95,7 +96,7 @@ $ clate -p [PROJECT_NAME]
 * Yggdroot/indentLine
 * junegunn/fzf
 * junegunn/fzf.vim
-* epmatsw/ag.vim
+* jesseleite/vim-agriculture
 * SirVer/ultisnips
 * honza/vim-snippets
 * vim-scripts/confirm-quit
@@ -115,10 +116,8 @@ $ clate -p [PROJECT_NAME]
 ## Command
 * FZF       : List all files in fzf window
 ```:FZF```
-* FzfAg     : Grep [PATTERN] in current project
-```:FzfAg [PATTERN]```
-* Ag        : Grep [PATTERN] in specific directory
-```:Ag [PATTERN] [DIRECTORY]```
+* AgRaw     : Grep [PATTERN] in current project
+```:AgRaw -Q [PATTERN] [DIRECTORY]```
 
 ## Short-cut
 * Next buffer               : &lt;C-c> l
@@ -133,9 +132,5 @@ $ clate -p [PROJECT_NAME]
 * GtagsCursor               : &lt;leader> g
 * Mark word highlight       : &lt;leader> h
 * Clear word highlight      : &lt;leader> c
-* Go to header              : &lt;leader> n
-* Find define/declaration   : &lt;leader> y
-* Find type                 : &lt;leader> t
-* Find parent               : &lt;leader> r
-* Fix it                    : &lt;leader> f
+* List for yank             : &lt;leader> y
 

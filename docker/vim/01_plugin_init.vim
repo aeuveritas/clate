@@ -42,12 +42,12 @@ Plug 'chrisbra/vim-diff-enhanced'
 
 " Edit
 Plug 'mg979/vim-visual-multi'
-Plug 'Shougo/neoyank.vim'
+Plug 'justinhoward/fzf-neoyank'
 
 " Tab/Window/Buffer
 Plug 'schickling/vim-bufonly'
 
-" Passive function
+" Auto fill
 Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 
@@ -74,6 +74,7 @@ Plug 'Yggdroot/indentLine', { 'on': 'IndentLinesToggle' }
 " Search
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'jesseleite/vim-agriculture'
 
 " Snippets
 Plug 'SirVer/ultisnips'

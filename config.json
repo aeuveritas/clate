@@ -1,0 +1,12 @@
+{
+    "ID"             : "USER_ID",
+    "UID"            : "USER_ID_NUMBER",
+    "GROUP"          : "GROUP_ID",
+    "GID"            : "GROUP_ID_NUMBER",
+    "COMMON_PATH"    : "DIRECTORY_FOR_CLATE",
+    "LANGUAGE"       : {
+        "PYTHON"     : false,
+        "CPP"        : false,
+        "JAVASCRIPT" : false
+    }
+}

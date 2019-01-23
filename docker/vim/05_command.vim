@@ -83,3 +83,8 @@ vnoremap b          :call AsyncBlame()<CR>
 " Gtags
 nnoremap <leader>g  :GtagsCursor<CR>
 
+" Yank
+nnoremap <leader>y  :FZFNeoyank<cr>
+nnoremap <ldeaer>r  :FZFNeoyankSelection<cr>
+
+

@@ -7,4 +7,7 @@ COPY vim/init_init.vim $HOME/.config/nvim/init.vim
 RUN chown $UNAME:$GROUP $HOME -R \
     && su - $UNAME -c "nvim +PlugInstall +qall"
 
+# Link fzf
+RUN ln -s /home/$UNAME/.fzf/bin/fzf /usr/local/bin/fzf
+
 
