@@ -167,7 +167,7 @@ ENV UID="{0}" \\\n\
     if config_info['LANGUAGE']['CPP']:
         PIP_CMD += " clang"
     if config_info['LANGUAGE']['PYTHON']:
-        PIP_CMD += " python-language-server"
+        PIP_CMD += " python-language-server[all]"
     PIP_CMD += "\n\n"
 
     pip = open(DOCKERPIP, "w")
