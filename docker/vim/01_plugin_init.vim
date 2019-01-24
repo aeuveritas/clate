@@ -52,11 +52,12 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 
 " Highlight
+Plug 'bfrg/vim-cpp-modern'
 Plug 'vim-python/python-syntax', { 'for': 'python' }
 Plug 't9md/vim-quickhl'
 Plug 'chrisbra/csv.vim', { 'for': 'csv' }
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'gabrielelana/vim-markdown', { 'for' : 'markdown' }
+Plug 'gabrielelana/vim-markdown', { 'for': 'markdown' }
 
 " Sidebar
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }

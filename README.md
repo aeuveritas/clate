@@ -1,5 +1,5 @@
 # Clate
-VIM for C/C++ on Docker
+VIM for C/C++(Pytho, Javascript) on Docker
 
 # Installation
 1. You can find your information with **id** linux command.
@@ -11,8 +11,9 @@ $ id [YOUR_ID]
 $ id root
  uid=0(root) gid=0(root) groups=0(root),0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel),11(floppy),20(dialout),26(tape),27(video)
 ```
-2. Fill user_info.json
+2. Fill config.json
   - COMMON_PATH is directory to keep sharing files among **Clate** instances.
+  - Set "true" for target language.
 3. Execute install.py
 
 # Console
@@ -20,15 +21,18 @@ $ id root
   - create, show, remove project.
 ```
 $ clate
-Clate - 0.1
-    [C]reate new project
-    [L]ist projects
-    [A]ctivate project
-dele[T]e project
-   s[E]lect version
+[ INF ] Clate - 0.2
+   [C]reate new project
+   [L]ist projects
+   [A]ctivate project
+lis[T] running project
+  d[E]lete proect
 
-   e[X]it
-Command:
+ st[O]p running project
+cha[N]ge version
+
+  e[X]it
+[ ASK ] command:
 ```
 * Creates new project
 ```
@@ -43,48 +47,56 @@ Created: {'directory': {'Base': u'[COMMON_PATH]/[PROJECT_NAME]/', 'Workspace': '
 Command: l
 {
     "common": {
-        "Config": "[COMMON_PATH]/Config/",
-        "Share": "[COMMON_PATH]/Share/",
-        "Snippet": "[COMMON_PATH]/Snippet/"
+        "default_version": "0.2",
+        "directory": {
+            "Config": "[COMMON_PATH]/Config/",
+            "path": "[COMMON_PATH]/",
+            "Share": "[COMMON_PATH]/Share/",
+            "Snippet": "[COMMON_PATH]/Snippet/"
+        }
     },
-    "path": "[COMMON_PATH]/",
     "project": [
         {
             "directory": {
-                "Base": "[COMMON_PATH]/Debug/",
                 "Workspace": "[PROJECT_PATH]"
             },
-            "name": "debug"
+            "name": "clate",
+            "version": "0.2"
         },
         {
             "directory": {
-                "Base": "[COMMON_PATH]/[PROJECT_NAME]/",
                 "Workspace": "[PROJECT_PATH]"
             },
-            "name": "test_clate"
+            "name": "test_clate",
+            "version": "0.2"
         }
-    ],
-    "version": "0.1"
+    ]
 }
 ```
 * Run project directly.
 ```
-$ clate -p [PROJECT_NAME]
+$ clate -a [PROJECT_NAME]
 ```
 
 # Plugin
+* neoclide/coc.nvim
 * kana/vim-operator-user
 * skywind3000/asyncrun.vim
+* Shougo/denite.nvim
 * tpope/vim-fugitive
+* mhinz/vim-signify
 * chrisbra/vim-diff-enhanced
-* schickling/vim-bufonly
 * mg979/vim-visual-multi
 * justinhoward/fzf-neoyank
-* mhinz/vim-signify
+* schickling/vim-bufonly
 * jiangmiao/auto-pairs
 * scrooloose/nerdcommenter
+* bfrg/vim-cpp-modern
+* vim-python/python-syntax
 * t9md/vim-quickhl
 * chrisbra/csv.vim
+* ntpeters/vim-better-whitespace
+* gabrielelana/vim-markdown
 * scrooloose/nerdtree
 * Xuyuanp/nerdtree-git-plugin
 * jeetsukumaran/vim-buffergator
@@ -100,8 +112,6 @@ $ clate -p [PROJECT_NAME]
 * SirVer/ultisnips
 * honza/vim-snippets
 * vim-scripts/confirm-quit
-* gabrielelana/vim-markdown
-* ntpeters/vim-better-whitespace
 
 # Usage
 
@@ -110,7 +120,6 @@ $ clate -p [PROJECT_NAME]
 * F5: NERDTree
 * F6: TagBar
 * F7: Buffergator
-* F8: Most Recently Used file list
 * F12: Quick menu
 
 ## Command
