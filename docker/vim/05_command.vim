@@ -8,6 +8,7 @@ call quickmenu#reset()
 let g:quickmenu_options = "HL"
 
 call quickmenu#append("# Analysis", '')
+call quickmenu#append("Diagnostics", 'CocList diagnostics', "diagnostics")
 
 call quickmenu#append("# Gtags", '')
 call quickmenu#append("Build tag", 'Gctags', "build tag")
