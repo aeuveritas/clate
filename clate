@@ -3,8 +3,6 @@
 import argparse
 import os
 import json
-import shutil
-import subprocess
 
 import docker
 
@@ -110,7 +108,9 @@ class Interactor:
                 print("[ WAR ] already existed: {}".format(project_name))
                 return
 
-            import readline, glob
+            import readline
+            import glob
+
             def complete(text, state):
                 return (glob.glob(text+'*')+[None])[state]
             readline.set_completer_delims(' \t\n;')
