@@ -116,7 +116,12 @@ set ffs=unix,dos,mac
 "*****************************************************************************
 "" coc.nvim
 "*****************************************************************************
+" disable previe
 set completeopt-=preview
+
+" always show signcolumns
+set signcolumn=yes
+
 highlight Pmenu ctermfg=0 ctermbg=7 guifg=#ffffff guibg=#000000
 
 "*****************************************************************************
