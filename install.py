@@ -129,7 +129,7 @@ def config():
     config_json = open(CONFIG_JSON).read()
     config_info = json.loads(config_json)
 
-    if config_info['UID'] == "USER_ID" \
+    if config_info['ID'] == "USER_ID" \
         or config_info['UID'] == 'USER_ID_NUMBER' \
         or config_info['GROUP'] == 'GROUP_ID' \
         or config_info['GID'] == 'GROUP_ID_NUMBER' \
@@ -230,9 +230,9 @@ ENV UID="{0}" \\\n\
     run = open(RUN_SCRIPT, 'w')
     run.write("""#!/bin/bash
 rm ~/.config/nvim/init.vim
-ln -s /Config/{}/init.vim ~/.config/nvim/init.vim
-sudo -u $UNAME -H bash -c "cd /Workspace && nvim ~/README.md"
-    """.format(VERSION))
+ln -s /Config/{0}/init.vim ~/.config/nvim/init.vim
+su - {1} -c "cd /Workspace && nvim ~/README.md"
+    """.format(VERSION, config_info['ID']))
     run.close()
 
     return True

@@ -1,4 +1,4 @@
 # Clate
-FROM alpine:latest
+FROM ubuntu:latest
 MAINTAINER Karl.Jeong <aeuveritas@gmail.com>
 

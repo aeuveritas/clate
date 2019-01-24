@@ -24,7 +24,8 @@ COPY artifact/coc.nvim/coc-settings.json $HOME/.config/nvim
 COPY artifact/README.md $HOME
 
 ## Set GNU Global
-RUN cp $TEMP/* $PLUGIN/
+RUN cp $TEMP/gtags.vim $PLUGIN/ \
+    && cp $TEMP/gtags-cscope.vim $PLUGIN/
 
 # Set vimrc
 COPY vim/init.vim $HOME/.config/nvim/init.vim

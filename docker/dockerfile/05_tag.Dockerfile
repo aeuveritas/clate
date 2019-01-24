@@ -1,6 +1,16 @@
 # Environment
 ENV GLOBAL_VERSION=6.6.3
 
+# Install dependencies
+RUN apt-get install -y \
+    autoconf \
+    bison \
+    flex \
+    gperf \
+    libtool-bin \
+    texinfo \
+    ncurses-dev
+
 # Build Ctags
 RUN git clone https://github.com/universal-ctags/ctags.git \
     && cd ctags \
