@@ -97,7 +97,7 @@ class Interactor:
         return False
 
     def _endSlash(self, new_dir):
-        if new_dir[-1] is not '/':
+        if new_dir[-1] != '/':
             new_dir += '/'
 
     def fill_project(self, name_list, default_version):
