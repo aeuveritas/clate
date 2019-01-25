@@ -1,5 +1,5 @@
 # Clate
-VIM for C/C++(Pytho, Javascript) on Docker
+VIM for C/C++(Python, Javascript) on Docker
 
 # Installation
 1. You can find your information with **id** linux command.
