@@ -3,6 +3,7 @@
 import argparse
 import os
 import json
+import shutil
 
 import docker
 
@@ -43,7 +44,34 @@ class Docker:
         return self._traverse(name, lambda obj: obj.stop())
 
 
+class DirManager:
+    def exDir(self, new_dir):
+        if os.path.exists(new_dir):
+            return True
+        return False
+
+    def endSlash(self, new_dir):
+        if new_dir[-1] != '/':
+            new_dir += '/'
+        return new_dir
+
+    def mkDir(self, new_dir):
+        try:
+            os.makedirs(new_dir)
+        except OSError as e:
+            print(e)
+
+    def rmDir(self, t_dir):
+        try:
+            shutil.rmtree(t_dir)
+        except shutil.Error as e:
+            print(e)
+
+
 class Interactor:
+    def __init__(self, dirMgr):
+        self._dirMgr = dirMgr
+
     def menu(self):
         print('   \x1b[1;32;40m' + "[C]" + '\x1b[0m' + "reate new project")
         print('   \x1b[1;32;40m' + "[L]" + '\x1b[0m' + "ist projects")
@@ -91,15 +119,6 @@ class Interactor:
 
         return False
 
-    def _exdir(self, new_dir):
-        if os.path.exists(new_dir):
-            return True
-        return False
-
-    def _endSlash(self, new_dir):
-        if new_dir[-1] != '/':
-            new_dir += '/'
-
     def fill_project(self, name_list, default_version):
         try:
             project_name = input("[ ASK ] project name: ")
@@ -118,10 +137,10 @@ class Interactor:
             readline.set_completer(complete)
 
             project_path = input("[ ASK ] project directory: ")
-            if not self._exdir(project_path):
+            if not self._dirMgr.exDir(project_path):
                 print("[ WAR ] not existed: {}".format(project_path))
                 return
-            self._endSlash(project_path)
+            project_path = self._dirMgr.endSlash(project_path)
 
             dirs = dict()
             dirs['Workspace'] = project_path
@@ -132,11 +151,11 @@ class Interactor:
                     new_name = input("[ ASK ] directory name: ")
 
                     new_path = input("[ ASK ] directory path: ")
-                    if not self._exdir(new_path):
+                    if not self._dirMgr.exDir(new_path):
                         print("[ WAR ] not existed: {}".format(new_path))
                         continue
 
-                    self._endSlash(new_path)
+                    self._dirMgr.endSlash(new_path)
                     dirs[new_name] = new_path
                 else:
                     break
@@ -177,9 +196,11 @@ class Clate:
         self._project = None
         self._project_names = None
 
-        self._interactor = Interactor()
+        self._dirMgr = DirManager()
+        self._interactor = Interactor(self._dirMgr)
         self._setting = Setting_Manager()
         self._docker = Docker()
+
         self._common, self._project = self._setting.update()
         self._build_project_names()
 
@@ -239,14 +260,20 @@ class Clate:
         print("PROJECT")
         print(json.dumps(self._project, indent=4, sort_keys=True))
 
+    def _createTempDir(self, new_project):
+        temp_dir = self._common['directory']['Path'] + 'Temp/' + new_project['name'] + '/'
+        new_project['directory']['Temp'] = temp_dir
+        self._dirMgr.mkDir(temp_dir)
+
     def _create(self):
         new_project = self._interactor.fill_project(self._project_names, self._common['default_version'])
 
         if new_project:
+            self._createTempDir(new_project)
             self._project.append(new_project)
             self._build_project_names()
-            print("[ SUC ] created: {}".format(new_project))
             self._setting.flush(self._common, self._project)
+            print("[ SUC ] created: {}".format(new_project))
 
     def _delete(self):
         project_num = self._interactor.list_select(self._project_names)
@@ -259,6 +286,7 @@ class Clate:
                 if not self._docker.is_running(project_name):
                     confirm = self._interactor.binary_select()
                     if confirm:
+                        self._dirMgr.rmDir(self._project[project_num]['directory']['Temp'])
                         del self._project[project_num]
                         self._build_project_names()
                         print("[ SUC ] deleted: {}".format(project_name))
@@ -277,7 +305,10 @@ class Clate:
             dockercmd += "-v {0}:/{1} ".format(host, target)
 
         for target, host in self._common['directory'].items():
-            dockercmd += "-v {0}:/{1} ".format(host, target)
+            if target != 'Temp':
+                dockercmd += "-v {0}:/{1} ".format(host, target)
+            else:
+                dockercmd += "-v {0}:/Temp ".format(host)
 
         if is_debug:
             dockercmd += "--entrypoint /bin/bash "

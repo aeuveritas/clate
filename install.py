@@ -86,6 +86,9 @@ def clate_manager():
     common_dict = dict()
 
     common_dirs = dict()
+    temp_dir = COMMON_PATH + 'Temp/'
+    mkdir(temp_dir)
+
     common_dirs['Path'] = COMMON_PATH
     common_dirs['Share'] = share_dir
     common_dirs['Snippet'] = snippet_dir
@@ -99,9 +102,6 @@ def clate_manager():
         clate_json = open(CLATE_JSON).read()
         clate_data = json.loads(clate_json)
     else:
-        clate_dir = COMMON_PATH + 'Clate/'
-        mkdir(clate_dir)
-
         clate_dirs = dict()
         clate_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__))
 
@@ -115,6 +115,10 @@ def clate_manager():
 
         clate_data = dict()
         clate_data['project'] = project_list
+
+        clate_temp_dir = temp_dir + 'clate/'
+        clate_dirs['Temp'] = clate_temp_dir
+        mkdir(clate_temp_dir)
 
     clate_data['common'] = common_dict
     write_clate_json(clate_data)
