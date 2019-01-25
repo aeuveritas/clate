@@ -17,9 +17,6 @@ RUN chown $UNAME:$GROUP $HOME -R \
 ## GNU Global
 COPY artifact/gnu-global/gctags /usr/local/bin
 
-## coc.nvim
-COPY artifact/coc.nvim/coc-settings.json $HOME/.config/nvim
-
 ## README.ME
 COPY artifact/README.md $HOME
 

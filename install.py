@@ -20,6 +20,7 @@ DOCKERCLEANUP   = "{}/07_cleanup.Dockerfile".format(DOCKERFILEDIR)
 DOCKERSETUP     = "{}/08_setup.Dockerfile".format(DOCKERFILEDIR)
 
 DOCKERCPP       = "{}/clang_cpp.Dockerfile".format(DOCKERFILEDIR)
+DOCKERCOCJSON   = "{}/coc_json.Dockerfile".format(DOCKERFILEDIR)
 DOCKERPIP       = "{}/pip".format(DOCKERFILEDIR)
 DOCKERNPM       = "{}/npm".format(DOCKERFILEDIR)
 DOCKERCOC       = "{}/coc".format(DOCKERFILEDIR)
@@ -197,38 +198,41 @@ ENV UID="{0}" \\\n\
     coc.write(COC_PACKAGE)
     coc.close()
 
-    os.system("cat {0} > {1}".format(DOCKERINIT,        DOCKERFILE))
-    os.system("cat {0} >> {1}".format(DOCKERUSERDATA,   DOCKERFILE))
-    os.system("cat {0} >> {1}".format(DOCKERUSER,       DOCKERFILE))
-    os.system("cat {0} >> {1}".format(DOCKERBASE,       DOCKERFILE))
+    os.system("cat {0} > {1}".format(DOCKERINIT,         DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERUSERDATA,    DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERUSER,        DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERBASE,        DOCKERFILE))
     if config_info['LANGUAGE']['CPP']:
-        os.system("cat {0} >> {1}".format(DOCKERCPP,    DOCKERFILE))
-    os.system("cat {0} >> {1}".format(DOCKERVIM,        DOCKERFILE))
-    os.system("cat {0} >> {1}".format(DOCKERPIP,        DOCKERFILE))
-    os.system("cat {0} >> {1}".format(DOCKERNPM,        DOCKERFILE))
-    os.system("cat {0} >> {1}".format(DOCKERTAG,        DOCKERFILE))
-    os.system("cat {0} >> {1}".format(DOCKERPLUGIN,     DOCKERFILE))
-    os.system("cat {0} >> {1}".format(DOCKERCOC,        DOCKERFILE))
-    os.system("cat {0} >> {1}".format(DOCKERCLEANUP,    DOCKERFILE))
-    os.system("cat {0} >> {1}".format(DOCKERSETUP,      DOCKERFILE))
+        os.system("cat {0} >> {1}".format(DOCKERCPP,     DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERVIM,         DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERPIP,         DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERNPM,         DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERTAG,         DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERPLUGIN,      DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERCOC,         DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERCLEANUP,     DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERSETUP,       DOCKERFILE))
+
+    if config_info['LANGUAGE']['CPP']:
+        os.system("cat {0} >> {1}".format(DOCKERCOCJSON, DOCKERFILE))
 
     if os.path.exists(DOCKERDIR + '/' + GLOBALRC):
         os.system("echo 'COPY {0} $HOME/.globalrc' >> {1}".format(GLOBALRC, DOCKERFILE))
         os.system("echo 'RUN chown $UNAME:$GROUP $HOME -R' >> {0}".format(DOCKERFILE))
 
     # Build init vimrc
-    os.system("cat {0} > {1}".format(VIMPLUGININIT,     VIMRCINIT))
-    os.system("cat {0} >> {1}".format(VIMPLUGINFIN,     VIMRCINIT))
+    os.system("cat {0} > {1}".format(VIMPLUGININIT,      VIMRCINIT))
+    os.system("cat {0} >> {1}".format(VIMPLUGINFIN,      VIMRCINIT))
 
     # Build proc vimrc
-    os.system("cat {0} > {1}".format(VIMPLUGININIT,     VIMRCPROC))
-    os.system("cat {0} >> {1}".format(VIMPLUGINADD,     VIMRCPROC))
-    os.system("cat {0} >> {1}".format(VIMPLUGINFIN,     VIMRCPROC))
+    os.system("cat {0} > {1}".format(VIMPLUGININIT,      VIMRCPROC))
+    os.system("cat {0} >> {1}".format(VIMPLUGINADD,      VIMRCPROC))
+    os.system("cat {0} >> {1}".format(VIMPLUGINFIN,      VIMRCPROC))
 
     # Build proc vimrc
-    os.system("cp {0} {1}".format(VIMRCPROC,            VIMRCACT))
-    os.system("cat {0} >> {1}".format(VIMCONF,          VIMRCACT))
-    os.system("cat {0} >> {1}".format(VIMCMD,           VIMRCACT))
+    os.system("cp {0} {1}".format(VIMRCPROC,             VIMRCACT))
+    os.system("cat {0} >> {1}".format(VIMCONF,           VIMRCACT))
+    os.system("cat {0} >> {1}".format(VIMCMD,            VIMRCACT))
 
     # Run shell script
     run = open(RUN_SCRIPT, 'w')
