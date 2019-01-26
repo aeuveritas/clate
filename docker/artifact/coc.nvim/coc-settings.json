@@ -5,7 +5,8 @@
             "filetypes": ["c", "cpp", "cuda", "objc", "objcpp"],
             "rootPatterns": [".ccls", "compile_commands.json", ".vim/", ".git/", ".hg/"],
             "initializationOptions": {
-                "cacheDirectory": "/Temp/ccls_cache/"
+                "cacheDirectory": "/Temp/ccls_cache/",
+                "clang":{"extraArgs": ["--gcc-toolchain=/usr",]}
             }
         }
     }
