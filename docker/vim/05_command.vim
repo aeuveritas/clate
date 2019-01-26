@@ -89,8 +89,12 @@ nnoremap <leader>y  :FZFNeoyank<cr>
 nnoremap <ldeaer>r  :FZFNeoyankSelection<cr>
 
 " Hide quit
-cnoremap <silent> q<CR>    :echo 'Please, use clate console'<CR>
-cnoremap <silent> qa<CR>   :echo 'Please, use clate console'<CR>
-cnoremap <silent> wqa<CR>  :wa<CR>
-cnoremap <silent> wq<CR>   :wa<CR>
+cnoremap <silent> q<CR>            :echo 'Please, use clate console'<CR>
+cnoremap <silent> qa<CR>           :echo 'Please, use clate console'<CR>
+cnoremap <silent> wqa<CR>          :wa<CR>
+cnoremap <silent> wq<CR>           :wa<CR>
+
+" Stop clate
+cnoremap <silent> stop_clate<CR>   :q<CR>
+
 
