@@ -239,15 +239,19 @@ class Clate:
 
             print("")
 
+    def _get_running_project(self):
+        return self._docker.get_names()
+
     def _show_running_project(self):
-        names = self._docker.get_names()
+        names = self._get_running_project()
         self._interactor.print_list(names)
 
     def _stop(self):
-        project_num = self._interactor.list_select(self._project_names)
+        names = self._get_running_project()
+        num = self._interactor.list_select(names)
 
-        if project_num != -1:
-            project_name = self._project_names[project_num]
+        if num != -1:
+            project_name = names[num]
             ret = self._docker.stop(project_name)
             if ret:
                 print("[ SUC ] stopped: {}".format(project_name))

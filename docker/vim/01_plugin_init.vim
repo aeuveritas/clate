@@ -82,6 +82,3 @@ Plug 'jesseleite/vim-agriculture'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
-" Interface
-Plug 'vim-scripts/confirm-quit'
-
