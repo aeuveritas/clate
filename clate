@@ -97,9 +97,12 @@ class Interactor:
             print("{0}: {1}".format(i, item))
 
     def list_select(self, items):
+        ret = -1
+        if len(items) == 0:
+            return ret
+
         self.print_list(items)
 
-        ret = -1
         try:
             num = int(input("[ ASK ] select: "))
             if num <= len(items) and num >= 0:
