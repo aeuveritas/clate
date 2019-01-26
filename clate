@@ -45,7 +45,7 @@ class Docker:
 
 
 class DirManager:
-    def exDir(self, new_dir):
+    def exist(self, new_dir):
         if os.path.exists(new_dir):
             return True
         return False
@@ -65,6 +65,12 @@ class DirManager:
         try:
             shutil.rmtree(t_dir)
         except shutil.Error as e:
+            print(e)
+
+    def rmFile(self, t_file):
+        try:
+            os.remove(t_file)
+        except OSError as e:
             print(e)
 
 
@@ -141,7 +147,7 @@ class Interactor:
             readline.set_completer(complete)
 
             project_path = input("[ ASK ] project directory: ")
-            if not self._dirMgr.exDir(project_path):
+            if not self._dirMgr.exist(project_path):
                 print("[ WAR ] not existed: {}".format(project_path))
                 return
             project_path = self._dirMgr.endSlash(project_path)
@@ -155,7 +161,7 @@ class Interactor:
                     new_name = input("[ ASK ] directory name: ")
 
                     new_path = input("[ ASK ] directory path: ")
-                    if not self._dirMgr.exDir(new_path):
+                    if not self._dirMgr.exist(new_path):
                         print("[ WAR ] not existed: {}".format(new_path))
                         continue
 
@@ -248,6 +254,10 @@ class Clate:
     def _compile_project(self, project):
         try:
             compile_dir = project['directory']['Workspace']
+            cc_file = compile_dir + 'compile_commands.json'
+            if self._dirMgr.exist(cc_file):
+                self._dirMgr.rmFile(cc_file)
+
             cmd = "cmake -H{0} -B{0}/Debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES".format(compile_dir)
             os.system(cmd)
 
@@ -255,7 +265,7 @@ class Clate:
             os.system(cmd)
             print("[ SUC ] generate: compile_commands.json")
         except:
-            print("[ WAR ] cannot generate: compile_commands.json")
+            print("[ WAR ] cannot generate: compile_commands.json, error: {}".format(e))
 
     def _compile(self):
         project_num = self._select_project()
