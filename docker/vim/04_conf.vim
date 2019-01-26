@@ -124,6 +124,9 @@ set signcolumn=yes
 
 highlight Pmenu ctermfg=0 ctermbg=7 guifg=#ffffff guibg=#000000
 
+" Smaller updatetime for CursorHold & CursorHoldI
+set updatetime=300
+
 "*****************************************************************************
 "" Status line
 "*****************************************************************************

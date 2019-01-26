@@ -52,6 +52,12 @@ endfunction
 " Source
 :command! Refresh   :source ~/.config/nvim/init.vim
 
+" Use `:Format` for format current buffer
+command! -nargs=0 Format :call CocAction('format')
+
+" Use `:Fold` for fold current buffer
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
 "*****************************************************************************
 "" Key
 "*****************************************************************************
@@ -86,15 +92,38 @@ nnoremap <leader>g  :GtagsCursor<CR>
 
 " Yank
 nnoremap <leader>y  :FZFNeoyank<cr>
-nnoremap <ldeaer>r  :FZFNeoyankSelection<cr>
+nnoremap <ldeaer>yy :FZFNeoyankSelection<cr>
 
 " Hide quit
-cnoremap <silent> q<CR>            :echo 'Please, use clate console'<CR>
-cnoremap <silent> qa<CR>           :echo 'Please, use clate console'<CR>
+cnoremap <silent> q<CR>            :bd<CR>
+cnoremap <silent> qa<CR>           :bd<CR>
+cnoremap <silent> q!<CR>           :bd<CR>
 cnoremap <silent> wqa<CR>          :wa<CR>
 cnoremap <silent> wq<CR>           :wa<CR>
 
-" Stop clate
-cnoremap <silent> stop_clate<CR>   :q<CR>
+" Save with ctrl + s
+nnoremap <C-s>      :w<CR>
+inoremap <C-s>      :w<CR>
 
+" CCLS
+"" Fix error
+nnoremap <leader>f  <Plug>(coc-fix-current)
 
+"" Highlight symbol under cursor on CursorHold
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+"" Remap keys for gotos
+nnoremap <leader>d <Plug>(coc-definition)
+nnoremap <leader>t <Plug>(coc-type-definition)
+nnoremap <leader>i <Plug>(coc-implementation)
+nnoremap <leader>r <Plug>(coc-references)
+
+"" Remap for rename current word
+nmap <leader>n <Plug>(coc-rename)
+
+"" Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
+"" Coc only does snippet and additional edit on confirm.
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+"" Remap for format selected region
+vnoremap <leader>o  <Plug>(coc-format-selected)
