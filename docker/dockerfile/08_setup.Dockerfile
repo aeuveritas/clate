@@ -7,6 +7,8 @@ ENTRYPOINT ["bash", "/usr/local/bin/run"]
 COPY shell/bashrc $HOME/.bashrc
 COPY shell/run /usr/local/bin
 RUN chmod 777 /usr/local/bin/run
+RUN echo "* hard nofile 773280" >> /etc/security/limits.conf \
+    && echo "* soft nofile 773280" >> /etc/security/limits.conf
 
 # Set post nvim plugin
 COPY vim/init_proc.vim $HOME/.config/nvim/init.vim
