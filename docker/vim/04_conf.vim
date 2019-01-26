@@ -122,7 +122,7 @@ set completeopt-=preview
 " always show signcolumns
 set signcolumn=yes
 
-highlight Pmenu ctermfg=0 ctermbg=7 guifg=#ffffff guibg=#000000
+highlight Pmenu ctermfg=0 ctermbg=255 guifg=#ffffff guibg=#000000
 
 " Smaller updatetime for CursorHold & CursorHoldI
 set updatetime=300

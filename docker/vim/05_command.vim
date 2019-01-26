@@ -103,7 +103,6 @@ cnoremap <silent> wq<CR>           :wa<CR>
 
 " Save with ctrl + s
 nnoremap <C-s>      :w<CR>
-inoremap <C-s>      :w<CR>
 
 " CCLS
 "" Fix error
