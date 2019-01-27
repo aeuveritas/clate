@@ -85,7 +85,7 @@ class Interactor:
         print(' lis\x1b[1;32;40m' + "[T]" + '\x1b[0m' + " running project")
         print('   d\x1b[1;32;40m' + "[E]" + '\x1b[0m' + "lete proect")
         print('')
-        print('Gene\x1b[1;32;40m' + "[R]" + '\x1b[0m' + "ate compile_commands.json")
+        print('gene\x1b[1;32;40m' + "[R]" + '\x1b[0m' + "ate compile_commands.json")
         print('  st\x1b[1;32;40m' + "[O]" + '\x1b[0m' + "p running project")
         print(' cha\x1b[1;32;40m' + "[N]" + '\x1b[0m' + "ge version")
         print('')
@@ -258,10 +258,10 @@ class Clate:
             if self._dirMgr.exist(cc_file):
                 self._dirMgr.rmFile(cc_file)
 
-            cmd = "cmake -H{0} -B{0}/Debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES".format(compile_dir)
+            cmd = "cmake -H{0} -B{0}/CLATE -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES".format(compile_dir)
             os.system(cmd)
 
-            cmd = "ln -s {0}/Debug/compile_commands.json {0}".format(compile_dir)
+            cmd = "ln -s {0}/CLATE/compile_commands.json {0}".format(compile_dir)
             os.system(cmd)
             print("[ SUC ] generate: compile_commands.json")
         except:
