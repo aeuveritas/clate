@@ -78,17 +78,19 @@ class Interactor:
     def __init__(self, dirMgr):
         self._dirMgr = dirMgr
 
-    def menu(self):
+    def menu(self, support_cpp):
         print('    \x1b[1;32;40m' + "[C]" + '\x1b[0m' + "reate new project")
         print('    \x1b[1;32;40m' + "[L]" + '\x1b[0m' + "ist projects")
         print('    \x1b[1;32;40m' + "[A]" + '\x1b[0m' + "ctivate project")
-        print(' lis\x1b[1;32;40m' + "[T]" + '\x1b[0m' + " running project")
-        print('   d\x1b[1;32;40m' + "[E]" + '\x1b[0m' + "lete proect")
+        print('dele\x1b[1;32;40m' + "[T]" + '\x1b[0m' + "e proect")
+        print('chan\x1b[1;32;40m' + "[E]" + '\x1b[0m' + " version")
         print('')
-        print('gene\x1b[1;32;40m' + "[R]" + '\x1b[0m' + "ate compile_commands.json")
         print('  st\x1b[1;32;40m' + "[O]" + '\x1b[0m' + "p running project")
-        print(' cha\x1b[1;32;40m' + "[N]" + '\x1b[0m' + "ge version")
+        print('  li\x1b[1;32;40m' + "[S]" + '\x1b[0m' + "t running project")
         print('')
+        if support_cpp:
+            print('gene\x1b[1;32;40m' + "[R]" + '\x1b[0m' + "ate compile_commands.json")
+            print('')
         print('   e\x1b[1;32;40m' + "[X]" + '\x1b[0m' + "it")
 
         cmd = ""
@@ -170,10 +172,15 @@ class Interactor:
                 else:
                     break
 
+            clang = dict()
+            clang['directory'] = 'CLATE'
+            clang['option'] = '-DCMAKE_BUILD_TYPE=Debug'
+
             new_project = dict()
             new_project['name'] = project_name
             new_project['version'] = default_version
             new_project['directory'] = dirs
+            new_project['clang'] = clang
 
             return new_project
         except KeyboardInterrupt:
@@ -226,7 +233,8 @@ class Clate:
         is_finish = False
 
         while not is_finish:
-            cmd = self._interactor.menu().lower()
+            support_cpp = self._common['language']['CPP']
+            cmd = self._interactor.menu(support_cpp).lower()
 
             if cmd == 'c':
                 self._create()
@@ -235,15 +243,15 @@ class Clate:
             elif cmd == 'a':
                 self._run()
             elif cmd == 't':
-                self._show_running_project()
-            elif cmd == 'e':
                 self._delete()
-            elif cmd == 'r':
-                self._compile()
+            elif cmd == 'e':
+                self._change_version()
             elif cmd == 'o':
                 self._stop()
-            elif cmd == 'n':
-                self._change_version()
+            elif cmd == 's':
+                self._show_running_project()
+            elif cmd == 'r' and support_cpp:
+                self._compile()
             elif cmd == 'x':
                 return
             else:
@@ -253,19 +261,21 @@ class Clate:
 
     def _compile_project(self, project):
         try:
-            compile_dir = project['directory']['Workspace']
-            cc_file = compile_dir + 'compile_commands.json'
+            project_dir = project['directory']['Workspace']
+            compile_dir = project['clang']['directory']
+            compile_option = project['clang']['option']
+            cc_file = project_dir + 'compile_commands.json'
             if self._dirMgr.exist(cc_file):
                 self._dirMgr.rmFile(cc_file)
 
-            cmd = "cmake -H{0} -B{0}/CLATE -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES".format(compile_dir)
+            cmd = "cmake -H{0} -B{0}/{1} -DCMAKE_EXPORT_COMPILE_COMMANDS=YES {2}".format(project_dir, compile_dir, compile_option)
             os.system(cmd)
 
-            cmd = "ln -s {0}/CLATE/compile_commands.json {0}".format(compile_dir)
+            cmd = "ln -s {0}/{1}/compile_commands.json {0}".format(project_dir, compile_dir)
             os.system(cmd)
             print("[ SUC ] generate: compile_commands.json")
         except:
-            print("[ WAR ] cannot generate: compile_commands.json, error: {}".format(e))
+            print("[ WAR ] cannot generate: compile_commands.json")
 
     def _compile(self):
         project_num = self._select_project()

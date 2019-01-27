@@ -42,6 +42,7 @@ RUN_SCRIPT = "./docker/shell/run"
 GLOBALRC = "artifact/gnu-global/globalrc"
 
 COMMON_PATH = ""
+SUPPORT_LANGUAGE = None
 CLATE_JSON = os.getenv("HOME") + '/.clate.json'
 
 
@@ -63,6 +64,7 @@ def mkdir(t_dir):
 def clate_manager():
     global VERSION
     global COMMON_PATH
+    global SUPPORT_LANGUAGE
     global CLATE_JSON
 
     clate_data = None
@@ -98,28 +100,36 @@ def clate_manager():
     common_dict['directory'] = common_dirs
     common_dict['default_version'] = VERSION
 
+    common_dict['language'] = SUPPORT_LANGUAGE
+
     # Project
     if os.path.exists(CLATE_JSON):
         clate_json = open(CLATE_JSON).read()
         clate_data = json.loads(clate_json)
     else:
         clate_dirs = dict()
-        clate_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__))
+        clate_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__)) + '/'
+
+        clate_temp_dir = temp_dir + 'clate/'
+        clate_dirs['Temp'] = clate_temp_dir
+        mkdir(clate_temp_dir)
+
+        clang = dict()
+        clang['directory'] = 'CLATE/'
+        clang['option'] = "-DCMAKE_BUILD_TYPE=Debug"
 
         clate_project = dict()
         clate_project['name'] = 'clate'
         clate_project['version'] = VERSION
         clate_project['directory'] = clate_dirs
 
+        clate_project['clang'] = clang
+
         project_list = list()
         project_list.append(clate_project)
 
         clate_data = dict()
         clate_data['project'] = project_list
-
-        clate_temp_dir = temp_dir + 'clate/'
-        clate_dirs['Temp'] = clate_temp_dir
-        mkdir(clate_temp_dir)
 
     clate_data['common'] = common_dict
     write_clate_json(clate_data)
@@ -130,6 +140,7 @@ def clate_manager():
 
 def config():
     global COMMON_PATH
+    global SUPPORT_LANGUAGE
     # Build dockerfile
     config_json = open(CONFIG_JSON).read()
     config_info = json.loads(config_json)
@@ -162,6 +173,7 @@ ENV UID="{0}" \\\n\
         mkdir(common)
 
     COMMON_PATH = common
+    SUPPORT_LANGUAGE = config_info['LANGUAGE']
 
     user = open(DOCKERUSERDATA, "w")
     user.write(USER_ENV)
