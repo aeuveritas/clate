@@ -352,10 +352,7 @@ class Clate:
             dockercmd += "-v {0}:/{1} ".format(host, target)
 
         for target, host in self._common['directory'].items():
-            if target != 'Temp':
-                dockercmd += "-v {0}:/{1} ".format(host, target)
-            else:
-                dockercmd += "-v {0}:/Temp ".format(host)
+            dockercmd += "-v {0}:/{1} ".format(host, target)
 
         if is_debug:
             dockercmd += "--entrypoint /bin/bash "
