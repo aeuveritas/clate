@@ -27,7 +27,9 @@ def main():
             print("[ ERR ] debug and active cannot be together.")
             return
 
-    clate = clate_core.Clate(CLATE_JSON)
+    dirMgr = clate_core.DirManager()
+    interactor = clate_core.Interactor(dirMgr)
+    clate = clate_core.Clate(CLATE_JSON, dirMgr, interactor)
 
     if params.active:
         clate.run(params.active)

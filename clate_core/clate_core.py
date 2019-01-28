@@ -136,7 +136,7 @@ class Interactor:
 
             if project_name in name_list:
                 print("[ WAR ] already existed: {}".format(project_name))
-                return
+                return None
 
             import readline
             import glob
@@ -210,13 +210,13 @@ class Setting_Manager:
 
 
 class Clate:
-    def __init__(self, json_file):
+    def __init__(self, json_file, dirMgr, interactor):
         self._common = None
         self._project = None
         self._project_names = None
 
-        self._dirMgr = DirManager()
-        self._interactor = Interactor(self._dirMgr)
+        self._dirMgr = dirMgr
+        self._interactor = interactor
         self._setting = Setting_Manager(json_file)
         self._docker = Docker()
 
