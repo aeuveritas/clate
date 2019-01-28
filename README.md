@@ -1,7 +1,7 @@
 # Clate
-VIM for C/C++(Python, Javascript) on Docker
+VIM for C/C++ & Python on Docker
 
-![clate](https://lh3.googleusercontent.com/YX3fwssxs7YPgn4Pyrdp1I--_RBH4kfrm4_6ITxNA0iG7Cv1GzRDKbEIJQLOblh8r4UECVPEv4RX0A "clate")
+![clate](img/clate.png "clate")
 
 # Installation
 1. You can find your information with **id** linux command.
@@ -48,34 +48,38 @@ Created: {'directory': {'Base': u'[COMMON_PATH]/[PROJECT_NAME]/', 'Workspace': '
 ```
 * Lists up all projects
 ```
-Command: l
+[ ASK ] command: l
+COMMON
 {
-    "common": {
-        "default_version": "0.2",
-        "directory": {
-            "Config": "[COMMON_PATH]/Config/",
-            "path": "[COMMON_PATH]/",
-            "Share": "[COMMON_PATH]/Share/",
-            "Snippet": "[COMMON_PATH]/Snippet/"
-        }
+    "default_version": "0.2",
+    "directory": {
+        "Config": "/home/xaliver/clate/Config/",
+        "Path": "/home/xaliver/clate/",
+        "Share": "/home/xaliver/clate/Share/",
+        "Snippet": "/home/xaliver/clate/Snippet/"
     },
-    "project": [
-        {
-            "directory": {
-                "Workspace": "[PROJECT_PATH]"
-            },
-            "name": "clate",
-            "version": "0.2"
-        },
-        {
-            "directory": {
-                "Workspace": "[PROJECT_PATH]"
-            },
-            "name": "test_clate",
-            "version": "0.2"
-        }
-    ]
+    "language": {
+        "CPP": true,
+        "JAVASCRIPT": false,
+        "PYTHON": true
+    }
 }
+PROJECT
+[
+    {
+        "clang": {
+            "directory": "CLATE/",
+            "option": "-DCMAKE_BUILD_TYPE=Debug"
+        },
+        "directory": {
+            "Temp": "/home/xaliver/clate/Temp/clate/",
+            "Workspace": "/home/xaliver/Workspace/clate/"
+        },
+        "name": "clate",
+        "version": "0.2"
+    }
+]
+
 ```
 * Run project directly.
 ```
@@ -91,6 +95,7 @@ $ clate -a [PROJECT_NAME]
 * mhinz/vim-signify
 * chrisbra/vim-diff-enhanced
 * mg979/vim-visual-multi
+* Shougo/neoyank.vim
 * justinhoward/fzf-neoyank
 * schickling/vim-bufonly
 * jiangmiao/auto-pairs
@@ -115,7 +120,6 @@ $ clate -a [PROJECT_NAME]
 * jesseleite/vim-agriculture
 * SirVer/ultisnips
 * honza/vim-snippets
-* vim-scripts/confirm-quit
 
 # Usage
 

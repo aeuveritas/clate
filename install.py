@@ -115,7 +115,7 @@ def clate_manager():
         mkdir(clate_temp_dir)
 
         clang = dict()
-        clang['directory'] = 'CLATE/'
+        clang['directory'] = 'CLATE'
         clang['option'] = "-DCMAKE_BUILD_TYPE=Debug"
 
         clate_project = dict()
