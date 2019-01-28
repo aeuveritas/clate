@@ -1,6 +1,8 @@
 # Clate
 VIM for C/C++(Python, Javascript) on Docker
 
+![clate](https://lh3.googleusercontent.com/YX3fwssxs7YPgn4Pyrdp1I--_RBH4kfrm4_6ITxNA0iG7Cv1GzRDKbEIJQLOblh8r4UECVPEv4RX0A "clate")
+
 # Installation
 1. You can find your information with **id** linux command.
 ```

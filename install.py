@@ -135,7 +135,7 @@ def clate_manager():
     write_clate_json(clate_data)
 
     # Install execute file
-    os.system("sudo cp clate /usr/local/bin")
+    os.system("sudo ln -s {0}/clate /usr/local/bin".format(os.getcwd()))
 
 
 def config():
