@@ -64,9 +64,10 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 let mapleader = ","
 
 map <F1> :e ~/README.md<CR>
-map <F5> :NERDTreeToggle<CR>
-map <F6> :TagbarToggle<CR>
-map <F7> :BuffergatorToggle<CR>
+map <F5> :e<CR>
+map <F6> :NERDTreeToggle<CR>
+map <F7> :TagbarToggle<CR>
+map <F8> :BuffergatorToggle<CR>
 
 map <silent><F12> :call quickmenu#toggle(0)<CR>
 
@@ -92,12 +93,13 @@ nnoremap <leader>g  :GtagsCursor<CR>
 
 " Yank
 nnoremap <leader>y  :FZFNeoyank<cr>
-nnoremap <ldeaer>yy :FZFNeoyankSelection<cr>
+nnoremap <leader>yy :FZFNeoyankSelection<cr>
 
 " Hide quit
-cnoremap <silent> q<CR>            :bd<CR>
-cnoremap <silent> qa<CR>           :bd<CR>
-cnoremap <silent> q!<CR>           :bd<CR>
+cnoremap <silent> q<CR>            :BuffergatorToggle<CR>
+cnoremap <silent> qa<CR>           :BuffergatorToggle<CR>
+cnoremap <silent> qall<CR>         :BuffergatorToggle<CR>
+cnoremap <silent> q!<CR>           :BuffergatorToggle<CR>
 cnoremap <silent> wqa<CR>          :wa<CR>
 cnoremap <silent> wq<CR>           :wa<CR>
 
@@ -106,16 +108,13 @@ nnoremap <C-s>      :w<CR>
 
 " CCLS
 "" Fix error
-nnoremap <leader>f  <Plug>(coc-fix-current)
-
-"" Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
+nmap <leader>f  <Plug>(coc-fix-current)
 
 "" Remap keys for gotos
-nnoremap <leader>d <Plug>(coc-definition)
-nnoremap <leader>t <Plug>(coc-type-definition)
-nnoremap <leader>i <Plug>(coc-implementation)
-nnoremap <leader>r <Plug>(coc-references)
+nmap <leader>d <Plug>(coc-definition)
+nmap <leader>t <Plug>(coc-type-definition)
+nmap <leader>i <Plug>(coc-implementation)
+nmap <leader>r <Plug>(coc-references)
 
 "" Remap for rename current word
 nmap <leader>n <Plug>(coc-rename)
