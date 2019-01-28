@@ -22,16 +22,18 @@ $ id root
 ```
 $ clate
 [ INF ] Clate - 0.2
-   [C]reate new project
-   [L]ist projects
-   [A]ctivate project
-lis[T] running project
-  d[E]lete proect
+    [C]reate new project
+    [L]ist projects
+    [A]ctivate project
+dele[T]e proect
+chan[E] version
 
- st[O]p running project
-cha[N]ge version
+  st[O]p running project
+  li[S]t running project
 
-  e[X]it
+gene[R]ate compile_commands.json
+
+   e[X]it
 [ ASK ] command:
 ```
 * Creates new project
@@ -117,9 +119,10 @@ $ clate -a [PROJECT_NAME]
 
 ## Function key
 * F1: This README.md
-* F5: NERDTree
-* F6: TagBar
-* F7: Buffergator
+* F5: Refresh
+* F6: NERDTree
+* F7: TagBar
+* F8: Buffergator
 * F12: Quick menu
 
 ## Command
