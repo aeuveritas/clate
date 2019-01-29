@@ -12,7 +12,6 @@
 "*****************************************************************************
 let mapleader = ","
 
-map <F1> :e ~/README.md<CR>
 map <F5> :e<CR>
 map <F6> :NERDTreeToggle<CR>
 map <F7> :TagbarToggle<CR>

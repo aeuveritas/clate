@@ -44,6 +44,12 @@ function! Clear()
 endfunction
 
 function! HideQuit()
-    execute 'bf'
+    let nr_bufs = len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
+    echo nr_bufs
+    if nr_bufs == 1
+        echo 'this is the last buffer.'
+    else
+        execute 'bd'
+    endif
 endfunction
 
