@@ -1,4 +1,4 @@
 #!/bin/bash
 rm ~/.config/nvim/init.vim
 ln -s /Config/$CLATE_VERSION/init.vim ~/.config/nvim/init.vim
-su - $UNAME -c "cd /Workspace && nvim"
+su - $UNAME -c "cd /Workspace && nvim ~/MANUAL.md"

@@ -4,46 +4,47 @@ import os
 import json
 
 # Variables
-NAME            = "clate"
-VERSION         = "0.2"
+NAME             = "clate"
+VERSION          = "0.2"
 
-DOCKERDIR       = "./docker"
-DOCKERFILE      = "{}/Dockerfile".format(DOCKERDIR)
-DOCKERFILEDIR   = "{}/dockerfile".format(DOCKERDIR)
-DOCKERINIT      = "{}/01_init.Dockerfile".format(DOCKERFILEDIR)
-DOCKERUSER      = "{}/02_user.Dockerfile".format(DOCKERFILEDIR)
-DOCKERBASE      = "{}/03_base.Dockerfile".format(DOCKERFILEDIR)
-DOCKERVIM       = "{}/04_vim.Dockerfile".format(DOCKERFILEDIR)
-DOCKERTAG       = "{}/05_tag.Dockerfile".format(DOCKERFILEDIR)
-DOCKERPLUGIN    = "{}/06_plugin.Dockerfile".format(DOCKERFILEDIR)
-DOCKERCLEANUP   = "{}/07_cleanup.Dockerfile".format(DOCKERFILEDIR)
-DOCKERSETUP     = "{}/08_setup.Dockerfile".format(DOCKERFILEDIR)
+DOCKERDIR        = "./docker"
+DOCKERFILE       = "{}/Dockerfile".format(DOCKERDIR)
+DOCKERFILEDIR    = "{}/dockerfile".format(DOCKERDIR)
+DOCKERINIT       = "{}/01_init.Dockerfile".format(DOCKERFILEDIR)
+DOCKERUSER       = "{}/02_user.Dockerfile".format(DOCKERFILEDIR)
+DOCKERBASE       = "{}/03_base.Dockerfile".format(DOCKERFILEDIR)
+DOCKERVIM        = "{}/04_vim.Dockerfile".format(DOCKERFILEDIR)
+DOCKERTAG        = "{}/05_tag.Dockerfile".format(DOCKERFILEDIR)
+DOCKERPLUGIN     = "{}/06_plugin.Dockerfile".format(DOCKERFILEDIR)
+DOCKERCLEANUP    = "{}/07_cleanup.Dockerfile".format(DOCKERFILEDIR)
+DOCKERSETUP      = "{}/08_setup.Dockerfile".format(DOCKERFILEDIR)
 
-DOCKERCPP       = "{}/clang_cpp.Dockerfile".format(DOCKERFILEDIR)
-DOCKERCOCJSON   = "{}/coc_json.Dockerfile".format(DOCKERFILEDIR)
-DOCKERPIP       = "{}/pip".format(DOCKERFILEDIR)
-DOCKERNPM       = "{}/npm".format(DOCKERFILEDIR)
-DOCKERCOC       = "{}/coc".format(DOCKERFILEDIR)
+DOCKERCPP        = "{}/clang_cpp.Dockerfile".format(DOCKERFILEDIR)
+DOCKERCOCJSON    = "{}/coc_json.Dockerfile".format(DOCKERFILEDIR)
+DOCKERPIP        = "{}/pip".format(DOCKERFILEDIR)
+DOCKERNPM        = "{}/npm".format(DOCKERFILEDIR)
+DOCKERCOC        = "{}/coc".format(DOCKERFILEDIR)
 
-DOCKERUSERDATA  = "{}/userdata".format(DOCKERFILEDIR)
-DOCKERVERSION   = "{}/version".format(DOCKERFILEDIR)
-CONFIG_JSON     = "./config.json"
+DOCKERUSERDATA   = "{}/userdata".format(DOCKERFILEDIR)
+DOCKERVERSION    = "{}/version".format(DOCKERFILEDIR)
+CONFIG_JSON      = "./config.json"
 
-VIMDIR          = "{}/vim".format(DOCKERDIR)
-VIMRCINIT       = "{}/init_plug.vim".format(VIMDIR)
-VIMRCACT        = "{}/init.vim".format(VIMDIR)
-VIMPLUGIN       = "{}/01_plugin.vim".format(VIMDIR)
-VIMCONF         = "{}/02_conf.vim".format(VIMDIR)
-VIMMENU         = "{}/03_menu_function.vim".format(VIMDIR)
-VIMCMD          = "{}/04_command.vim".format(VIMDIR)
+VIMDIR           = "{}/vim".format(DOCKERDIR)
+VIMRCINIT        = "{}/init_plug.vim".format(VIMDIR)
+VIMRCACT         = "{}/init.vim".format(VIMDIR)
+VIMPLUGIN        = "{}/01_plugin.vim".format(VIMDIR)
+VIMCONF          = "{}/02_conf.vim".format(VIMDIR)
+VIMMENU          = "{}/03_menu_function.vim".format(VIMDIR)
+VIMCMD           = "{}/04_command.vim".format(VIMDIR)
 
-RUN_SCRIPT = "./docker/shell/run"
-GLOBALRC = "artifact/gnu-global/globalrc"
+README           = "./README.md"
+MANUAL           = "./docker/artifact/MANUAL.md"
+GLOBALRC         = "artifact/gnu-global/globalrc"
 
-COMMON_PATH = ""
+COMMON_PATH      = ""
 SUPPORT_LANGUAGE = None
-CLATE_JSON = os.getenv("HOME") + '/.clate.json'
-CLATE_EXEC = '/usr/local/bin/clate'
+CLATE_JSON       = os.getenv("HOME") + '/.clate.json'
+CLATE_EXEC       = '/usr/local/bin/clate'
 
 
 def write_clate_json(clate_data):
@@ -199,6 +200,15 @@ ENV CLATE_VERSION={0} \
     version.write(VERSION_ENV)
     version.close()
 
+    manual = open(MANUAL, "w")
+    with open(README, "r") as lines:
+        for line in lines:
+            if "clate.png" in line:
+                pass
+
+            manual.write(line)
+    manual.close()
+
     # PIP command
     PIP_CMD = "# Install neovim python support \nRUN pip3 install pynvim pep8"
     if config_info['LANGUAGE']['CPP']:
@@ -267,7 +277,6 @@ ENV CLATE_VERSION={0} \
 
 def install():
     # Build docker image
-    os.system("cp README.md ./docker/artifact/")
     os.chdir(DOCKERDIR)
     os.system("docker build . -t {0}:{1}".format(NAME, VERSION))
     os.chdir("..")
@@ -282,7 +291,7 @@ def cleanup():
     os.system("rm {0}".format(DOCKERNPM))
     os.system("rm {0}".format(DOCKERCOC))
     os.system("rm {0}".format(DOCKERFILE))
-    os.system("rm docker/artifact/README.md")
+    os.system("rm {0}".format(MANUAL))
 
 
 if __name__ == "__main__":

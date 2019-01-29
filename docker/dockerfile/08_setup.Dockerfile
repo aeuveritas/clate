@@ -14,8 +14,8 @@ RUN echo "* hard nofile 773280" >> /etc/security/limits.conf \
 ## GNU Global
 COPY artifact/gnu-global/gctags /usr/local/bin
 
-## README.ME
-COPY artifact/README.md $HOME
+## MANUAL.md
+COPY artifact/MANUAL.md $HOME
 
 ## Set GNU Global
 RUN cp $TEMP/gtags.vim $PLUGIN/ \
