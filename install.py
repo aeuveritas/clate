@@ -202,12 +202,19 @@ ENV CLATE_VERSION={0} \
     version.close()
 
     manual = open(MANUAL, "w")
+    isSkip = False
     with open(README, "r") as lines:
         for line in lines:
             if "clate.png" in line:
-                pass
+                isSkip = True
+                continue
+            elif "Usage" in line:
+                isSkip = False
 
-            manual.write(line)
+            if not isSkip:
+                if "&lt;" in line:
+                    line = line.replace("&lt;", "<")
+                manual.write(line)
     manual.close()
 
     # PIP command
