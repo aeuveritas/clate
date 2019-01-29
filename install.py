@@ -94,6 +94,7 @@ def clate_manager():
         version_dir = config_dir + '/' + VERSION
         mkdir(version_dir)
         os.system("sudo cp {0} {1}".format(VIMRCACT, version_dir))
+        os.system("sudo cp {0} {1}".format(MANUAL,   version_dir))
 
         common_dict = dict()
 
