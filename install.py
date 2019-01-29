@@ -26,6 +26,7 @@ DOCKERNPM       = "{}/npm".format(DOCKERFILEDIR)
 DOCKERCOC       = "{}/coc".format(DOCKERFILEDIR)
 
 DOCKERUSERDATA  = "{}/userdata".format(DOCKERFILEDIR)
+DOCKERVERSION   = "{}/version".format(DOCKERFILEDIR)
 CONFIG_JSON     = "./config.json"
 
 VIMDIR          = "{}/vim".format(DOCKERDIR)
@@ -66,8 +67,6 @@ def clate_manager():
     global SUPPORT_LANGUAGE
     global CLATE_JSON
 
-    clate_data = None
-
     # Common
     share_dir = COMMON_PATH + 'Share/'
     mkdir(share_dir)
@@ -79,33 +78,41 @@ def clate_manager():
     os.system("cp ./docker/artifact/UltiSnips/cpp.snippets {0}".format(ultisnips_dir))
     os.system("cp ./docker/artifact/UltiSnips/python.snippets {0}".format(ultisnips_dir))
 
-    config_dir = COMMON_PATH + 'Config/'
-    mkdir(config_dir)
-    version_dir = config_dir + '/' + VERSION
-    mkdir(version_dir)
-    os.system("sudo cp {0} {1}".format(VIMRCACT, version_dir))
-
-    common_dict = dict()
-
-    common_dirs = dict()
-    temp_dir = COMMON_PATH + 'Temp/'
-    mkdir(temp_dir)
-
-    common_dirs['Path'] = COMMON_PATH
-    common_dirs['Share'] = share_dir
-    common_dirs['Snippet'] = snippet_dir
-    common_dirs['Config'] = config_dir
-
-    common_dict['directory'] = common_dirs
-    common_dict['default_version'] = VERSION
-
-    common_dict['language'] = SUPPORT_LANGUAGE
+    clate_data = None
 
     # Project
     if os.path.exists(CLATE_JSON):
         clate_json = open(CLATE_JSON).read()
         clate_data = json.loads(clate_json)
     else:
+        clate_data = dict()
+
+        # Common
+        config_dir = COMMON_PATH + 'Config/'
+        mkdir(config_dir)
+        version_dir = config_dir + '/' + VERSION
+        mkdir(version_dir)
+        os.system("sudo cp {0} {1}".format(VIMRCACT, version_dir))
+
+        common_dict = dict()
+
+        common_dirs = dict()
+        temp_dir = COMMON_PATH + 'Temp/'
+        mkdir(temp_dir)
+
+        common_dirs['Path'] = COMMON_PATH
+        common_dirs['Share'] = share_dir
+        common_dirs['Snippet'] = snippet_dir
+        common_dirs['Config'] = config_dir
+
+        common_dict['directory'] = common_dirs
+        common_dict['default_version'] = VERSION
+
+        common_dict['language'] = SUPPORT_LANGUAGE
+
+        clate_data['common'] = common_dict
+
+        # Default project
         clate_dirs = dict()
         clate_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__)) + '/'
 
@@ -127,10 +134,8 @@ def clate_manager():
         project_list = list()
         project_list.append(clate_project)
 
-        clate_data = dict()
         clate_data['project'] = project_list
 
-    clate_data['common'] = common_dict
     write_clate_json(clate_data)
 
     # Install execute file
@@ -139,6 +144,7 @@ def clate_manager():
 
 
 def config():
+    global VERSION
     global COMMON_PATH
     global SUPPORT_LANGUAGE
     # Build dockerfile
@@ -153,6 +159,16 @@ def config():
         print("Please fill your info in config_info.json")
         return False
 
+    common = config_info['COMMON_PATH']
+    if common[-1] != '/':
+        common += '/'
+
+    if not os.path.exists(common):
+        mkdir(common)
+
+    COMMON_PATH = common
+    SUPPORT_LANGUAGE = config_info['LANGUAGE']
+
     # User info
     USER_ENV = \
     """
@@ -165,19 +181,23 @@ ENV UID="{0}" \\\n\
     HOME=/home/{1}\n\
 \n
     """.format(config_info['UID'], config_info['ID'], config_info['GID'], config_info['GROUP'])
-    common = config_info['COMMON_PATH']
-    if common[-1] != '/':
-        common += '/'
-
-    if not os.path.exists(common):
-        mkdir(common)
-
-    COMMON_PATH = common
-    SUPPORT_LANGUAGE = config_info['LANGUAGE']
 
     user = open(DOCKERUSERDATA, "w")
     user.write(USER_ENV)
     user.close()
+
+    # Version info
+    VERSION_ENV = \
+    """
+# Version info
+ENV CLATE_VERSION={0} \
+    GLOBAL_VERSION={1} \
+    LLVM_VERSION={2}
+    """.format(VERSION, config_info['VERSION']['GLOBAL'], config_info['VERSION']['LLVM'])
+
+    version = open(DOCKERVERSION, "w")
+    version.write(VERSION_ENV)
+    version.close()
 
     # PIP command
     PIP_CMD = "# Install neovim python support \nRUN pip3 install pynvim pep8"
@@ -212,6 +232,7 @@ ENV UID="{0}" \\\n\
 
     os.system("cat {0} > {1}".format(DOCKERINIT,         DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERUSERDATA,    DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERVERSION,     DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERUSER,        DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERBASE,        DOCKERFILE))
     if config_info['LANGUAGE']['CPP']:
@@ -241,15 +262,6 @@ ENV UID="{0}" \\\n\
     os.system("cat {0} >> {1}".format(VIMMENU,           VIMRCACT))
     os.system("cat {0} >> {1}".format(VIMCMD,            VIMRCACT))
 
-    # Run shell script
-    run = open(RUN_SCRIPT, 'w')
-    run.write("""#!/bin/bash
-rm ~/.config/nvim/init.vim
-ln -s /Config/{0}/init.vim ~/.config/nvim/init.vim
-su - {1} -c "cd /Workspace && nvim ~/README.md"
-    """.format(VERSION, config_info['ID']))
-    run.close()
-
     return True
 
 
@@ -265,11 +277,11 @@ def cleanup():
     os.system("rm {0}".format(VIMRCINIT))
     os.system("rm {0}".format(VIMRCACT))
     os.system("rm {0}".format(DOCKERUSERDATA))
+    os.system("rm {0}".format(DOCKERVERSION))
     os.system("rm {0}".format(DOCKERPIP))
     os.system("rm {0}".format(DOCKERNPM))
     os.system("rm {0}".format(DOCKERCOC))
     os.system("rm {0}".format(DOCKERFILE))
-    os.system("rm {0}".format(RUN_SCRIPT))
     os.system("rm docker/artifact/README.md")
 
 

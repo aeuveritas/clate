@@ -23,6 +23,6 @@ RUN git clone https://git.llvm.org/git/llvm.git \
     && ninja -C Release install && cd .. \
     && rm -rf ccls && rm -rf llvm
 
-RUN mkdir -p /usr/local/clang/9.0.0 \
-    && cp -a /usr/local/lib/clang/9.0.0/include/ /usr/local/clang/9.0.0/
+RUN mkdir -p /usr/local/clang/$LLVM_VERSION \
+    && cp -a /usr/local/lib/clang/$LLVM_VERSION/include/ /usr/local/clang/$LLVM_VERSION/
 

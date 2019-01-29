@@ -1,6 +1,3 @@
-# Environment
-ENV GLOBAL_VERSION=6.6.3
-
 # Install dependencies
 RUN apt-get install -y \
     autoconf \

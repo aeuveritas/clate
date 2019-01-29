@@ -5,8 +5,12 @@
     "GID"            : "GROUP_ID_NUMBER",
     "COMMON_PATH"    : "DIRECTORY_FOR_CLATE",
     "LANGUAGE"       : {
-        "PYTHON"     : false,
-        "CPP"        : false,
+        "PYTHON"     : true,
+        "CPP"        : true,
         "JAVASCRIPT" : false
+    },
+    "VERSION"        : {
+        "GLOBAL"     : "6.6.3",
+        "LLVM"       : "9.0.0"
     }
 }
