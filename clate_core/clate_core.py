@@ -84,12 +84,12 @@ class Interactor:
         print('dele\x1b[1;32;40m' + "[T]" + '\x1b[0m' + "e proect")
         print('chan\x1b[1;32;40m' + "[E]" + '\x1b[0m' + " version")
         print('')
+        if support_cpp:
+            print('    \x1b[1;32;40m' + "[G]" + '\x1b[0m' + "enerate compile_commands.json")
+            print('')
         print('  st\x1b[1;32;40m' + "[O]" + '\x1b[0m' + "p running project")
         print('  li\x1b[1;32;40m' + "[S]" + '\x1b[0m' + "t running project")
         print('')
-        if support_cpp:
-            print('gene\x1b[1;32;40m' + "[R]" + '\x1b[0m' + "ate compile_commands.json")
-            print('')
         print('   e\x1b[1;32;40m' + "[X]" + '\x1b[0m' + "it")
 
         cmd = ""
@@ -252,7 +252,7 @@ class Clate:
                 self._stop()
             elif cmd == 's':
                 self._show_running_project()
-            elif cmd == 'r' and support_cpp:
+            elif cmd == 'g' and support_cpp:
                 self._compile()
             elif cmd == 'x':
                 return
@@ -400,4 +400,14 @@ class Clate:
             return
 
         self._run_project(self._project[idx], is_debug)
+
+    def compile(self, project_name='clate'):
+        idx = None
+        try:
+            idx = self._project_names.index(project_name)
+        except ValueError:
+            print("[ WAR ] no project: {0}".format(project_name))
+            return
+
+        self._compile_project(self._project[idx])
 

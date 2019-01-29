@@ -9,7 +9,7 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && apt-get install -y yarn
 
 # Install plugins for NeoVim
-COPY vim/init_init.vim $HOME/.config/nvim/init.vim
+COPY vim/init_plug.vim $HOME/.config/nvim/init.vim
 RUN chown $UNAME:$GROUP $HOME -R \
     && su - $UNAME -c "nvim +PlugInstall +qall"
 

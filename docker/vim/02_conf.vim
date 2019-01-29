@@ -178,12 +178,9 @@ let g:UltiSnipsSnippetDirectories = ['/Snippet/UltiSnips']
 "*****************************************************************************
 "" GNU Global
 "*****************************************************************************
-let g:GtagsCscope_Auto_Load = 1                             " Autoload GtagsCscope
-
-"*****************************************************************************
-"" Rtags
-"*****************************************************************************
-"let g:rtagsUseLocationList = 0
+function! SetGtags()
+    let g:GtagsCscope_Auto_Load = 1     " Autoload GtagsCscope
+endfunction
 
 "*****************************************************************************
 "" NERDTree
@@ -220,18 +217,10 @@ let g:fzf_command_prefix = 'Fzf'
 let $FZF_DEFAULT_COMMAND = 'find * -type f'
 
 "*****************************************************************************
-"" Bufonly
-"*****************************************************************************
-
-"*****************************************************************************
 "" Indentline
 "*****************************************************************************
 let g:indentLine_char = ':'
 let g:indentLine_setColors = 0
-
-"*****************************************************************************
-"" Quickhl
-"*****************************************************************************
 
 "*****************************************************************************
 "" Diff-enhanced
@@ -256,10 +245,6 @@ let g:NERDTrimTrailingWhitespace = 1
 " Enable NERDCommenterToggle to check all selected lines is commented or not
 let g:NERDToggleCheckAllLines = 1
 let g:clang_format#auto_format_on_insert_leave = 1
-
-"*****************************************************************************
-"" Scratch
-"*****************************************************************************
 
 "*****************************************************************************
 "" Python highlight
@@ -288,4 +273,5 @@ let g:better_whitespace_enabled = 1
 "autocmd VimEnter * NERDTree
 "autocmd VimEnter * Tagbar
 "autocmd VimEnter * 2wincmd w
+autocmd VimEnter * call SetGtags()
 

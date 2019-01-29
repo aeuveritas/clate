@@ -10,11 +10,6 @@ RUN chmod 777 /usr/local/bin/run
 RUN echo "* hard nofile 773280" >> /etc/security/limits.conf \
     && echo "* soft nofile 773280" >> /etc/security/limits.conf
 
-# Set post nvim plugin
-COPY vim/init_proc.vim $HOME/.config/nvim/init.vim
-RUN chown $UNAME:$GROUP $HOME -R \
-    && su - $UNAME -c "nvim +PlugInstall +qall"
-
 # Copy artifact
 ## GNU Global
 COPY artifact/gnu-global/gctags /usr/local/bin
@@ -29,5 +24,5 @@ RUN cp $TEMP/gtags.vim $PLUGIN/ \
 # Set vimrc
 COPY vim/init.vim $HOME/.config/nvim/init.vim
 RUN chown $UNAME:$GROUP $HOME -R \
-    && su - $UNAME -c "nvim +PlugInstall +qall"
+    && su - $UNAME -c "nvim +qall"
 

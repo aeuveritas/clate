@@ -44,10 +44,10 @@ nnoremap <leader>y  :FZFNeoyank<cr>
 nnoremap <leader>yy :FZFNeoyankSelection<cr>
 
 " Hide quit
-cnoremap <silent> q<CR>    :call HideQuite()<CR>
-cnoremap <silent> qa<CR>   :call HideQuite()<CR>
-cnoremap <silent> qall<CR> :call HideQuite()<CR>
-cnoremap <silent> q!<CR>   :call HideQuite()<CR>
+cnoremap <silent> q<CR>    :call HideQuit()<CR>
+cnoremap <silent> qa<CR>   :call HideQuit()<CR>
+cnoremap <silent> qall<CR> :call HideQuit()<CR>
+cnoremap <silent> q!<CR>   :call HideQuit()<CR>
 cnoremap <silent> wqa<CR>  :wa<CR>
 cnoremap <silent> wq<CR>   :wa<CR>
 
@@ -70,4 +70,7 @@ nmap <leader>n <Plug>(coc-rename)
 "" Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
 "" Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+nmap <leader>w       :StripWhiteSapce<CR>
+
 

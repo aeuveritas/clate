@@ -29,15 +29,12 @@ DOCKERUSERDATA  = "{}/userdata".format(DOCKERFILEDIR)
 CONFIG_JSON     = "./config.json"
 
 VIMDIR          = "{}/vim".format(DOCKERDIR)
-VIMRCINIT       = "{}/init_init.vim".format(VIMDIR)
-VIMRCPROC       = "{}/init_proc.vim".format(VIMDIR)
+VIMRCINIT       = "{}/init_plug.vim".format(VIMDIR)
 VIMRCACT        = "{}/init.vim".format(VIMDIR)
-VIMPLUGININIT   = "{}/01_plugin_init.vim".format(VIMDIR)
-VIMPLUGINADD    = "{}/02_plugin_add.vim".format(VIMDIR)
-VIMPLUGINFIN    = "{}/03_plugin_fin.vim".format(VIMDIR)
-VIMCONF         = "{}/04_conf.vim".format(VIMDIR)
-VIMMENU         = "{}/05_menu_function.vim".format(VIMDIR)
-VIMCMD          = "{}/06_command.vim".format(VIMDIR)
+VIMPLUGIN       = "{}/01_plugin.vim".format(VIMDIR)
+VIMCONF         = "{}/02_conf.vim".format(VIMDIR)
+VIMMENU         = "{}/03_menu_function.vim".format(VIMDIR)
+VIMCMD          = "{}/04_command.vim".format(VIMDIR)
 
 RUN_SCRIPT = "./docker/shell/run"
 GLOBALRC = "artifact/gnu-global/globalrc"
@@ -236,18 +233,12 @@ ENV UID="{0}" \\\n\
         os.system("echo 'RUN chown $UNAME:$GROUP $HOME -R' >> {0}".format(DOCKERFILE))
 
     # Build init vimrc
-    os.system("cat {0} > {1}".format(VIMPLUGININIT,      VIMRCINIT))
-    os.system("cat {0} >> {1}".format(VIMPLUGINFIN,      VIMRCINIT))
+    os.system("cat {0} > {1}".format(VIMPLUGIN,          VIMRCINIT))
 
     # Build proc vimrc
-    os.system("cat {0} > {1}".format(VIMPLUGININIT,      VIMRCPROC))
-    os.system("cat {0} >> {1}".format(VIMPLUGINADD,      VIMRCPROC))
-    os.system("cat {0} >> {1}".format(VIMPLUGINFIN,      VIMRCPROC))
-
-    # Build proc vimrc
-    os.system("cp {0} {1}".format(VIMRCPROC,             VIMRCACT))
+    os.system("cp {0} {1}".format(VIMPLUGIN,             VIMRCACT))
     os.system("cat {0} >> {1}".format(VIMCONF,           VIMRCACT))
-    os.system("cat {0} >> {1}".format(VIMMENU,            VIMRCACT))
+    os.system("cat {0} >> {1}".format(VIMMENU,           VIMRCACT))
     os.system("cat {0} >> {1}".format(VIMCMD,            VIMRCACT))
 
     # Run shell script
@@ -272,7 +263,6 @@ def install():
 
 def cleanup():
     os.system("rm {0}".format(VIMRCINIT))
-    os.system("rm {0}".format(VIMRCPROC))
     os.system("rm {0}".format(VIMRCACT))
     os.system("rm {0}".format(DOCKERUSERDATA))
     os.system("rm {0}".format(DOCKERPIP))

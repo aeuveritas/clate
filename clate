@@ -10,6 +10,7 @@ CLATE_JSON = os.getenv("HOME") + '/.clate.json'
 def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--active', help='active project', default=None)
+    parser.add_argument('-g', '--generate', help='generate compile_commands.json', default=None)
     parser.add_argument('-d', '--debug', help='run project with debug mode', action='store_true')
 
     return parser.parse_args()
@@ -22,10 +23,18 @@ def main():
 
     params = parse()
 
+    cnt = 0
+
+    if params.active:
+        cnt += 1
+    if params.generate:
+        cnt += 1
     if params.debug:
-        if params.active:
-            print("[ ERR ] debug and active cannot be together.")
-            return
+        cnt += 1
+
+    if cnt > 1:
+        print("[ ERR ] only 1 option is available.")
+        return
 
     dirMgr = clate_core.DirManager()
     interactor = clate_core.Interactor(dirMgr)
@@ -33,6 +42,8 @@ def main():
 
     if params.active:
         clate.run(params.active)
+    elif params.generate:
+        clate.compile(params.generate)
     elif params.debug:
         clate.run(is_debug=True)
     else:
