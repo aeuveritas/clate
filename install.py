@@ -36,7 +36,8 @@ VIMPLUGININIT   = "{}/01_plugin_init.vim".format(VIMDIR)
 VIMPLUGINADD    = "{}/02_plugin_add.vim".format(VIMDIR)
 VIMPLUGINFIN    = "{}/03_plugin_fin.vim".format(VIMDIR)
 VIMCONF         = "{}/04_conf.vim".format(VIMDIR)
-VIMCMD          = "{}/05_command.vim".format(VIMDIR)
+VIMMENU         = "{}/05_menu_function.vim".format(VIMDIR)
+VIMCMD          = "{}/06_command.vim".format(VIMDIR)
 
 RUN_SCRIPT = "./docker/shell/run"
 GLOBALRC = "artifact/gnu-global/globalrc"
@@ -246,6 +247,7 @@ ENV UID="{0}" \\\n\
     # Build proc vimrc
     os.system("cp {0} {1}".format(VIMRCPROC,             VIMRCACT))
     os.system("cat {0} >> {1}".format(VIMCONF,           VIMRCACT))
+    os.system("cat {0} >> {1}".format(VIMMENU,            VIMRCACT))
     os.system("cat {0} >> {1}".format(VIMCMD,            VIMRCACT))
 
     # Run shell script
