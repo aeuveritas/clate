@@ -94,7 +94,6 @@ $ clate -a [PROJECT_NAME]
 * tpope/vim-fugitive
 * mhinz/vim-signify
 * chrisbra/vim-diff-enhanced
-* mg979/vim-visual-multi
 * Shougo/neoyank.vim
 * justinhoward/fzf-neoyank
 * schickling/vim-bufonly

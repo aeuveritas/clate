@@ -9,6 +9,7 @@
 "Plug 'sunaku/vim-shortcut'
 "Plug 'brooth/far.vim'
 "Plug 'arakashic/chromatica.nvim'
+"Plug 'mg979/vim-visual-multi'
 
 " Rtags
 "Plug 'marxin/neo-rtags'
@@ -36,7 +37,7 @@
 "    \ 'branch': 'next',
 "    \ 'do': 'bash install.sh',
 "    \ }
-"Plug 'teto/nvim-palette', { 'do': ':UpdateRemotePlugins' } 
+"Plug 'teto/nvim-palette', { 'do': ':UpdateRemotePlugins' }
 
 call plug#end()
 
