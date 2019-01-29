@@ -137,17 +137,27 @@ $ clate -a [PROJECT_NAME]
 ```:AgRaw -Q [PATTERN] [DIRECTORY]```
 
 ## Short-cut
-* Next buffer               : &lt;C-c> l
-* Prev buffer               : &lt;C-c> k
-* Close buffer              : &lt;C-c> j
+* Next buffer              : &lt;C-c> l
+* Prev buffer              : &lt;C-c> k
+* Close buffer             : &lt;C-c> j
 
-* Next quickfix             : &lt;C-c> p
-* Prev quickfix             : &lt;C-c> o
-* Close quickfix            : &lt;C-c> i
+* Next quickfix            : &lt;C-c> p
+* Prev quickfix            : &lt;C-c> o
+* Close quickfix           : &lt;C-c> i
 
-* &lt;leader>               : ,
-* GtagsCursor               : &lt;leader> g
-* Mark word highlight       : &lt;leader> h
-* Clear word highlight      : &lt;leader> c
-* List for yank             : &lt;leader> y
+* &lt;leader>              : ,
+* GtagsCursor              : &lt;leader> g
+* Mark word highlight      : &lt;leader> h
+* Clear word highlight     : &lt;leader> c
+
+* List for yank            : &lt;leader> y
+
+* Jump to definition       : &lt;leader> d
+* Check type               : &lt;leader> t
+* Jump to implementation   : &lt;leader> i
+* List to reference        : &lt;leader> r
+* Rename                   : &lt;leader> n
+
+* Strip white space        : &lt;leader> w
+
 
