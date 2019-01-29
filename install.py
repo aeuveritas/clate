@@ -44,6 +44,7 @@ GLOBALRC = "artifact/gnu-global/globalrc"
 COMMON_PATH = ""
 SUPPORT_LANGUAGE = None
 CLATE_JSON = os.getenv("HOME") + '/.clate.json'
+CLATE_EXEC = '/usr/local/bin/clate'
 
 
 def write_clate_json(clate_data):
@@ -135,7 +136,8 @@ def clate_manager():
     write_clate_json(clate_data)
 
     # Install execute file
-    os.system("sudo ln -s {0}/clate /usr/local/bin".format(os.getcwd()))
+    if not os.path.exists(CLATE_EXEC):
+        os.system("sudo ln -s {0}/clate /usr/local/bin".format(os.getcwd()))
 
 
 def config():
