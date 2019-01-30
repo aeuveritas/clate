@@ -99,7 +99,7 @@ $ clate -a [PROJECT_NAME]
 * [schickling/vim-bufonly](https://github.com/schickling/vim-bufonly)
 * [jiangmiao/auto-pairs](https://github.com/jiangmiao/auto-pairs)
 * [scrooloose/nerdcommenter](https://github.com/scrooloose/nerdcommenter)
-* [bfrg/vim-cpp-modern](https://github.com/bfrg/vim-cpp-modern)
+* [arakashic/chromatica.nvim](https://github.com/arakashic/chromatica.nvim)
 * [vim-python/python-syntax](https://github.com/vim-python/python-syntax)
 * [t9md/vim-quickhl](https://github.com/t9md/vim-quickhl)
 * [chrisbra/csv.vim](https://github.com/chrisbra/csv.vim)

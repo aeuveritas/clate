@@ -52,7 +52,7 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 
 " Highlight
-Plug 'bfrg/vim-cpp-modern', { 'for': 'cpp' }
+Plug 'arakashic/chromatica.nvim', { 'for': 'cpp', 'do': ':UpdateRemotePlugins' }
 Plug 'vim-python/python-syntax', { 'for': 'python' }
 Plug 't9md/vim-quickhl'
 Plug 'chrisbra/csv.vim', { 'for': 'csv' }
@@ -82,13 +82,10 @@ Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
 " Disabled
+"Plug 'bfrg/vim-cpp-modern', { 'for': 'cpp' }
 "Plug 'rhysd/vim-clang-format'
 "Plug 'ctrlpvim/ctrlp.vim'
-"Plug 'hardenedapple/vsh'
-"Plug 'cyansprite/Extract'
 "Plug 'sunaku/vim-shortcut'
-"Plug 'brooth/far.vim'
-"Plug 'arakashic/chromatica.nvim'
 "Plug 'mg979/vim-visual-multi'
 
 " NCM2
