@@ -135,6 +135,8 @@ $ clate -a [PROJECT_NAME]
 ```:FZF```
 * AgRaw     : Grep [PATTERN] in current project
 ```:AgRaw -Q [PATTERN] [DIRECTORY]```
+* GGrep     : Git grep [PATTERN] in current project
+```:GGrep [PATTERN]```
 
 ## Short-cut
 * Next buffer              : &lt;C-c> l

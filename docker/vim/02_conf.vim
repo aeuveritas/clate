@@ -214,7 +214,7 @@ let g:buffergator_viewport_split_policy = "T"
 "" Fzf
 "*****************************************************************************
 let g:fzf_command_prefix = 'Fzf'
-let $FZF_DEFAULT_COMMAND = 'find * -type f'
+let $FZF_DEFAULT_COMMAND = 'git ls-files --exclude-standard --others --cached'
 
 "*****************************************************************************
 "" Indentline
