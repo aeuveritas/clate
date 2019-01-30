@@ -52,7 +52,7 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 
 " Highlight
-Plug 'bfrg/vim-cpp-modern'
+Plug 'bfrg/vim-cpp-modern', { 'for': 'cpp' }
 Plug 'vim-python/python-syntax', { 'for': 'python' }
 Plug 't9md/vim-quickhl'
 Plug 'chrisbra/csv.vim', { 'for': 'csv' }
@@ -70,7 +70,7 @@ Plug 'skywind3000/quickmenu.vim'
 Plug 'dracula/vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'Yggdroot/indentLine', { 'on': 'IndentLinesToggle' }
+Plug 'Yggdroot/indentLine', { 'for': 'python' }
 
 " Search
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -84,22 +84,12 @@ Plug 'honza/vim-snippets'
 " Disabled
 "Plug 'rhysd/vim-clang-format'
 "Plug 'ctrlpvim/ctrlp.vim'
-"Plug 'JBakamovic/cxxd-vim'
-"Plug 'uplus/vim-clang-rename'
 "Plug 'hardenedapple/vsh'
 "Plug 'cyansprite/Extract'
 "Plug 'sunaku/vim-shortcut'
 "Plug 'brooth/far.vim'
 "Plug 'arakashic/chromatica.nvim'
 "Plug 'mg979/vim-visual-multi'
-
-" Rtags
-"Plug 'marxin/neo-rtags'
-"Plug 'lyuts/vim-rtags'
-
-" Cxxd
-"Plug 'JBakamovic/cxxd-vim'
-"Plug 'JBakamovic/yaflandia'
 
 " NCM2
 "Plug 'ncm2/ncm2'
