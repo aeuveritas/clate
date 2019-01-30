@@ -39,6 +39,7 @@ VIMCMD           = "{}/04_command.vim".format(VIMDIR)
 
 README           = "./README.md"
 MANUAL           = "./docker/artifact/MANUAL.md"
+COC_SETTINGS     = "./docker/artifact/coc.nvim/coc-settings.json"
 GLOBALRC         = "artifact/gnu-global/globalrc"
 
 COMMON_PATH      = ""
@@ -62,11 +63,27 @@ def mkdir(t_dir):
         print(e)
 
 
-def clate_manager():
+def create_new_version(clate_data=None):
+    global COMMON_PATH
     global VERSION
+
+    print("create version infomation")
+
+    version_dir = COMMON_PATH + 'Config/' + VERSION
+    mkdir(version_dir)
+
+    if clate_data:
+        clate_data['common']['default_version'] = VERSION
+
+    return version_dir
+
+
+def create_new_clate():
     global COMMON_PATH
     global SUPPORT_LANGUAGE
-    global CLATE_JSON
+    global VERSION
+
+    print("create common and default project")
 
     # Common
     share_dir = COMMON_PATH + 'Share/'
@@ -79,66 +96,83 @@ def clate_manager():
     os.system("cp ./docker/artifact/UltiSnips/cpp.snippets {0}".format(ultisnips_dir))
     os.system("cp ./docker/artifact/UltiSnips/python.snippets {0}".format(ultisnips_dir))
 
-    clate_data = None
+    clate_data = dict()
 
+    # Common
+    config_dir = COMMON_PATH + 'Config/'
+    mkdir(config_dir)
+
+    common_dict = dict()
+
+    common_dirs = dict()
+    temp_dir = COMMON_PATH + 'Temp/'
+    mkdir(temp_dir)
+
+    common_dirs['Path'] = COMMON_PATH
+    common_dirs['Share'] = share_dir
+    common_dirs['Snippet'] = snippet_dir
+    common_dirs['Config'] = config_dir
+
+    common_dict['directory'] = common_dirs
+    common_dict['default_version'] = VERSION
+    common_dict['language'] = SUPPORT_LANGUAGE
+
+    clate_data['common'] = common_dict
+
+    # Default project
+    clate_dirs = dict()
+    clate_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__)) + '/'
+
+    clate_temp_dir = temp_dir + 'clate/'
+    clate_dirs['Temp'] = clate_temp_dir
+    mkdir(clate_temp_dir)
+
+    clang = dict()
+    clang['directory'] = 'CLATE'
+    clang['option'] = "-DCMAKE_BUILD_TYPE=Debug"
+
+    clate_project = dict()
+    clate_project['name'] = 'clate'
+    clate_project['version'] = VERSION
+    clate_project['directory'] = clate_dirs
+
+    clate_project['clang'] = clang
+
+    project_list = list()
+    project_list.append(clate_project)
+
+    clate_data['project'] = project_list
+
+    return clate_data
+
+
+def clate_manager():
+    global VERSION
+    global CLATE_JSON
+
+    clate_data = None
+    version_dir = None
     # Project
     if os.path.exists(CLATE_JSON):
+        print(".clate.json is already existed")
         clate_json = open(CLATE_JSON).read()
         clate_data = json.loads(clate_json)
+
+        if COMMON_PATH != clate_data['common']['directory']['Path']:
+            clate_data = create_new_clate()
+            version_dir = create_new_version()
+        elif VERSION != clate_data['common']['default_version']:
+            version_dir = create_new_version(clate_data)
+        else:
+            version_dir = create_new_version()
     else:
-        clate_data = dict()
-
-        # Common
-        config_dir = COMMON_PATH + 'Config/'
-        mkdir(config_dir)
-        version_dir = config_dir + '/' + VERSION
-        mkdir(version_dir)
-        os.system("sudo cp {0} {1}".format(VIMRCACT, version_dir))
-        os.system("sudo cp {0} {1}".format(MANUAL,   version_dir))
-
-        common_dict = dict()
-
-        common_dirs = dict()
-        temp_dir = COMMON_PATH + 'Temp/'
-        mkdir(temp_dir)
-
-        common_dirs['Path'] = COMMON_PATH
-        common_dirs['Share'] = share_dir
-        common_dirs['Snippet'] = snippet_dir
-        common_dirs['Config'] = config_dir
-
-        common_dict['directory'] = common_dirs
-        common_dict['default_version'] = VERSION
-
-        common_dict['language'] = SUPPORT_LANGUAGE
-
-        clate_data['common'] = common_dict
-
-        # Default project
-        clate_dirs = dict()
-        clate_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__)) + '/'
-
-        clate_temp_dir = temp_dir + 'clate/'
-        clate_dirs['Temp'] = clate_temp_dir
-        mkdir(clate_temp_dir)
-
-        clang = dict()
-        clang['directory'] = 'CLATE'
-        clang['option'] = "-DCMAKE_BUILD_TYPE=Debug"
-
-        clate_project = dict()
-        clate_project['name'] = 'clate'
-        clate_project['version'] = VERSION
-        clate_project['directory'] = clate_dirs
-
-        clate_project['clang'] = clang
-
-        project_list = list()
-        project_list.append(clate_project)
-
-        clate_data['project'] = project_list
+        clate_data = create_new_clate()
+        version_dir = create_new_version()
 
     write_clate_json(clate_data)
+
+    os.system("cp {0} {1}".format(VIMRCACT,       version_dir))
+    os.system("cp {0} {1}".format(COC_SETTINGS,   version_dir))
 
     # Install execute file
     if not os.path.exists(CLATE_EXEC):
@@ -149,6 +183,7 @@ def config():
     global VERSION
     global COMMON_PATH
     global SUPPORT_LANGUAGE
+
     # Build dockerfile
     config_json = open(CONFIG_JSON).read()
     config_info = json.loads(config_json)
