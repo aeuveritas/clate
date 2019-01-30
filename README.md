@@ -91,6 +91,7 @@ $ clate -a [PROJECT_NAME]
 * [kana/vim-operator-user](https://github.com/kana/vim-operator-user)
 * [skywind3000/asyncrun.vim](https://github.com/skywind3000/asyncrun.vim)
 * [Shougo/denite.nvim](https://github.com/Shougo/denite.nvim)
+* [jsfaint/gen_tags.vim](https://github.com/jsfaint/gen_tags.vim)
 * [tpope/vim-fugitive](https://github.com/tpope/vim-fugitive)
 * [mhinz/vim-signify](https://github.com/mhinz/vim-signify)
 * [chrisbra/vim-diff-enhanced](https://github.com/chrisbra/vim-diff-enhanced)
@@ -147,6 +148,18 @@ $ clate -a [PROJECT_NAME]
 * Prev quickfix            : &lt;C-c> o
 * Close quickfix           : &lt;C-c> i
 
+* Find functions calling
+      this function        : &lt;C-\> c
+* Find functions called
+      by this function     : &lt;C-\> d
+* Find this egrep pattern  : &lt;C-\> e
+* Find this file           : &lt;C-\> f
+* Find this definition     : &lt;C-\> g
+* Find files including
+      this file            : &lt;C-\> i
+* Find this C symbol       : &lt;C-\> s
+* Find this text string    : &lt;C-\> t
+
 * &lt;leader>              : ,
 * GtagsCursor              : &lt;leader> g
 * Mark word highlight      : &lt;leader> h
@@ -161,5 +174,3 @@ $ clate -a [PROJECT_NAME]
 * Rename                   : &lt;leader> n
 
 * Strip white space        : &lt;leader> w
-
-

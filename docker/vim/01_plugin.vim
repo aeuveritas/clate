@@ -35,6 +35,9 @@ Plug 'kana/vim-operator-user'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
 
+" Tag
+Plug 'jsfaint/gen_tags.vim'
+
 " Git
 Plug 'tpope/vim-fugitive'
 Plug 'mhinz/vim-signify'
