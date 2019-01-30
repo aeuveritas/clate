@@ -52,7 +52,7 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 
 " Highlight
-Plug 'arakashic/chromatica.nvim', { 'for': 'cpp', 'do': ':UpdateRemotePlugins' }
+Plug 'bfrg/vim-cpp-modern', { 'for': 'cpp' }
 Plug 'vim-python/python-syntax', { 'for': 'python' }
 Plug 't9md/vim-quickhl'
 Plug 'chrisbra/csv.vim', { 'for': 'csv' }
@@ -82,7 +82,7 @@ Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
 " Disabled
-"Plug 'bfrg/vim-cpp-modern', { 'for': 'cpp' }
+"Plug 'arakashic/chromatica.nvim', { 'for': 'cpp', 'do': ':UpdateRemotePlugins' } # Too heavy
 "Plug 'rhysd/vim-clang-format'
 "Plug 'ctrlpvim/ctrlp.vim'
 "Plug 'sunaku/vim-shortcut'

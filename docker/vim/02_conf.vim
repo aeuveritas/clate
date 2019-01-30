@@ -270,10 +270,10 @@ let g:better_whitespace_enabled = 1
 "*****************************************************************************
 "" Chromatica
 "*****************************************************************************
-let g:chromatica#libclang_path = '/usr/local/lib'
-let g:chromatica#responsive_mode = 1
-let g:chromatica#global_args = ['-isystem/usr/local/clang/9.0.0/include']
-let g:chromatica#enable_at_startup = 1
+#let g:chromatica#libclang_path = '/usr/local/lib'
+#let g:chromatica#responsive_mode = 1
+#let g:chromatica#global_args = ['-isystem/usr/local/clang/9.0.0/include']
+#let g:chromatica#enable_at_startup = 1
 
 "*****************************************************************************
 "" Start up
