@@ -223,7 +223,7 @@ let $FZF_DEFAULT_COMMAND = 'git ls-files --exclude-standard --others --cached'
 "*****************************************************************************
 "" Indentline
 "*****************************************************************************
-let g:indentLine_char = ':'
+let g:indentLine_char = '|'
 let g:indentLine_setColors = 0
 
 "*****************************************************************************
