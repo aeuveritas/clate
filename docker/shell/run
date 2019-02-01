@@ -3,4 +3,4 @@ rm ~/.config/nvim/init.vim
 ln -s /Config/$CLATE_VERSION/init.vim ~/.config/nvim/
 rm ~/.config/nvim/coc-settings.json
 ln -s /Config/$CLATE_VERSION/coc-settings.json ~/.config/nvim/
-su - $UNAME -c "cd /Workspace && nvim ~/MANUAL.md"
+su -m - $UNAME -c "cd /Workspace && nvim ~/MANUAL.md"
