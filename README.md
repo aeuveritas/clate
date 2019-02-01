@@ -149,16 +149,16 @@ $ clate -a [PROJECT_NAME]
 * Close quickfix           : &lt;C-c> i
 
 * Find functions calling
-      this function        : &lt;C-\> c
+      this function        : &lt;C-\\> c
 * Find functions called
-      by this function     : &lt;C-\> d
-* Find this egrep pattern  : &lt;C-\> e
-* Find this file           : &lt;C-\> f
-* Find this definition     : &lt;C-\> g
+      by this function     : &lt;C-\\> d
+* Find this egrep pattern  : &lt;C-\\> e
+* Find this file           : &lt;C-\\> f
+* Find this definition     : &lt;C-\\> g
 * Find files including
-      this file            : &lt;C-\> i
-* Find this C symbol       : &lt;C-\> s
-* Find this text string    : &lt;C-\> t
+      this file            : &lt;C-\\> i
+* Find this C symbol       : &lt;C-\\> s
+* Find this text string    : &lt;C-\\> t
 
 * &lt;leader>              : ,
 * GtagsCursor              : &lt;leader> g
