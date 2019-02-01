@@ -19,36 +19,36 @@ command! -bang -nargs=* GGrep
 "*****************************************************************************
 let mapleader = ","
 
-map <F5> :e<CR>
-map <F6> :NERDTreeToggle<CR>
-map <F7> :TagbarToggle<CR>
-map <F8> :BuffergatorToggle<CR>
+map <F5>                   :e<CR>
+map <F6>                   :NERDTreeToggle<CR>
+map <F7>                   :TagbarToggle<CR>
+map <F8>                   :BuffergatorToggle<CR>
 
-map <silent><F12> :call quickmenu#toggle(0)<CR>
+map <silent><F12>          :call quickmenu#toggle(0)<CR>
 
 " Quickhl
-nmap <leader>h <Plug>(quickhl-manual-this)
-nmap <leader>c <Plug>(quickhl-manual-clear)
+nmap <leader>h             <Plug>(quickhl-manual-this)
+nmap <leader>hh            <Plug>(quickhl-manual-clear)
 
 " Quickfix
-nnoremap <C-c>i     :ccl<CR>
-nnoremap <C-c>p     :cn<CR>
-nnoremap <C-c>o     :cp<CR>
+nnoremap <C-c>i            :ccl<CR>
+nnoremap <C-c>p            :cn<CR>
+nnoremap <C-c>o            :cp<CR>
 
 " Buffer
-nnoremap <C-c>l     :bn<CR>
-nnoremap <C-c>k     :bp<CR>
-nnoremap <C-c>j     :bd<CR>
+nnoremap <C-c>l            :bn<CR>
+nnoremap <C-c>k            :bp<CR>
+nnoremap <C-c>j            :bd<CR>
 
 " Git blame
-vnoremap b          :call AsyncBlame()<CR>
+vnoremap b                 :call AsyncBlame()<CR>
 
 " Gtags
-nnoremap <leader>g  :GtagsCursor<CR>
+nnoremap <leader>g         :GtagsCursor<CR>
 
 " Yank
-nnoremap <leader>y  :FZFNeoyank<cr>
-nnoremap <leader>yy :FZFNeoyankSelection<cr>
+nnoremap <leader>y         :FZFNeoyank<cr>
+nnoremap <leader>yy        :FZFNeoyankSelection<cr>
 
 " Hide quit
 cnoremap <silent> q<CR>    :call HideQuit()<CR>
@@ -59,25 +59,25 @@ cnoremap <silent> wqa<CR>  :wa<CR>
 cnoremap <silent> wq<CR>   :wa<CR>
 
 " Save with ctrl + s
-nnoremap <C-s>      :w<CR>
+nnoremap <C-s>             :w<CR>
 
 " CCLS
 "" Fix error
-nmap <leader>f  <Plug>(coc-fix-current)
+nmap <leader>f             <Plug>(coc-fix-current)
 
 "" Remap keys for gotos
-nmap <leader>d <Plug>(coc-definition)
-nmap <leader>t <Plug>(coc-type-definition)
-nmap <leader>i <Plug>(coc-implementation)
-nmap <leader>r <Plug>(coc-references)
+nmap <leader>d             <Plug>(coc-definition)
+nmap <leader>t             <Plug>(coc-type-definition)
+nmap <leader>i             <Plug>(coc-implementation)
+nmap <leader>r             <Plug>(coc-references)
 
 "" Remap for rename current word
-nmap <leader>n <Plug>(coc-rename)
+nmap <leader>n             <Plug>(coc-rename)
 
 "" Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
 "" Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
-nmap <leader>w       :StripWhiteSapce<CR>
+nmap <leader>w             :StripWhiteSapce<CR>
 
 

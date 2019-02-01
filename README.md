@@ -163,7 +163,7 @@ $ clate -a [PROJECT_NAME]
 * &lt;leader>              : ,
 * GtagsCursor              : &lt;leader> g
 * Mark word highlight      : &lt;leader> h
-* Clear word highlight     : &lt;leader> c
+* Clear word highlight     : &lt;leader> hh
 
 * List for yank            : &lt;leader> y
 
@@ -174,3 +174,5 @@ $ clate -a [PROJECT_NAME]
 * Rename                   : &lt;leader> n
 
 * Strip white space        : &lt;leader> w
+
+* Toggle comment           : &lt;leader> c &lt;space>
