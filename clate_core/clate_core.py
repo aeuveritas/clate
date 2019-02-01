@@ -359,6 +359,9 @@ class Clate:
         if is_debug:
             dockercmd += "--entrypoint /bin/bash "
 
+        dockercmd += "--env CMAKE_DIR={0} ".format(project['clang']['directory'])
+        dockercmd += "--env CMAKE_OPTION={0} ".format(project['clang']['option'])
+
         dockercmd += "clate:{0}".format(project['version'])
 
         print("[ SUC ] run: {}".format(dockercmd))
