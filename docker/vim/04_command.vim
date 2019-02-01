@@ -61,7 +61,7 @@ cnoremap <silent> wq<CR>   :wa<CR>
 " Save with ctrl + s
 nnoremap <C-s>             :w<CR>
 
-" CCLS
+" coc.nvim
 "" Fix error
 nmap <leader>f             <Plug>(coc-fix-current)
 
@@ -74,10 +74,7 @@ nmap <leader>r             <Plug>(coc-references)
 "" Remap for rename current word
 nmap <leader>n             <Plug>(coc-rename)
 
-"" Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
-"" Coc only does snippet and additional edit on confirm.
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
+" Comment toggle
 nmap <leader>w             :StripWhiteSapce<CR>
 
 

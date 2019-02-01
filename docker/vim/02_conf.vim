@@ -127,6 +127,10 @@ highlight Pmenu ctermfg=0 ctermbg=255 guifg=#ffffff guibg=#000000
 " Smaller updatetime for CursorHold & CursorHoldI
 set updatetime=300
 
+"" Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
+"" Coc only does snippet and additional edit on confirm.
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
 "*****************************************************************************
 "" Status line
 "*****************************************************************************
