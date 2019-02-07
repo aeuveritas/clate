@@ -3,6 +3,7 @@
 import os
 import json
 import shutil
+import argparse
 
 import docker
 
@@ -15,20 +16,21 @@ AVAILABLE_VERSION = [
 
 
 class Docker:
-    def __init__(self):
-        self._client = docker.from_env()
+    def __init__(self, client):
+        self._client = client
+        self._docker = docker.from_env()
 
     def get_names(self):
         names = list()
-        for container in self._client.containers.list():
-            if "clate_" in container.name:
-                names.append(container.name.replace("clate_", ""))
+        for container in self._docker.containers.list():
+            if "{0}".format(self._client) in container.name:
+                names.append(container.name.replace("{0}_".format(self._client), ""))
 
         return names
 
     def _traverse(self, name, func=None):
-        target_name = "clate_{}".format(name)
-        for container in self._client.containers.list():
+        target_name = "{0}_{1}".format(self._client, name)
+        for container in self._docker.containers.list():
             if target_name == container.name:
                 if func:
                     func(container)
@@ -189,11 +191,12 @@ class Interactor:
 
 
 class Setting_Manager:
-    def __init__(self, json_file):
-        self.json_file = json_file
+    def __init__(self):
+        global CLATE_JSON
+        self._json_file = CLATE_JSON
 
     def update(self):
-        clate_json = open(self.json_file, 'r')
+        clate_json = open(self._json_file, 'r')
         data = json.loads(clate_json.read())
         clate_json.close()
 
@@ -204,26 +207,27 @@ class Setting_Manager:
         data['common'] = common
         data['project'] = project
 
-        clate_json = open(self.json_file, 'w')
+        clate_json = open(self._json_file, 'w')
         clate_json.write(json.dumps(data, sort_keys=True, indent=4))
         clate_json.close()
 
 
 class Clate:
-    def __init__(self, json_file, dirMgr, interactor):
+    def __init__(self, dirMgr, interactor, client="clate"):
         self._common = None
         self._project = None
         self._project_names = None
 
+        self._client = client
         self._dirMgr = dirMgr
         self._interactor = interactor
-        self._setting = Setting_Manager(json_file)
-        self._docker = Docker()
+        self._setting = Setting_Manager()
+        self._docker = Docker(client)
 
         self._common, self._project = self._setting.update()
         self._build_project_names()
 
-        print("[ INF ] Clate - {0}".format(self._common['default_version']))
+        print("[ INF ] {0} - {1}".format(client, self._common['default_version']))
 
     def _build_project_names(self):
         del self._project_names
@@ -348,7 +352,7 @@ class Clate:
     def _run_project(self, project, is_debug=False):
         dockercmd = "docker run -ti --rm "
 
-        dockercmd += "--name clate_{} ".format(project['name'])
+        dockercmd += "--name {0}_{1} ".format(self._client, project['name'])
 
         for target, host in project['directory'].items():
             dockercmd += "-v {0}:/{1} ".format(host, target)
@@ -359,8 +363,8 @@ class Clate:
         if is_debug:
             dockercmd += "--entrypoint /bin/bash "
 
-        dockercmd += "--env CMAKE_DIR={0} ".format(project['clang']['directory'])
-        dockercmd += "--env CMAKE_OPTION={0} ".format(project['clang']['option'])
+        dockercmd += "--env CLATE_CLIENT={0} ".format(self._client)
+        dockercmd += "--env PROJECT_NAME={0} ".format(project['name'])
 
         dockercmd += "clate:{0}".format(project['version'])
 
@@ -414,3 +418,39 @@ class Clate:
 
         self._compile_project(self._project[idx])
 
+
+def parse():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-a', '--active', help='active project', default=None)
+    parser.add_argument('-g', '--generate', help='generate compile_commands.json', default=None)
+    parser.add_argument('-d', '--debug', help='run project with debug mode', action='store_true')
+
+    return parser.parse_args()
+
+
+def check_param(params):
+    cnt = 0
+
+    if params.active:
+        cnt += 1
+    if params.generate:
+        cnt += 1
+    if params.debug:
+        cnt += 1
+
+    if cnt > 1:
+        print("[ ERR ] only 1 option is available.")
+        return False
+
+    return True
+
+
+def clate_main(clate, params):
+    if params.active:
+        clate.run(params.active)
+    elif params.generate:
+        clate.compile(params.generate)
+    elif params.debug:
+        clate.run(is_debug=True)
+    else:
+        clate.console()
