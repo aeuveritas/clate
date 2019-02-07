@@ -16,7 +16,7 @@ $ id root
 2. Fill config.json
   - COMMON_PATH is directory to keep sharing files among **Clate** instances.
   - Set "true" for target language.
-  - If you failed to configure ssh environment, please find you ip address and fill it out.
+  - If you failed to configure ssh environment, please find you ip address and fill HOST_IP out.
 3. Execute install.py
 
 # Console
