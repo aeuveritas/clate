@@ -2,6 +2,8 @@
 
 import os
 import json
+import socket
+import getpass
 
 # Variables
 NAME             = "clate"
@@ -18,6 +20,7 @@ DOCKERTAG        = "{}/05_tag.Dockerfile".format(DOCKERFILEDIR)
 DOCKERPLUGIN     = "{}/06_plugin.Dockerfile".format(DOCKERFILEDIR)
 DOCKERCLEANUP    = "{}/07_cleanup.Dockerfile".format(DOCKERFILEDIR)
 DOCKERSETUP      = "{}/08_setup.Dockerfile".format(DOCKERFILEDIR)
+DOCKERNETWORK    = "{}/09_network.Dockerfile".format(DOCKERFILEDIR)
 
 DOCKERCPP        = "{}/clang_cpp.Dockerfile".format(DOCKERFILEDIR)
 DOCKERCOCJSON    = "{}/coc_json.Dockerfile".format(DOCKERFILEDIR)
@@ -27,6 +30,7 @@ DOCKERCOC        = "{}/coc".format(DOCKERFILEDIR)
 
 DOCKERUSERDATA   = "{}/userdata".format(DOCKERFILEDIR)
 DOCKERVERSION    = "{}/version".format(DOCKERFILEDIR)
+DOCKERNETWORKENV = "{}/network".format(DOCKERFILEDIR)
 CONFIG_JSON      = "./config.json"
 
 VIMDIR           = "{}/vim".format(DOCKERDIR)
@@ -236,6 +240,21 @@ ENV CLATE_VERSION={0} \
     version.write(VERSION_ENV)
     version.close()
 
+    # Network info
+    host = config_info['HOST_IP']
+    if host == "":
+        host = socket.gethostbyname(socket.gethostname())
+    pwd = getpass.getpass("ssh password: ")
+    NETWORK_ENV = \
+    """
+ENV HOST={0} \
+    PASSWORD={1}
+    """.format(host, pwd)
+
+    network = open(DOCKERNETWORKENV, "w")
+    network.write(NETWORK_ENV)
+    network.close()
+
     manual = open(MANUAL, "w")
     isSkip = False
     with open(README, "r") as lines:
@@ -306,6 +325,9 @@ ENV CLATE_VERSION={0} \
         os.system("echo 'COPY {0} $HOME/.globalrc' >> {1}".format(GLOBALRC, DOCKERFILE))
         os.system("echo 'RUN chown $UNAME:$GROUP $HOME -R' >> {0}".format(DOCKERFILE))
 
+    os.system("cat {0} >> {1}".format(DOCKERNETWORKENV,  DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERNETWORK,     DOCKERFILE))
+
     # Build init vimrc
     os.system("cat {0} > {1}".format(VIMPLUGIN,          VIMRCINIT))
 
@@ -330,6 +352,7 @@ def cleanup():
     os.system("rm {0}".format(VIMRCACT))
     os.system("rm {0}".format(DOCKERUSERDATA))
     os.system("rm {0}".format(DOCKERVERSION))
+    os.system("rm {0}".format(DOCKERNETWORKENV))
     os.system("rm {0}".format(DOCKERPIP))
     os.system("rm {0}".format(DOCKERNPM))
     os.system("rm {0}".format(DOCKERCOC))

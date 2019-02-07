@@ -12,5 +12,6 @@
     "VERSION"        : {
         "GLOBAL"     : "6.6.3",
         "LLVM"       : "9.0.0"
-    }
+    },
+    "HOST_IP"        : ""
 }
