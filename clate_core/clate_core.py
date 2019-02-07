@@ -245,7 +245,7 @@ class Clate:
             if cmd == 'c':
                 self._create()
             elif cmd == 'l':
-                self._show()
+                self.show()
             elif cmd == 'a':
                 self._run()
             elif cmd == 't':
@@ -307,7 +307,7 @@ class Clate:
             else:
                 print("[ WAR ] cannot find running clate: {}".format(project_name))
 
-    def _show(self):
+    def show(self):
         print("COMMON")
         print(json.dumps(self._common, indent=4, sort_keys=True))
         print("PROJECT")
@@ -424,6 +424,7 @@ def parse():
     parser.add_argument('-a', '--active', help='active project', default=None)
     parser.add_argument('-g', '--generate', help='generate compile_commands.json', default=None)
     parser.add_argument('-d', '--debug', help='run project with debug mode', action='store_true')
+    parser.add_argument('-l', '--list', help='list all projects', action='store_true')
 
     return parser.parse_args()
 
@@ -436,6 +437,8 @@ def check_param(params):
     if params.generate:
         cnt += 1
     if params.debug:
+        cnt += 1
+    if params.list:
         cnt += 1
 
     if cnt > 1:
@@ -452,5 +455,7 @@ def clate_main(clate, params):
         clate.compile(params.generate)
     elif params.debug:
         clate.run(is_debug=True)
+    elif params.list:
+        clate.show()
     else:
         clate.console()
