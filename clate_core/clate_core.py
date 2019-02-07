@@ -80,19 +80,19 @@ class Interactor:
         self._dirMgr = dirMgr
 
     def menu(self, support_cpp):
-        print('    \x1b[1;32;40m' + "[C]" + '\x1b[0m' + "reate new project")
-        print('    \x1b[1;32;40m' + "[L]" + '\x1b[0m' + "ist projects")
-        print('    \x1b[1;32;40m' + "[A]" + '\x1b[0m' + "ctivate project")
-        print('dele\x1b[1;32;40m' + "[T]" + '\x1b[0m' + "e proect")
-        print('chan\x1b[1;32;40m' + "[E]" + '\x1b[0m' + " version")
+        print('     \x1b[1;32;40m' + "[C]" + '\x1b[0m' + "reate new project")
+        print('     \x1b[1;32;40m' + "[L]" + '\x1b[0m' + "ist projects")
+        print('     \x1b[1;32;40m' + "[A]" + '\x1b[0m' + "ctivate project")
+        print(' dele\x1b[1;32;40m' + "[T]" + '\x1b[0m' + "e proect")
+        print('chang\x1b[1;32;40m' + "[E]" + '\x1b[0m' + " version")
         print('')
         if support_cpp:
-            print('    \x1b[1;32;40m' + "[G]" + '\x1b[0m' + "enerate compile_commands.json")
+            print('     \x1b[1;32;40m' + "[G]" + '\x1b[0m' + "enerate compile_commands.json")
             print('')
-        print('  st\x1b[1;32;40m' + "[O]" + '\x1b[0m' + "p running project")
-        print('  li\x1b[1;32;40m' + "[S]" + '\x1b[0m' + "t running project")
+        print('   st\x1b[1;32;40m' + "[O]" + '\x1b[0m' + "p running project")
+        print('   li\x1b[1;32;40m' + "[S]" + '\x1b[0m' + "t running project")
         print('')
-        print('   e\x1b[1;32;40m' + "[X]" + '\x1b[0m' + "it")
+        print('    e\x1b[1;32;40m' + "[X]" + '\x1b[0m' + "it")
 
         cmd = ""
         try:

@@ -25,18 +25,18 @@ $ id root
 ```
 $ clate
 [ INF ] Clate - 0.2
-    [C]reate new project
-    [L]ist projects
-    [A]ctivate project
-dele[T]e proect
-chan[E] version
+     [C]reate new project
+     [L]ist projects
+     [A]ctivate project
+ dele[T]e proect
+chang[E] version
 
-  st[O]p running project
-  li[S]t running project
+   st[O]p running project
+   li[S]t running project
 
-gene[R]ate compile_commands.json
+ gene[R]ate compile_commands.json
 
-   e[X]it
+    e[X]it
 [ ASK ] command:
 ```
 * Creates new project
