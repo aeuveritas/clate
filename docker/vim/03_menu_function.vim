@@ -7,10 +7,9 @@ call quickmenu#reset()
 " Enable cursorline (:) and cmdline help (H)
 let g:quickmenu_options = "HL"
 
-call quickmenu#append("# Build", '')
-call quickmenu#append("Run cmake", 'call AsyncCMake()', "run cmake and generate compile_commands")
-call quickmenu#append("Build project", 'call AsyncBuild()', "build")
-call quickmenu#append("Build tag", 'Gctags', "build tag")
+call quickmenu#append("# Tags", '')
+call quickmenu#append("Generate compile_commands.json", 'call AsyncCMake()', "generate compile_commands")
+call quickmenu#append("Generate tag", 'Gctags', "generate tag")
 
 call quickmenu#append("# Analysis", '')
 call quickmenu#append("Diagnostics", 'CocList diagnostics', "diagnostics")
@@ -51,11 +50,7 @@ function! HideQuit()
     endif
 endfunction
 
-function! AsyncBuild()
-    execute 'AsyncRun cd ' . $CMAKE_DIR . ' && make -j $(nproc)'
-endfunction
-
 function! AsyncCMake()
-    execute 'AsyncRun cmake -H. -B' . $CMAKE_DIR . ' ' . $CMAKE_OPTION . ' -DCMAKE_EXPORT_COMPILE_COMMANDS=YES && rm compile_commands.json && ln -s ' . $CMAKE_DIR . 'compile_commands.json'
+    execute 'AsyncRun ssh ' . $HOST . ' "' . $CLATE_CLIENT . ' -g ' . $PROJECT_NAME . '"'
 endfunction
 
