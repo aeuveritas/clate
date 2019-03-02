@@ -14,8 +14,11 @@ call quickmenu#append("Generate tag", 'Gctags', "generate tag")
 call quickmenu#append("# Analysis", '')
 call quickmenu#append("Diagnostics", 'CocList diagnostics', "diagnostics")
 
+call quickmenu#append("# Build/Run", '')
+call quickmenu#append("Build", 'call AsyncBuild', "build project")
+call quickmenu#append("Run", 'call AsyncRunBinary', "run project")
+
 call quickmenu#append("# Tab/Window/Buffer", '')
-call quickmenu#append("Clear all windows", 'call Clear()', "clear all windows and open last buffer")
 call quickmenu#append("Clear rest of buffers", 'BufOnly', "clear rest of buffers")
 
 call quickmenu#append("# Look", '')
@@ -52,5 +55,13 @@ endfunction
 
 function! AsyncCMake()
     execute 'AsyncRun ssh ' . $HOST . ' "' . $CLATE_CLIENT . ' -g ' . $PROJECT_NAME . '"'
+endfunction
+
+function! AsyncBuild()
+    execute 'AsyncRun ' . $BUILD_CMD
+endfunction
+
+function! AsyncRunBinary()
+    execute 'AsyncRun ' . $RUN_CMD
 endfunction
 

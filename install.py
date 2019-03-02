@@ -131,16 +131,16 @@ def create_new_clate():
     clate_dirs['Temp'] = clate_temp_dir
     mkdir(clate_temp_dir)
 
-    clang = dict()
-    clang['directory'] = 'CLATE'
-    clang['option'] = "-DCMAKE_BUILD_TYPE=Debug"
+    build = dict()
+    build['build_cmd'] = ''
+    build['run_cmd'] = ''
 
     clate_project = dict()
     clate_project['name'] = 'clate'
     clate_project['version'] = VERSION
     clate_project['directory'] = clate_dirs
 
-    clate_project['clang'] = clang
+    clate_project['clang'] = build
 
     project_list = list()
     project_list.append(clate_project)

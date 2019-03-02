@@ -173,15 +173,15 @@ class Interactor:
                 else:
                     break
 
-            clang = dict()
-            clang['directory'] = 'CLATE'
-            clang['option'] = '-DCMAKE_BUILD_TYPE=Debug'
+            build = dict()
+            build['build_cmd'] = ''
+            build['run_cmd'] = ''
 
             new_project = dict()
             new_project['name'] = project_name
             new_project['version'] = default_version
             new_project['directory'] = dirs
-            new_project['clang'] = clang
+            new_project['build'] = build
 
             return new_project
         except KeyboardInterrupt:
@@ -365,6 +365,8 @@ class Clate:
 
         dockercmd += "--env CLATE_CLIENT={0} ".format(self._client)
         dockercmd += "--env PROJECT_NAME={0} ".format(project['name'])
+        dockercmd += "--env BUILD_CMD={0} ".format(project['build']['build_cmd'])
+        dockercmd += "--env RUN_CMD={0} ".format(project['build']['run_cmd'])
 
         dockercmd += "clate:{0}".format(project['version'])
 
