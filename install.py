@@ -140,7 +140,7 @@ def create_new_clate():
     clate_project['version'] = VERSION
     clate_project['directory'] = clate_dirs
 
-    clate_project['clang'] = build
+    clate_project['build'] = build
 
     project_list = list()
     project_list.append(clate_project)
