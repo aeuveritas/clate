@@ -23,18 +23,18 @@ $ id root
 * **Clate** console helps to manage projects.
   - create, show, remove project.
 ```
-$ clate
-[ INF ] Clate - 0.2
+[ INF ] clate - 0.2
      [C]reate new project
      [L]ist projects
      [A]ctivate project
  dele[T]e proect
 chang[E] version
 
+     [G]enerate compile_commands.json
+
+    e[D]it project configs
    st[O]p running project
    li[S]t running project
-
- gene[R]ate compile_commands.json
 
     e[X]it
 [ ASK ] command:
@@ -45,42 +45,12 @@ Command: c
 Project name: [PROJECT_NAME]
 Project directory: [PROJECT_PATH]
 Do you have additional directory? (y/N)
-Created: {'directory': {'Base': u'[COMMON_PATH]/[PROJECT_NAME]/', 'Workspace': '[PROJECT_PATH]'}, 'name': '[PROJECT_NAME]'}
+Created: {'name': '[PROJECT_NAME]', 'version': 'VERSION', directory': {'Temp': u'[COMMON_PATH]/[PROJECT_NAME]/', 'Workspace': '[PROJECT_PATH]'}, 'build': {'build_cmd': '', 'run_cmd': ''}}
 ```
 * Lists up all projects
 ```
-[ ASK ] command: l
-COMMON
-{
-    "default_version": "0.2",
-    "directory": {
-        "Config": "/home/xaliver/clate/Config/",
-        "Path": "/home/xaliver/clate/",
-        "Share": "/home/xaliver/clate/Share/",
-        "Snippet": "/home/xaliver/clate/Snippet/"
-    },
-    "language": {
-        "CPP": true,
-        "JAVASCRIPT": false,
-        "PYTHON": true
-    }
-}
-PROJECT
-[
-    {
-        "clang": {
-            "directory": "CLATE/",
-            "option": "-DCMAKE_BUILD_TYPE=Debug"
-        },
-        "directory": {
-            "Temp": "/home/xaliver/clate/Temp/clate/",
-            "Workspace": "/home/xaliver/Workspace/clate/"
-        },
-        "name": "clate",
-        "version": "0.2"
-    }
-]
-
+$ clate -l
+ 0: clate
 ```
 * Run project directly.
 ```
