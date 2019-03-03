@@ -315,10 +315,8 @@ class Clate:
                 print("[ WAR ] cannot find running clate: {}".format(project_name))
 
     def show(self):
-        print("COMMON")
-        print(json.dumps(self._common, indent=4, sort_keys=True))
-        print("PROJECT")
-        print(json.dumps(self._project, indent=4, sort_keys=True))
+        for idx, project in enumerate(self._project):
+            print("{0:2}: {1}".format(idx, project['name']))
 
     def _createTempDir(self, new_project):
         temp_dir = self._common['directory']['Path'] + 'Temp/' + new_project['name'] + '/'
