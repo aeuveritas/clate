@@ -15,8 +15,8 @@ call quickmenu#append("# Analysis", '')
 call quickmenu#append("Diagnostics", 'CocList diagnostics', "diagnostics")
 
 call quickmenu#append("# Build/Run", '')
-call quickmenu#append("Build", 'call AsyncBuild', "build project")
-call quickmenu#append("Run", 'call AsyncRunBinary', "run project")
+call quickmenu#append("Build", 'call AsyncBuild()', "build project")
+call quickmenu#append("Run", 'call AsyncRunBinary()', "run project")
 
 call quickmenu#append("# Tab/Window/Buffer", '')
 call quickmenu#append("Clear rest of buffers", 'BufOnly', "clear rest of buffers")

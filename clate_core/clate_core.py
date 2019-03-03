@@ -365,8 +365,8 @@ class Clate:
 
         dockercmd += "--env CLATE_CLIENT={0} ".format(self._client)
         dockercmd += "--env PROJECT_NAME={0} ".format(project['name'])
-        dockercmd += "--env BUILD_CMD={0} ".format(project['build']['build_cmd'])
-        dockercmd += "--env RUN_CMD={0} ".format(project['build']['run_cmd'])
+        dockercmd += "--env BUILD_CMD='{0}' ".format(project['build']['build_cmd'])
+        dockercmd += "--env RUN_CMD='{0}' ".format(project['build']['run_cmd'])
 
         dockercmd += "clate:{0}".format(project['version'])
 
