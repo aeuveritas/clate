@@ -89,6 +89,7 @@ class Interactor:
         if support_cpp:
             print('     \x1b[1;32;40m' + "[G]" + '\x1b[0m' + "enerate compile_commands.json")
             print('')
+        print('    e\x1b[1;32;40m' + "[D]" + '\x1b[0m' + "it project configs")
         print('   st\x1b[1;32;40m' + "[O]" + '\x1b[0m' + "p running project")
         print('   li\x1b[1;32;40m' + "[S]" + '\x1b[0m' + "t running project")
         print('')
@@ -256,6 +257,8 @@ class Clate:
                 self._stop()
             elif cmd == 's':
                 self._show_running_project()
+            elif cmd == 'd':
+                self._edit_config()
             elif cmd == 'g' and support_cpp:
                 self._compile()
             elif cmd == 'x':
@@ -294,6 +297,10 @@ class Clate:
     def _show_running_project(self):
         names = self._get_running_project()
         self._interactor.print_list(names)
+
+    def _edit_config(self):
+        global CLATE_JSON
+        os.system("vi {0}".format(CLATE_JSON))
 
     def _stop(self):
         names = self._get_running_project()
