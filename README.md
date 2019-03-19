@@ -105,10 +105,13 @@ $ clate -a [PROJECT_NAME]
 ## Command
 * FZF       : List all files in fzf window
 ```:FZF```
-* AgRaw     : Grep [PATTERN] in current project
-```:AgRaw -Q [PATTERN] [DIRECTORY]```
+* Ag      : Grep [PATTERN] in current project
+```:Ag [PATTERN]
+:Ag -Q [PATTERN] [DIRECTORY]```
 * GGrep     : Git grep [PATTERN] in current project
 ```:GGrep [PATTERN]```
+* Gblame    : Git blame
+```Gblame```
 
 ## Short-cut
 * Next buffer              : &lt;C-c> l
@@ -131,7 +134,7 @@ $ clate -a [PROJECT_NAME]
 * Find this C symbol       : &lt;C-\\> s
 * Find this text string    : &lt;C-\\> t
 
-* &lt;leader>              : ,
+* &lt;leader>                 : ,
 * GtagsCursor              : &lt;leader> g
 * Mark word highlight      : &lt;leader> h
 * Clear word highlight     : &lt;leader> hh

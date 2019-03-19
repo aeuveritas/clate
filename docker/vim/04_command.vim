@@ -43,12 +43,17 @@ nnoremap <C-c>j            :bd<CR>
 " Git blame
 vnoremap b                 :call AsyncBlame()<CR>
 
+" Git grep
+nnoremap <leader>s         :Ag <C-R>=expand("<cword>")<CR><CR>
+
 " Gtags
-nnoremap <leader>g         :GtagsCursor<CR>
+nnoremap <leader>gd        :GtagsCursor<CR>
+nnoremap <leader>gr        :Gtags -r <C-R>=expand("<cword>")<CR><CR>
+nnoremap <leader>gs        :Gtags -s <C-R>=expand("<cword>")<CR><CR>
 
 " Yank
 nnoremap <leader>y         :FZFNeoyank<cr>
-nnoremap <leader>yy        :FZFNeoyankSelection<cr>
+vnoremap <leader>y         :FZFNeoyankSelection<cr>
 
 " Hide quit
 cnoremap <silent> q<CR>    :call HideQuit()<CR>
@@ -74,7 +79,7 @@ nmap <leader>r             <Plug>(coc-references)
 "" Remap for rename current word
 nmap <leader>n             <Plug>(coc-rename)
 
-" Comment toggle
+" Strip white space
 nmap <leader>w             :StripWhiteSapce<CR>
 
 

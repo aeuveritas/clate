@@ -21,6 +21,10 @@ COPY artifact/MANUAL.md $HOME
 RUN cp $TEMP/gtags.vim $PLUGIN/ \
     && cp $TEMP/gtags-cscope.vim $PLUGIN/
 
+# Set GNU global working directory
+RUN mkdir $HOME/.cache/tags_dir \
+    && ln -s /Workspace $HOME/.cache/tags_dir
+
 # Set vimrc
 COPY vim/init.vim $HOME/.config/nvim/init.vim
 RUN chown $UNAME:$GROUP $HOME -R \
