@@ -133,7 +133,7 @@ class Interactor:
 
         return False
 
-    def fill_project(self, name_list, default_version):
+    def fill_project(self, name_list, default_version, host_ip):
         try:
             project_name = input("[ ASK ] project name: ")
 
@@ -177,6 +177,8 @@ class Interactor:
             build = dict()
             build['build_cmd'] = ''
             build['run_cmd'] = ''
+            build['cmake_cmd'] = ''
+            build['cmake_option'] = ''
 
             new_project = dict()
             new_project['name'] = project_name
@@ -271,16 +273,18 @@ class Clate:
     def _compile_project(self, project):
         try:
             project_dir = project['directory']['Workspace']
-            compile_dir = project['clang']['directory']
-            compile_option = project['clang']['option']
             cc_file = project_dir + 'compile_commands.json'
             if self._dirMgr.exist(cc_file):
                 self._dirMgr.rmFile(cc_file)
 
-            cmd = "cmake -H{0} -B{0}/{1} -DCMAKE_EXPORT_COMPILE_COMMANDS=YES {2}".format(project_dir, compile_dir, compile_option)
+            cmake_option = project['build']['cmake_option']
+            cmd = "cmake -H{0} -B{0}/CLATE -DCMAKE_EXPORT_COMPILE_COMMANDS=YES {1}".format(project_dir, cmake_option)
             os.system(cmd)
 
-            cmd = "ln -s {0}/{1}/compile_commands.json {0}".format(project_dir, compile_dir)
+            cmd = "cp {0}/CLATE/compile_commands.json {0}".format(project_dir)
+            os.system(cmd)
+
+            cmd = "rm -rf  {0}/CLATE".format(project_dir)
             os.system(cmd)
             print("[ SUC ] generate: compile_commands.json")
         except:
@@ -324,7 +328,7 @@ class Clate:
         self._dirMgr.mkDir(temp_dir)
 
     def _create(self):
-        new_project = self._interactor.fill_project(self._project_names, self._common['default_version'])
+        new_project = self._interactor.fill_project(self._project_names, self._common['default_version'], self._common['host_ip'])
 
         if new_project:
             self._createTempDir(new_project)
@@ -372,6 +376,7 @@ class Clate:
         dockercmd += "--env PROJECT_NAME={0} ".format(project['name'])
         dockercmd += "--env BUILD_CMD='{0}' ".format(project['build']['build_cmd'])
         dockercmd += "--env RUN_CMD='{0}' ".format(project['build']['run_cmd'])
+        dockercmd += """--env CMAKE_CMD="{0}" """.format(project['build']['cmake_cmd'])
 
         dockercmd += "clate:{0}".format(project['version'])
 

@@ -54,7 +54,7 @@ function! HideQuit()
 endfunction
 
 function! AsyncCMake()
-    execute 'AsyncRun ssh ' . $HOST . ' "' . $CLATE_CLIENT . ' -g ' . $PROJECT_NAME . '"'
+    execute 'AsyncRun ' . $CMAKE_CMD
 endfunction
 
 function! AsyncBuild()

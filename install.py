@@ -51,6 +51,8 @@ SUPPORT_LANGUAGE = None
 CLATE_JSON       = os.getenv("HOME") + '/.clate.json'
 CLATE_EXEC       = '/usr/local/bin/clate'
 
+HOST_IP          = None
+
 
 def write_clate_json(clate_data):
     global CLATE_JSON
@@ -86,6 +88,7 @@ def create_new_clate():
     global COMMON_PATH
     global SUPPORT_LANGUAGE
     global VERSION
+    global HOST_IP
 
     print("create common and default project")
 
@@ -120,6 +123,7 @@ def create_new_clate():
     common_dict['directory'] = common_dirs
     common_dict['default_version'] = VERSION
     common_dict['language'] = SUPPORT_LANGUAGE
+    common_dict['host_ip'] = HOST_IP
 
     clate_data['common'] = common_dict
 
@@ -134,6 +138,8 @@ def create_new_clate():
     build = dict()
     build['build_cmd'] = ''
     build['run_cmd'] = ''
+    build['cmake_cmd'] = ''
+    build['cmake_option'] = ''
 
     clate_project = dict()
     clate_project['name'] = 'clate'
@@ -187,6 +193,7 @@ def config():
     global VERSION
     global COMMON_PATH
     global SUPPORT_LANGUAGE
+    global HOST_IP
 
     # Build dockerfile
     config_json = open(CONFIG_JSON).read()
@@ -241,15 +248,15 @@ ENV CLATE_VERSION={0} \
     version.close()
 
     # Network info
-    host = config_info['HOST_IP']
-    if host == "":
-        host = socket.gethostbyname(socket.gethostname())
+    HOST_IP = config_info['HOST_IP']
+    if HOST_IP == "":
+        HOST_IP = socket.gethostbyname(socket.gethostname())
     pwd = getpass.getpass("ssh password: ")
     NETWORK_ENV = \
     """
 ENV HOST={0} \
     PASSWORD={1}
-    """.format(host, pwd)
+    """.format(HOST_IP, pwd)
 
     network = open(DOCKERNETWORKENV, "w")
     network.write(NETWORK_ENV)

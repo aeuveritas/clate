@@ -3,4 +3,7 @@
 globalrc
 __pycache__/
 config.json
+GPATH
+GTAGS
+GRTAGS
 
