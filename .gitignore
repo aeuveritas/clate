@@ -6,4 +6,5 @@ config.json
 GPATH
 GTAGS
 GRTAGS
-
+compile_commands.json
+build/

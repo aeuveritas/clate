@@ -84,6 +84,34 @@ def create_new_version(clate_data=None):
     return version_dir
 
 
+def create_new_project(project_name, temp_dir, project_list):
+    global VERSION
+
+    project_dirs = dict()
+    if project_name == "clate":
+        project_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__)) + '/'
+    else:
+        project_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__)) + '/' + project_name + '/'
+
+    project_temp_dir = temp_dir + project_name + '/'
+    project_dirs['Temp'] = project_temp_dir
+    mkdir(project_temp_dir)
+
+    build = dict()
+    build['build_cmd'] = '' if project_name == 'clate' else "rm -rf /Workspace/build/ && mkdir /Workspace/build/ && cd /Workspace/build && cmake .. && make"
+    build['run_cmd'] = '' if project_name == 'clate' else "cd ./build && ./cpilot"
+    build['cmake_cmd'] = '' if project_name == 'clate' else "rm -rf /Workspace/build/ && mkdir /Workspace/build/ && cd /Workspace/build && cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=YES && cp compile_commands.json .. && cd .. && rm -rf ./CLATE"
+    build['cmake_option'] = '' if project_name == 'clate' else "-DCMAKE_VERBOSE_MAKEFILE=YES"
+
+    clate_project = dict()
+    clate_project['name'] = project_name
+    clate_project['version'] = VERSION
+    clate_project['directory'] = project_dirs
+
+    clate_project['build'] = build
+
+    project_list.append(clate_project)
+
 def create_new_clate():
     global COMMON_PATH
     global SUPPORT_LANGUAGE
@@ -128,28 +156,9 @@ def create_new_clate():
     clate_data['common'] = common_dict
 
     # Default project
-    clate_dirs = dict()
-    clate_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__)) + '/'
-
-    clate_temp_dir = temp_dir + 'clate/'
-    clate_dirs['Temp'] = clate_temp_dir
-    mkdir(clate_temp_dir)
-
-    build = dict()
-    build['build_cmd'] = ''
-    build['run_cmd'] = ''
-    build['cmake_cmd'] = ''
-    build['cmake_option'] = ''
-
-    clate_project = dict()
-    clate_project['name'] = 'clate'
-    clate_project['version'] = VERSION
-    clate_project['directory'] = clate_dirs
-
-    clate_project['build'] = build
-
     project_list = list()
-    project_list.append(clate_project)
+    create_new_project("clate", temp_dir, project_list)
+    create_new_project("cpilot", temp_dir, project_list)
 
     clate_data['project'] = project_list
 
