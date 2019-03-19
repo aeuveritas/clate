@@ -51,6 +51,7 @@ Created: {'name': '[PROJECT_NAME]', 'version': 'VERSION', directory': {'Temp': u
 ```
 $ clate -l
  0: clate
+ 1: cpilot
 ```
 * Run project directly.
 ```
@@ -103,50 +104,62 @@ $ clate -a [PROJECT_NAME]
 * F12: Quick menu
 
 ## Command
-* FZF       : List all files in fzf window
+* FZF     : List all files in fzf window
+
 ```:FZF```
+
 * Ag      : Grep [PATTERN] in current project
-```:Ag [PATTERN]
-:Ag -Q [PATTERN] [DIRECTORY]```
-* GGrep     : Git grep [PATTERN] in current project
+
+```:Ag [PATTERN]```
+
+```:Ag -Q [PATTERN] [DIRECTORY]```
+
+* GGrep   : Git grep [PATTERN] in current project
+
 ```:GGrep [PATTERN]```
-* Gblame    : Git blame
-```Gblame```
+
+* Gblame  : Git blame
+
+```:Gblame```
+
 
 ## Short-cut
-* Next buffer              : &lt;C-c> l
-* Prev buffer              : &lt;C-c> k
-* Close buffer             : &lt;C-c> j
+* &lt;C-c> l     : Next buffer
+* &lt;C-c> k     : Prev buffer
+* &lt;C-c> j     : Close buffer
 
-* Next quickfix            : &lt;C-c> p
-* Prev quickfix            : &lt;C-c> o
-* Close quickfix           : &lt;C-c> i
+* &lt;C-c> p     : Next quickfix
+* &lt;C-c> o     : Prev quickfix
+* &lt;C-c> i     : Close quickfix
 
-* Find functions calling
-      this function        : &lt;C-\\> c
-* Find functions called
-      by this function     : &lt;C-\\> d
-* Find this egrep pattern  : &lt;C-\\> e
-* Find this file           : &lt;C-\\> f
-* Find this definition     : &lt;C-\\> g
-* Find files including
-      this file            : &lt;C-\\> i
-* Find this C symbol       : &lt;C-\\> s
-* Find this text string    : &lt;C-\\> t
+## Cscope
+* &lt;C-\\> c    : Find functions calling this function
+* &lt;C-\\> d    : Find functions called by this function
+* &lt;C-\\> e    : Find this egrep pattern
+* &lt;C-\\> f    : Find this file
+* &lt;C-\\> g    : Find this definition
+* &lt;C-\\> i    : Find files including this file
+* &lt;C-\\> s    : Find this C symbol
+* &lt;C-\\> t    : Find this text string
 
-* &lt;leader>                 : ,
-* GtagsCursor              : &lt;leader> g
-* Mark word highlight      : &lt;leader> h
-* Clear word highlight     : &lt;leader> hh
+## Leader: ,
 
-* List for yank            : &lt;leader> y
+## Multiple highlight
+* &lt;leader> h  : Mark word highlight
+* &lt;leader> hh : Clear word highlight
 
-* Jump to definition       : &lt;leader> d
-* Check type               : &lt;leader> t
-* Jump to implementation   : &lt;leader> i
-* List to reference        : &lt;leader> r
-* Rename                   : &lt;leader> n
+## Language Server Protocol
+* &lt;leader> d  : Jump to definition
+* &lt;leader> t  : Check type
+* &lt;leader> i  : Jump to implementation
+* &lt;leader> r  : List to reference
+* &lt;leader> n  : Rename
 
-* Strip white space        : &lt;leader> w
+## Miscellaneous
+* &lt;leader> g  : Find definition for word on cursor
 
-* Toggle comment           : &lt;leader> c &lt;space>
+* &lt;leader> y  : List for yank
+
+* &lt;leader> w  : Strip white space
+
+* &lt;leader> c &lt;space> : Toggle comment
