@@ -67,7 +67,7 @@ class Docker:
         id = None
         try:
             id = self._docker.images.get(target_image).id
-        except Exception as e::
+        except Exception as e:
             pass
 
         return id
