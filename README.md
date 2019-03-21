@@ -4,6 +4,10 @@ VIM for C/C++ & Python on Docker
 ![clate](img/clate.png "clate")
 
 # Installation
+0. Install Python Docker SDK
+```
+$ pip install docker
+```
 1. You can find your information with **id** linux command.
 ```
 $ id [YOUR_ID]

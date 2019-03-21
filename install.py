@@ -112,6 +112,7 @@ def create_new_project(project_name, temp_dir, project_list):
 
     project_list.append(clate_project)
 
+
 def create_new_clate():
     global COMMON_PATH
     global SUPPORT_LANGUAGE
@@ -358,9 +359,20 @@ ENV HOST={0} \
 
 def install():
     # Build docker image
+    global VERSION
+    from clate_core.clate_core import Docker
+    docker = Docker("clate")
+    if docker.is_using_image(VERSION):
+        print("cannot build new image. please stop containers from clate:{0}".format(VERSION))
+        return
+
+    id = docker.get_current_image_id(VERSION)
+
     os.chdir(DOCKERDIR)
     os.system("docker build . -t {0}:{1}".format(NAME, VERSION))
     os.chdir("..")
+
+    docker.remove_dangling_image(VERSION, id)
 
 
 def cleanup():

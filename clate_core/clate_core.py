@@ -16,7 +16,7 @@ AVAILABLE_VERSION = [
 
 
 class Docker:
-    def __init__(self, client):
+    def __init__(self, client="clate"):
         self._client = client
         self._docker = docker.from_env()
 
@@ -43,6 +43,43 @@ class Docker:
 
     def stop(self, name):
         return self._traverse(name, lambda obj: obj.stop())
+
+    def get_using_images(self):
+        images = set()
+        for container in self._docker.containers.list():
+            images.add(str(container.image))
+
+        return images
+
+    def is_using_image(self, version):
+        target_image = "clate:{0}".format(version)
+        using_images = list(self.get_using_images())
+
+        for image in using_images:
+            if target_image in image:
+                return True
+
+        return False
+
+    def get_current_image_id(self, version):
+        target_image = "clate:{0}".format(version)
+
+        id = None
+        try:
+            id = self._docker.images.get(target_image).id
+        except Exception as e::
+            pass
+
+        return id
+
+    def remove_dangling_image(self, version, id):
+        current_image_id = self.get_current_image_id(version)
+
+        if current_image_id != id:
+            try:
+                image = self._docker.images.remove(image=id, force=True)
+            except Exception as e:
+                pass
 
 
 class DirManager:
