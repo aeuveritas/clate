@@ -24,6 +24,7 @@ map <F6>                   :NERDTreeToggle<CR>
 map <F7>                   :TagbarToggle<CR>
 map <F8>                   :BuffergatorToggle<CR>
 
+map <silent><F11>          :CocList<CR>
 map <silent><F12>          :call quickmenu#toggle(0)<CR>
 
 " Quickhl
@@ -39,6 +40,9 @@ nnoremap <C-c>o            :cp<CR>
 nnoremap <C-c>l            :bn<CR>
 nnoremap <C-c>k            :bp<CR>
 nnoremap <C-c>j            :bd<CR>
+
+" Open file with fzf
+nnoremap <leader>ff        :FZF<CR>
 
 " Git blame
 vnoremap b                 :call AsyncBlame()<CR>

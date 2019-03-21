@@ -308,7 +308,7 @@ ENV HOST={0} \
     npm.close()
 
     # coc package
-    COC_PACKAGE = """RUN su - $UNAME -c 'nvim +"CocInstall coc-highlight coc-json coc-yaml coc-snippets coc-emmet"""
+    COC_PACKAGE = """RUN su - $UNAME -c 'nvim +"CocInstall coc-highlight coc-json coc-yaml coc-snippets coc-emmet coc-lists"""
     if config_info['LANGUAGE']['PYTHON']:
         COC_PACKAGE += " coc-pyls"
     if config_info['LANGUAGE']['JAVASCRIPT']:

@@ -100,12 +100,14 @@ $ clate -a [PROJECT_NAME]
 # Usage
 
 ## Function key
-* F1: This README.md
-* F5: Refresh
-* F6: NERDTree
-* F7: TagBar
-* F8: Buffergator
-* F12: Quick menu
+*  F1: This README.md
+*  F5: Refresh
+*  F6: NERDTree
+*  F7: TagBar
+*  F8: Buffergator
+
+* F11: CN menu
+* F12: Menu
 
 ## Command
 * FZF     : List all files in fzf window
@@ -148,6 +150,9 @@ $ clate -a [PROJECT_NAME]
 
 ## Leader: ,
 
+## Search file
+* &lt;leader> ff : Fuzzy file search
+
 ## Multiple highlight
 * &lt;leader> h  : Mark word highlight
 * &lt;leader> hh : Clear word highlight
@@ -158,6 +163,11 @@ $ clate -a [PROJECT_NAME]
 * &lt;leader> i  : Jump to implementation
 * &lt;leader> r  : List to reference
 * &lt;leader> n  : Rename
+
+## GNU Global
+* &lt;leader> gd  : Jump to definition
+* &lt;leader> gr  : Find reference
+* &lt;leader> gs  : Search the word
 
 ## Miscellaneous
 * &lt;leader> g  : Find definition for word on cursor
