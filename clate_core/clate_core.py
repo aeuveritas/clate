@@ -12,6 +12,7 @@ CLATE_JSON = os.getenv("HOME") + '/.clate.json'
 AVAILABLE_VERSION = [
     '0.1',
     '0.2',
+    '0.3'
 ]
 
 
@@ -116,17 +117,15 @@ class Interactor:
     def __init__(self, dirMgr):
         self._dirMgr = dirMgr
 
-    def menu(self, support_cpp):
+    def menu(self):
         print('     \x1b[1;32;40m' + "[C]" + '\x1b[0m' + "reate new project")
         print('     \x1b[1;32;40m' + "[L]" + '\x1b[0m' + "ist projects")
         print('     \x1b[1;32;40m' + "[A]" + '\x1b[0m' + "ctivate project")
         print(' dele\x1b[1;32;40m' + "[T]" + '\x1b[0m' + "e proect")
-        print('chang\x1b[1;32;40m' + "[E]" + '\x1b[0m' + " version")
+        print('     \x1b[1;32;40m' + "[E]" + '\x1b[0m' + "dit project configs")
         print('')
-        if support_cpp:
-            print('     \x1b[1;32;40m' + "[G]" + '\x1b[0m' + "enerate compile_commands.json")
-            print('')
-        print('    e\x1b[1;32;40m' + "[D]" + '\x1b[0m' + "it project configs")
+        print('     \x1b[1;32;40m' + "[G]" + '\x1b[0m' + "enerate compile_commands.json")
+        print('')
         print('   st\x1b[1;32;40m' + "[O]" + '\x1b[0m' + "p running project")
         print('   li\x1b[1;32;40m' + "[S]" + '\x1b[0m' + "t running project")
         print('')
@@ -170,7 +169,7 @@ class Interactor:
 
         return False
 
-    def fill_project(self, name_list, default_version, host_ip):
+    def fill_project(self, name_list, default_version, user_name):
         try:
             project_name = input("[ ASK ] project name: ")
 
@@ -211,17 +210,10 @@ class Interactor:
                 else:
                     break
 
-            build = dict()
-            build['build_cmd'] = ''
-            build['run_cmd'] = ''
-            build['cmake_cmd'] = ''
-            build['cmake_option'] = ''
-
             new_project = dict()
             new_project['name'] = project_name
             new_project['version'] = default_version
             new_project['directory'] = dirs
-            new_project['build'] = build
 
             return new_project
         except KeyboardInterrupt:
@@ -279,8 +271,7 @@ class Clate:
         is_finish = False
 
         while not is_finish:
-            support_cpp = self._common['language']['CPP']
-            cmd = self._interactor.menu(support_cpp).lower()
+            cmd = self._interactor.menu().lower()
 
             if cmd == 'c':
                 self._create()
@@ -291,15 +282,13 @@ class Clate:
             elif cmd == 't':
                 self._delete()
             elif cmd == 'e':
-                self._change_version()
+                self._edit_config()
+            elif cmd == 'g':
+                self._compile()
             elif cmd == 'o':
                 self._stop()
             elif cmd == 's':
                 self._show_running_project()
-            elif cmd == 'd':
-                self._edit_config()
-            elif cmd == 'g' and support_cpp:
-                self._compile()
             elif cmd == 'x':
                 return
             else:
@@ -326,6 +315,7 @@ class Clate:
             print("[ SUC ] generate: compile_commands.json")
         except:
             print("[ WAR ] cannot generate: compile_commands.json")
+            print("[ INF ] compile_commands.json is only available for cpp proejct with cmake")
 
     def _compile(self):
         project_num = self._select_project()
@@ -359,16 +349,11 @@ class Clate:
         for idx, project in enumerate(self._project):
             print("{0:2}: {1}".format(idx, project['name']))
 
-    def _createTempDir(self, new_project):
-        temp_dir = self._common['directory']['Path'] + 'Temp/' + new_project['name'] + '/'
-        new_project['directory']['Temp'] = temp_dir
-        self._dirMgr.mkDir(temp_dir)
 
     def _create(self):
-        new_project = self._interactor.fill_project(self._project_names, self._common['default_version'], self._common['host_ip'])
+        new_project = self._interactor.fill_project(self._project_names, self._common['default_version'], self._common['user'])
 
         if new_project:
-            self._createTempDir(new_project)
             self._project.append(new_project)
             self._build_project_names()
             self._setting.flush(self._common, self._project)
@@ -385,7 +370,6 @@ class Clate:
                 if not self._docker.is_running(project_name):
                     confirm = self._interactor.binary_select()
                     if confirm:
-                        self._dirMgr.rmDir(self._project[project_num]['directory']['Temp'])
                         del self._project[project_num]
                         self._build_project_names()
                         print("[ SUC ] deleted: {}".format(project_name))
@@ -403,17 +387,13 @@ class Clate:
         for target, host in project['directory'].items():
             dockercmd += "-v {0}:/{1} ".format(host, target)
 
-        for target, host in self._common['directory'].items():
-            dockercmd += "-v {0}:/{1} ".format(host, target)
+        dockercmd += "-v {0}:/home/{1}/.vscode-server ".format(self._common['extension'], self._common['user'])
 
         if is_debug:
             dockercmd += "--entrypoint /bin/bash "
 
         dockercmd += "--env CLATE_CLIENT={0} ".format(self._client)
         dockercmd += "--env PROJECT_NAME={0} ".format(project['name'])
-        dockercmd += "--env BUILD_CMD='{0}' ".format(project['build']['build_cmd'])
-        dockercmd += "--env RUN_CMD='{0}' ".format(project['build']['run_cmd'])
-        dockercmd += """--env CMAKE_CMD="{0}" """.format(project['build']['cmake_cmd'])
 
         dockercmd += "clate:{0}".format(project['version'])
 
@@ -431,21 +411,6 @@ class Clate:
         project_num = self._select_project()
         if project_num != -1:
             self._run_project(self._project[project_num], is_debug)
-
-    def _change_version(self):
-        project_num = self._select_project()
-        if project_num != -1:
-            project = self._project[project_num]
-            if self._docker.is_running(project['name']):
-                print("[ WAR ] cannot change version, because it is still running: {}".format(project['name']))
-                return
-
-            version_num = self._select_version()
-            if version_num != -1:
-                project['version'] = AVAILABLE_VERSION[version_num]
-                self._setting.flush(self._common, self._project)
-
-                print("[ SUC ] version is updated - project: {0}, version: {1}".format(project['name'], project['version']))
 
     def run(self, project_name='clate', is_debug=False):
         idx = None

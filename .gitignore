@@ -8,3 +8,5 @@ GTAGS
 GRTAGS
 compile_commands.json
 build/
+.ccls-cache/
+*.code-workspace

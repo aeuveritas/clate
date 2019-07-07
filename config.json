@@ -3,14 +3,8 @@
     "UID"            : "USER_ID_NUMBER",
     "GROUP"          : "GROUP_ID",
     "GID"            : "GROUP_ID_NUMBER",
-    "COMMON_PATH"    : "DIRECTORY_FOR_CLATE",
-    "LANGUAGE"       : {
-        "PYTHON"     : true,
-        "CPP"        : true,
-        "JAVASCRIPT" : false
-    },
+    "INSTALL_PATH"   : "DIRECTORY_FOR_CLATE",
     "VERSION"        : {
-        "GLOBAL"     : "6.6.3",
         "LLVM"       : "9.0.0"
     },
     "HOST_IP"        : ""
