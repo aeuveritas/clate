@@ -46,7 +46,7 @@ def mkdir(t_dir):
         print(e)
 
 
-def create_new_project(project_name, project_list):
+def create_new_project(project_name, port):
     global VERSION
     global VSCODE_PATH
 
@@ -60,8 +60,9 @@ def create_new_project(project_name, project_list):
     clate_project['name'] = project_name
     clate_project['version'] = VERSION
     clate_project['directory'] = project_dirs
+    clate_project['port'] = port
 
-    project_list.append(clate_project)
+    return clate_project
 
 
 def create_new_clate():
@@ -84,6 +85,7 @@ def create_new_clate():
     common_dict['extension'] = VSCODE_PATH
 
     common_dict['host_ip'] = HOST_IP
+    common_dict['last_port'] = 5000
 
     # Clate
     clate_data = dict()
@@ -91,8 +93,8 @@ def create_new_clate():
 
     # Default project
     project_list = list()
-    create_new_project("clate", project_list)
-    create_new_project("cpilot", project_list)
+    project_list.append(create_new_project("clate", 5000))
+    project_list.append(create_new_project("cpilot", 5100))
 
     clate_data['project'] = project_list
 

@@ -9,11 +9,6 @@ import docker
 
 CLATE_JSON = os.getenv("HOME") + '/.clate.json'
 
-AVAILABLE_VERSION = [
-    '0.1',
-    '0.2',
-    '0.3'
-]
 
 
 class Docker:
@@ -169,7 +164,7 @@ class Interactor:
 
         return False
 
-    def fill_project(self, name_list, default_version, user_name):
+    def fill_project(self, name_list, default_version, port):
         try:
             project_name = input("[ ASK ] project name: ")
 
@@ -214,6 +209,7 @@ class Interactor:
             new_project['name'] = project_name
             new_project['version'] = default_version
             new_project['directory'] = dirs
+            new_project['port'] = port
 
             return new_project
         except KeyboardInterrupt:
@@ -351,7 +347,8 @@ class Clate:
 
 
     def _create(self):
-        new_project = self._interactor.fill_project(self._project_names, self._common['default_version'], self._common['user'])
+        self._common['last_port'] += 1
+        new_project = self._interactor.fill_project(self._project_names, self._common['default_version'], self._common['last_port'])
 
         if new_project:
             self._project.append(new_project)
@@ -387,13 +384,22 @@ class Clate:
         for target, host in project['directory'].items():
             dockercmd += "-v {0}:/{1} ".format(host, target)
 
-        dockercmd += "-v {0}:/home/{1}/.vscode-server ".format(self._common['extension'], self._common['user'])
+        dockercmd += "--env CLATE_CLIENT={0} ".format(self._client)
+        dockercmd += "--env PROJECT_NAME={0} ".format(project['name'])
+
+        version = project['version']
+        if version in ('0.3', ):
+            dockercmd += "-v {0}:/home/{1}/.vscode-server ".format(self._common['extension'], self._common['user'])
+            dockercmd += "-p {0}:22 ".format(project['port'])
+        elif version in ('0.2', ):
+            dockercmd += "--env BUILD_CMD='{0}' ".format(project['build']['build_cmd'])
+            dockercmd += "--env RUN_CMD='{0}' ".format(project['build']['run_cmd'])
+            dockercmd += """--env CMAKE_CMD="{0}" """.format(project['build']['cmake_cmd'])
+        else:
+            print("[ WAR ] undefined version: {0}".format(version))
 
         if is_debug:
             dockercmd += "--entrypoint /bin/bash "
-
-        dockercmd += "--env CLATE_CLIENT={0} ".format(self._client)
-        dockercmd += "--env PROJECT_NAME={0} ".format(project['name'])
 
         dockercmd += "clate:{0}".format(project['version'])
 
@@ -402,10 +408,6 @@ class Clate:
 
     def _select_project(self):
         return self._interactor.list_select(self._project_names)
-
-    def _select_version(self):
-        global AVAILABLE_VERSION
-        return self._interactor.list_select(AVAILABLE_VERSION)
 
     def _run(self, is_debug=False):
         project_num = self._select_project()
