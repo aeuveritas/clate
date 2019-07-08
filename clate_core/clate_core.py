@@ -347,14 +347,16 @@ class Clate:
 
 
     def _create(self):
-        self._common['last_port'] += 1
-        new_project = self._interactor.fill_project(self._project_names, self._common['default_version'], self._common['last_port'])
+        port = self._common['last_port'] + 1
+        new_project = self._interactor.fill_project(self._project_names, self._common['default_version'], port)
+        self._common['last_port'] = port
 
         if new_project:
             self._project.append(new_project)
             self._build_project_names()
             self._setting.flush(self._common, self._project)
             print("[ SUC ] created: {}".format(new_project))
+            print("[ INF ] port: {0}".format(self._common['last_port']))
 
     def _delete(self):
         project_num = self._interactor.list_select(self._project_names)
