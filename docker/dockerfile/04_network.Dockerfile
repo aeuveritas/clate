@@ -14,3 +14,4 @@ RUN cat $HOME/id_rsa.pub >> $HOME/.ssh/authorized_keys \
     && chmod 600 $HOME/.ssh/authorized_keys
 
 ENV PASSWORD=""
+

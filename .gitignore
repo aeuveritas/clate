@@ -11,4 +11,7 @@ build/
 .ccls-cache/
 *.code-workspace
 *.pub
+docker-compose.yml
+.env
+Debug/
 

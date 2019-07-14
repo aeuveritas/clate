@@ -164,7 +164,7 @@ class Interactor:
 
         return False
 
-    def fill_project(self, name_list, default_version, port):
+    def fill_project(self, name_list, port_list):
         try:
             project_name = input("[ ASK ] project name: ")
 
@@ -181,14 +181,12 @@ class Interactor:
             readline.parse_and_bind("tab: complete")
             readline.set_completer(complete)
 
+            dirs = dict()
             project_path = input("[ ASK ] project directory: ")
             if not self._dirMgr.exist(project_path):
                 print("[ WAR ] not existed: {}".format(project_path))
                 return
-            project_path = self._dirMgr.endSlash(project_path)
-
-            dirs = dict()
-            dirs['Workspace'] = project_path
+            dirs['Workspace'] = self._dirMgr.endSlash(project_path)
 
             while True:
                 need_more = input("[ ASK ] additonal directory(y/N): ")
@@ -205,13 +203,25 @@ class Interactor:
                 else:
                     break
 
-            new_project = dict()
-            new_project['name'] = project_name
-            new_project['version'] = default_version
-            new_project['directory'] = dirs
-            new_project['port'] = port
+            ports = dict()
+            while True:
+                project_port = int(input("[ ASK ] project ssh port: "))
+                if str(project_port) in port_list:
+                    print("[ WAR ] already used port: {}".format(project_port))
+                    continue
+                ports['ssh'] = str(project_port)
+                break
 
-            return new_project
+            while True:
+                need_more = input("[ ASK ] additonal port(y/N): ")
+                if need_more in ('y', 'Y'):
+                    host_port = int(input("[ ASK ] host port: "))
+                    docker_port = int(input("[ ASK ] docker port: "))
+                    ports[str(host_port)] = str(docker_port)
+                else:
+                    break
+
+            return project_name, dirs, ports
         except KeyboardInterrupt:
             pass
 
@@ -245,6 +255,7 @@ class Clate:
         self._common = None
         self._project = None
         self._project_names = None
+        self._ssh_ports = None
 
         self._client = client
         self._dirMgr = dirMgr
@@ -254,6 +265,7 @@ class Clate:
 
         self._common, self._project = self._setting.update()
         self._build_project_names()
+        self._build_ssh_ports()
 
         print("[ INF ] {0} - {1}".format(client, self._common['default_version']))
 
@@ -262,6 +274,12 @@ class Clate:
         self._project_names = list()
         for project in self._project:
             self._project_names.append(project['name'])
+
+    def _build_ssh_ports(self):
+        del self._ssh_ports
+        self._ssh_ports = list()
+        for project in self._project:
+            self._ssh_ports.append(project['port']['ssh'])
 
     def console(self):
         is_finish = False
@@ -272,7 +290,7 @@ class Clate:
             if cmd == 'c':
                 self._create()
             elif cmd == 'l':
-                self.show()
+                self.show_project()
             elif cmd == 'a':
                 self._run()
             elif cmd == 't':
@@ -299,7 +317,7 @@ class Clate:
             if self._dirMgr.exist(cc_file):
                 self._dirMgr.rmFile(cc_file)
 
-            cmake_option = project['build']['cmake_option']
+            cmake_option = project['cmake']
             cmd = "cmake -H{0} -B{0}/CLATE -DCMAKE_EXPORT_COMPILE_COMMANDS=YES {1}".format(project_dir, cmake_option)
             os.system(cmd)
 
@@ -341,22 +359,31 @@ class Clate:
             else:
                 print("[ WAR ] cannot find running clate: {}".format(project_name))
 
-    def show(self):
+    def show_projects(self):
         for idx, project in enumerate(self._project):
             print("{0:2}: {1}".format(idx, project['name']))
 
 
-    def _create(self):
-        port = self._common['last_port'] + 1
-        new_project = self._interactor.fill_project(self._project_names, self._common['default_version'], port)
-        self._common['last_port'] = port
+    def _build_project(self, name, dirs, ports):
+        project = dict()
 
-        if new_project:
-            self._project.append(new_project)
-            self._build_project_names()
-            self._setting.flush(self._common, self._project)
-            print("[ SUC ] created: {}".format(new_project))
-            print("[ INF ] port: {0}".format(self._common['last_port']))
+        project['name'] = name
+        project['version'] = self._common['default_version']
+        project['directory'] = dirs
+        project['port'] = ports
+        project['cmake'] = ''
+
+        return project
+
+    def _create(self):
+        project_name, project_dirs, project_ports = self._interactor.fill_project(self._project_names, self._ssh_ports)
+        new_project = self._build_project(project_name, project_dirs, project_ports)
+
+        self._project.append(new_project)
+        self._build_project_names()
+        self._build_ssh_ports()
+        self._setting.flush(self._common, self._project)
+        print("[ SUC ] created: {}".format(new_project))
 
     def _delete(self):
         project_num = self._interactor.list_select(self._project_names)
@@ -371,6 +398,7 @@ class Clate:
                     if confirm:
                         del self._project[project_num]
                         self._build_project_names()
+                        self._build_ssh_ports()
                         print("[ SUC ] deleted: {}".format(project_name))
                         self._setting.flush(self._common, self._project)
                     else:
@@ -390,15 +418,13 @@ class Clate:
         dockercmd += "--env PROJECT_NAME={0} ".format(project['name'])
 
         version = project['version']
-        if version in ('0.3', ):
-            dockercmd += "-v {0}:/home/{1}/.vscode-server ".format(self._common['extension'], self._common['user'])
-            dockercmd += "-p {0}:22 ".format(project['port'])
-        elif version in ('0.2', ):
-            dockercmd += "--env BUILD_CMD='{0}' ".format(project['build']['build_cmd'])
-            dockercmd += "--env RUN_CMD='{0}' ".format(project['build']['run_cmd'])
-            dockercmd += """--env CMAKE_CMD="{0}" """.format(project['build']['cmake_cmd'])
-        else:
-            print("[ WAR ] undefined version: {0}".format(version))
+
+        dockercmd += "-v {0}:/home/{1}/.vscode-server ".format(self._common['extension'], self._common['user'])
+        dockercmd += "-p {0}:22 ".format(project['port']['ssh'])
+
+        for host, docker in project['port'].items():
+            if host != 'ssh':
+                dockercmd += "-p {0}:{1} ".format(host, docker)
 
         if is_debug:
             dockercmd += "--entrypoint /bin/bash "
@@ -474,6 +500,6 @@ def clate_main(clate, params):
     elif params.debug:
         clate.run(is_debug=True)
     elif params.list:
-        clate.show()
+        clate.show_project()
     else:
         clate.console()

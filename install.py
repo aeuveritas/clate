@@ -5,6 +5,7 @@ import json
 import socket
 import getpass
 
+
 # Variables
 NAME             = "clate"
 VERSION          = "0.3"
@@ -16,6 +17,7 @@ DOCKERINIT       = "{}/01_init.Dockerfile".format(DOCKERFILEDIR)
 DOCKERUSER       = "{}/02_user.Dockerfile".format(DOCKERFILEDIR)
 DOCKERSETUP      = "{}/03_setup.Dockerfile".format(DOCKERFILEDIR)
 DOCKERNETWORK    = "{}/04_network.Dockerfile".format(DOCKERFILEDIR)
+DOCKERNODE    = "{}/05_node.Dockerfile".format(DOCKERFILEDIR)
 
 DOCKERUSERDATA   = "{}/userdata".format(DOCKERFILEDIR)
 DOCKERVERSION    = "{}/version".format(DOCKERFILEDIR)
@@ -56,11 +58,15 @@ def create_new_project(project_name, port):
     else:
         project_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__)) + '/' + project_name + '/'
 
+    project_ports = dict()
+    project_ports['ssh'] = str(port)
+
     clate_project = dict()
     clate_project['name'] = project_name
     clate_project['version'] = VERSION
     clate_project['directory'] = project_dirs
-    clate_project['port'] = port
+    clate_project['port'] = project_ports
+    clate_project['cmake'] = ''
 
     return clate_project
 
@@ -85,7 +91,6 @@ def create_new_clate():
     common_dict['extension'] = VSCODE_PATH
 
     common_dict['host_ip'] = HOST_IP
-    common_dict['last_port'] = 5000
 
     # Clate
     clate_data = dict()
@@ -197,6 +202,7 @@ ENV HOST={0} \
 
     os.system("cat {0} >> {1}".format(DOCKERNETWORKENV,  DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERNETWORK,     DOCKERFILE))
+    os.system("cat {0} >> {1}".format(DOCKERNODE,     DOCKERFILE))
 
     return True
 
