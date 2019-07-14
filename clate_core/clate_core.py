@@ -373,6 +373,14 @@ class Clate:
         project['port'] = ports
         project['cmake'] = ''
 
+        ssh_config = """
+Host {0}
+    User {1}
+    Hostname {2}
+    Port {3}
+""".format(name, self._common['user'], self._common['host_ip'], ports['ssh'])
+        os.system("echo '{0}' >> ~/.ssh/config".format(ssh_config))
+
         return project
 
     def _create(self):

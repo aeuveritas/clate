@@ -68,6 +68,14 @@ def create_new_project(project_name, port):
     clate_project['port'] = project_ports
     clate_project['cmake'] = ''
 
+    ssh_config = """
+Host {0}
+    User {1}
+    Hostname {2}
+    Port {3}
+""".format(project_name, USER, HOST_IP, str(port))
+    os.system("echo '{0}' >> ~/.ssh/config".format(ssh_config))
+
     return clate_project
 
 
