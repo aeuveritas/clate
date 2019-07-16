@@ -17,7 +17,7 @@ DOCKERINIT       = "{}/01_init.Dockerfile".format(DOCKERFILEDIR)
 DOCKERUSER       = "{}/02_user.Dockerfile".format(DOCKERFILEDIR)
 DOCKERSETUP      = "{}/03_setup.Dockerfile".format(DOCKERFILEDIR)
 DOCKERNETWORK    = "{}/04_network.Dockerfile".format(DOCKERFILEDIR)
-DOCKERNODE    = "{}/05_node.Dockerfile".format(DOCKERFILEDIR)
+DOCKERNODE       = "{}/05_node.Dockerfile".format(DOCKERFILEDIR)
 
 DOCKERUSERDATA   = "{}/userdata".format(DOCKERFILEDIR)
 DOCKERVERSION    = "{}/version".format(DOCKERFILEDIR)
@@ -58,6 +58,10 @@ def create_new_project(project_name, port):
     else:
         project_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__)) + '/' + project_name + '/'
 
+    extension_dir = VSCODE_PATH + project_name + '/'
+    project_dirs['extension'] = extension_dir
+    mkdir(extension_dir)
+
     project_ports = dict()
     project_ports['ssh'] = str(port)
 
@@ -83,8 +87,8 @@ def create_new_clate():
     global VERSION
     global USER
     global INSTALL_PATH
-    global VSCODE_PATH
     global HOST_IP
+    global VSCODE_PATH
 
     print("create common and default project")
 
@@ -94,9 +98,9 @@ def create_new_clate():
     common_dict['default_version'] = VERSION
 
     mkdir(INSTALL_PATH)
+    common_dict['install_path'] = INSTALL_PATH
     VSCODE_PATH = INSTALL_PATH + 'vscode-server/'
     mkdir(VSCODE_PATH)
-    common_dict['extension'] = VSCODE_PATH
 
     common_dict['host_ip'] = HOST_IP
 

@@ -10,7 +10,6 @@ import docker
 CLATE_JSON = os.getenv("HOME") + '/.clate.json'
 
 
-
 class Docker:
     def __init__(self, client="clate"):
         self._client = client
@@ -369,6 +368,7 @@ class Clate:
 
         project['name'] = name
         project['version'] = self._common['default_version']
+        dirs['extension'] = self._common['install_path'] + 'vscode-server/' + name + '/'
         project['directory'] = dirs
         project['port'] = ports
         project['cmake'] = ''
@@ -380,6 +380,8 @@ Host {0}
     Port {3}
 """.format(name, self._common['user'], self._common['host_ip'], ports['ssh'])
         os.system("echo '{0}' >> ~/.ssh/config".format(ssh_config))
+
+        self._dirMgr.mkdir(dirs['extension'])
 
         return project
 
@@ -420,14 +422,14 @@ Host {0}
         dockercmd += "--name {0}_{1} ".format(self._client, project['name'])
 
         for target, host in project['directory'].items():
-            dockercmd += "-v {0}:/{1} ".format(host, target)
+            if target == 'extension':
+                dockercmd += "-v {0}:/home/{1}/.vscode-server ".format(host, self._common['user'])
+            else:
+                dockercmd += "-v {0}:/{1} ".format(host, target)
 
         dockercmd += "--env CLATE_CLIENT={0} ".format(self._client)
         dockercmd += "--env PROJECT_NAME={0} ".format(project['name'])
 
-        version = project['version']
-
-        dockercmd += "-v {0}:/home/{1}/.vscode-server ".format(self._common['extension'], self._common['user'])
         dockercmd += "-p {0}:22 ".format(project['port']['ssh'])
 
         for host, docker in project['port'].items():
