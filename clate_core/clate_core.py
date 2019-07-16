@@ -381,7 +381,7 @@ Host {0}
 """.format(name, self._common['user'], self._common['host_ip'], ports['ssh'])
         os.system("echo '{0}' >> ~/.ssh/config".format(ssh_config))
 
-        self._dirMgr.mkdir(dirs['extension'])
+        self._dirMgr.mkDir(dirs['extension'])
 
         return project
 
