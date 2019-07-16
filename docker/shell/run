@@ -1,3 +1,10 @@
 #!/bin/bash
 service ssh start
-su -m - $UNAME -c "top"
+
+while true
+do
+    /bin/bash
+    top
+done
+
+#su -m - $UNAME -c "top"
