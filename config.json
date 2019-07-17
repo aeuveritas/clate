@@ -4,5 +4,8 @@
     "GROUP"          : "GROUP_ID",
     "GID"            : "GROUP_ID_NUMBER",
     "INSTALL_PATH"   : "DIRECTORY_FOR_CLATE",
-    "HOST_IP"        : ""
+    "HOST_IP"        : "",
+    "FRAMEWORKS"      : {
+	"VUE"        : true
+    }
 }

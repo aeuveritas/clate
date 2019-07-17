@@ -8,19 +8,22 @@ import getpass
 
 # Variables
 NAME             = "clate"
-VERSION          = "dev"
+VERSION          = "user"
 
+WORKDIR          = os.getcwd()
 DOCKERDIR        = "./docker"
 DOCKERFILE       = "{}/Dockerfile".format(DOCKERDIR)
 DOCKERFILEDIR    = "{}/dockerfile".format(DOCKERDIR)
+DOCKERFRAMEWORK  = "{}/framework/".format(DOCKERDIR)
+
 DOCKERINIT       = "{}/01_init.Dockerfile".format(DOCKERFILEDIR)
 DOCKERUSER       = "{}/02_user.Dockerfile".format(DOCKERFILEDIR)
 DOCKERSETUP      = "{}/03_setup.Dockerfile".format(DOCKERFILEDIR)
 DOCKERNETWORK    = "{}/04_network.Dockerfile".format(DOCKERFILEDIR)
-DOCKERNODE       = "{}/05_node.Dockerfile".format(DOCKERFILEDIR)
 
 DOCKERUSERDATA   = "{}/userdata".format(DOCKERFILEDIR)
 DOCKERNETWORKENV = "{}/network".format(DOCKERFILEDIR)
+
 CONFIG_JSON      = "./config.json"
 
 CLATE_JSON       = os.getenv("HOME") + '/.clate.json'
@@ -30,7 +33,6 @@ USER             = ""
 INSTALL_PATH     = ""
 VSCODE_PATH      = ""
 HOST_IP          = None
-
 
 def write_clate_json(clate_data):
     global CLATE_JSON
@@ -198,7 +200,6 @@ ENV HOST={0} \
 
     os.system("cat {0} >> {1}".format(DOCKERNETWORKENV,  DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERNETWORK,     DOCKERFILE))
-    os.system("cat {0} >> {1}".format(DOCKERNODE,     DOCKERFILE))
 
     return True
 
@@ -206,6 +207,9 @@ ENV HOST={0} \
 def install():
     # Build docker image
     global VERSION
+    global DOCKERDIR
+    global NAME
+
     from clate_core.clate_core import Docker
     docker = Docker("clate")
     if docker.is_using_image(VERSION):
@@ -216,10 +220,22 @@ def install():
 
     os.chdir(DOCKERDIR)
     os.system("docker build . -t {0}:{1}".format(NAME, VERSION))
-    os.chdir("..")
+    os.chdir(WORKDIR)
 
     docker.remove_dangling_image(VERSION, id)
 
+
+def install_framework():
+    config_json = open(CONFIG_JSON).read()
+    config_info = json.loads(config_json)
+
+    for k, v in config_info['FRAMEWORKS'].items():
+        if v:
+            framework_path = DOCKERFRAMEWORK + k + '/'
+            os.chdir(framework_path)
+            os.system("docker build . -t {0}:{1}".format(NAME, k.lower()))
+
+            os.chdir(WORKDIR)
 
 def cleanup():
     os.system("rm {0}".format(DOCKERUSERDATA))
@@ -231,4 +247,5 @@ if __name__ == "__main__":
     if config():
         clate_manager()
         install()
+        install_framework()
         cleanup()

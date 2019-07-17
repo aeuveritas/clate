@@ -1,4 +1,4 @@
 # Clate
-FROM aeuveritas/clate_base:0.1
+FROM aeuveritas/clate:base
 MAINTAINER Karl.Jeong <aeuveritas@gmail.com>
 
