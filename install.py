@@ -8,7 +8,9 @@ import getpass
 
 # Variables
 NAME             = "clate"
-VERSION          = "user"
+VERSION          = "dev"
+
+TAG              = "user"
 
 WORKDIR          = os.getcwd()
 DOCKERDIR        = "./docker"
@@ -50,7 +52,7 @@ def mkdir(t_dir):
 
 
 def create_new_project(project_name, port):
-    global VERSION
+    global TAG
     global VSCODE_PATH
 
     project_dirs = dict()
@@ -68,7 +70,7 @@ def create_new_project(project_name, port):
 
     clate_project = dict()
     clate_project['name'] = project_name
-    clate_project['version'] = VERSION
+    clate_project['tag'] = TAG
     clate_project['directory'] = project_dirs
     clate_project['port'] = project_ports
     clate_project['cmake'] = ''
@@ -85,8 +87,8 @@ Host {0}
 
 
 def create_new_clate():
-    global VERSION
     global USER
+    global VERSION
     global INSTALL_PATH
     global HOST_IP
     global VSCODE_PATH
@@ -96,7 +98,7 @@ def create_new_clate():
     # Common
     common_dict = dict()
     common_dict['user'] = USER
-    common_dict['default_version'] = VERSION
+    common_dict['version'] = VERSION
 
     mkdir(INSTALL_PATH)
     common_dict['install_path'] = INSTALL_PATH
@@ -206,23 +208,23 @@ ENV HOST={0} \
 
 def install():
     # Build docker image
-    global VERSION
+    global TAG
     global DOCKERDIR
     global NAME
 
     from clate_core.clate_core import Docker
     docker = Docker("clate")
-    if docker.is_using_image(VERSION):
-        print("cannot build new image. please stop containers from clate:{0}".format(VERSION))
+    if docker.is_using_image(TAG):
+        print("cannot build new image. please stop containers from clate:{0}".format(TAG))
         return
 
-    id = docker.get_current_image_id(VERSION)
+    id = docker.get_current_image_id(TAG)
 
     os.chdir(DOCKERDIR)
-    os.system("docker build . -t {0}:{1}".format(NAME, VERSION))
+    os.system("docker build . -t {0}:{1}".format(NAME, TAG))
     os.chdir(WORKDIR)
 
-    docker.remove_dangling_image(VERSION, id)
+    docker.remove_dangling_image(TAG, id)
 
 
 def install_framework():

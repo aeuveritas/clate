@@ -46,8 +46,8 @@ class Docker:
 
         return images
 
-    def is_using_image(self, version):
-        target_image = "clate:{0}".format(version)
+    def is_using_image(self, tag):
+        target_image = "clate:{0}".format(tag)
         using_images = list(self.get_using_images())
 
         for image in using_images:
@@ -56,8 +56,8 @@ class Docker:
 
         return False
 
-    def get_current_image_id(self, version):
-        target_image = "clate:{0}".format(version)
+    def get_current_image_id(self, tag):
+        target_image = "clate:{0}".format(tag)
 
         id = None
         try:
@@ -67,8 +67,8 @@ class Docker:
 
         return id
 
-    def remove_dangling_image(self, version, id):
-        current_image_id = self.get_current_image_id(version)
+    def remove_dangling_image(self, tag, id):
+        current_image_id = self.get_current_image_id(tag)
 
         if current_image_id != id:
             try:
@@ -76,6 +76,15 @@ class Docker:
             except Exception as e:
                 pass
 
+    def get_tag_list(self):
+        tags = list()
+
+        for image in self._docker.images.list():
+            name, tag = image.tags[0].split(':')
+            if name == "clate":
+                tags.append(tag)
+
+        return tags
 
 class DirManager:
     def exist(self, new_dir):
@@ -161,13 +170,19 @@ class Interactor:
 
         return False
 
-    def fill_project(self, name_list, port_list):
+    def fill_project(self, name_list, tag_list, port_list):
         try:
             project_name = input("[ ASK ] project name: ")
 
             if project_name in name_list:
                 print("[ WAR ] already existed: {}".format(project_name))
                 return None
+
+            print("[ INF ] frameworks")
+            for (idx, tag) in enumerate(tag_list):
+                print("    {0}: {1}".format(idx, tag))
+            val = int(input("[ ASK ] select framework: "))
+            project_tag = tag_list[val]
 
             import readline
             import glob
@@ -218,7 +233,7 @@ class Interactor:
                 else:
                     break
 
-            return project_name, dirs, ports
+            return project_name, project_tag, dirs, ports
         except KeyboardInterrupt:
             pass
 
@@ -264,7 +279,7 @@ class Clate:
         self._build_project_names()
         self._build_ssh_ports()
 
-        print("[ INF ] {0} - {1}".format(client, self._common['default_version']))
+        print("[ INF ] {0} - {1}".format(client, self._common['version']))
 
     def _build_project_names(self):
         del self._project_names
@@ -334,11 +349,11 @@ class Clate:
             print("{0:2}: {1}".format(idx, project['name']))
 
 
-    def _build_project(self, name, dirs, ports):
+    def _build_project(self, name, tag, dirs, ports):
         project = dict()
 
         project['name'] = name
-        project['version'] = self._common['default_version']
+        project['tag'] = tag
         dirs['extension'] = self._common['install_path'] + 'vscode-server/' + name + '/'
         project['directory'] = dirs
         project['port'] = ports
@@ -357,8 +372,9 @@ Host {0}
         return project
 
     def _create(self):
-        project_name, project_dirs, project_ports = self._interactor.fill_project(self._project_names, self._ssh_ports)
-        new_project = self._build_project(project_name, project_dirs, project_ports)
+        tags = self._docker.get_tag_list()
+        name, tag, dirs, ports = self._interactor.fill_project(self._project_names, tags, self._ssh_ports)
+        new_project = self._build_project(name, tag, dirs, ports)
 
         self._project.append(new_project)
         self._build_project_names()
@@ -410,7 +426,7 @@ Host {0}
         if is_debug:
             dockercmd += "--entrypoint /bin/bash "
 
-        dockercmd += "clate:{0}".format(project['version'])
+        dockercmd += "clate:{0}".format(project['tag'])
 
         print("[ SUC ] run: {}".format(dockercmd))
         os.system(dockercmd)
