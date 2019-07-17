@@ -327,7 +327,6 @@ class Clate:
 
             print("")
 
-
     def _get_running_project(self):
         return self._docker.get_names()
 

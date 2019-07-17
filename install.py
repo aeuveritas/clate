@@ -38,6 +38,7 @@ class UserInfo:
         self.install_path = None
         self.host_ip = None
 
+
 def write_clate_json(clate_data):
     global CLATE_JSON
 
@@ -164,10 +165,6 @@ ENV UID="{0}" \\\n\
     user.write(USER_ENV)
     user.close()
 
-    path = config_info['INSTALL_PATH']
-    if path[-1] != '/':
-        path += '/'
-
     # Network info
     host_ip = config_info['HOST_IP']
     if host_ip == "":
@@ -184,7 +181,10 @@ ENV HOST={0} \
 
     uInfo.name = config_info['ID']
     given_path = config_info['INSTALL_PATH']
-    uInfo.install_path = given_path + 'clate/' if given_path[-1] == '/' else given_path + '/clate/'
+
+    from clate_core.clate_core import DirManager
+    dirMgr = DirManager()
+    uInfo.install_path = dirMgr.endSlash(given_path) + 'clate/'
     uInfo.host_ip = host_ip
 
     os.system("cat {0} > {1}".format(DOCKERINIT,         DOCKERFILE))
