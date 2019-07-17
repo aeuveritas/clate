@@ -432,10 +432,10 @@ Host {0}
     def _select_project(self):
         return self._interactor.list_select(self._project_names)
 
-    def _run(self, is_debug=False):
+    def _run(self):
         project_num = self._select_project()
         if project_num != -1:
-            self._run_project(self._project[project_num], is_debug)
+            self._run_project(self._project[project_num])
 
     def run(self, project_name='clate', is_debug=False):
         idx = None
@@ -451,7 +451,7 @@ Host {0}
 def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--active', help='active project', default=None)
-    parser.add_argument('-d', '--debug', help='run project with debug mode', action='store_true')
+    parser.add_argument('-d', '--debug', help='run project with debug mode', default=None)
     parser.add_argument('-l', '--list', help='list all projects', action='store_true')
 
     return parser.parse_args()
@@ -478,7 +478,7 @@ def clate_main(clate, params):
     if params.active:
         clate.run(params.active)
     elif params.debug:
-        clate.run(is_debug=True)
+        clate.run(params.debug, is_debug=True)
     elif params.list:
         clate.show_projects()
     else:
