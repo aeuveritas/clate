@@ -74,7 +74,6 @@ def create_new_project(project_name, port, vscode_path, uInfo):
     clate_project['tag'] = TAG
     clate_project['directory'] = project_dirs
     clate_project['port'] = project_ports
-    clate_project['cmake'] = ''
 
     ssh_config = """
 Host {0}

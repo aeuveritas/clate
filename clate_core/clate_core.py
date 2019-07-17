@@ -348,7 +348,6 @@ class Clate:
         for idx, project in enumerate(self._project):
             print("{0:2}: {1}".format(idx, project['name']))
 
-
     def _build_project(self, name, tag, dirs, ports):
         project = dict()
 
@@ -357,7 +356,6 @@ class Clate:
         dirs['extension'] = self._common['install_path'] + 'vscode-server/' + name + '/'
         project['directory'] = dirs
         project['port'] = ports
-        project['cmake'] = ''
 
         ssh_config = """
 Host {0}
