@@ -118,8 +118,6 @@ class Interactor:
         print(' dele\x1b[1;32;40m' + "[T]" + '\x1b[0m' + "e proect")
         print('     \x1b[1;32;40m' + "[E]" + '\x1b[0m' + "dit project configs")
         print('')
-        print('     \x1b[1;32;40m' + "[G]" + '\x1b[0m' + "enerate compile_commands.json")
-        print('')
         print('   st\x1b[1;32;40m' + "[O]" + '\x1b[0m' + "p running project")
         print('   li\x1b[1;32;40m' + "[S]" + '\x1b[0m' + "t running project")
         print('')
@@ -289,15 +287,13 @@ class Clate:
             if cmd == 'c':
                 self._create()
             elif cmd == 'l':
-                self.show_project()
+                self.show_projects()
             elif cmd == 'a':
                 self._run()
             elif cmd == 't':
                 self._delete()
             elif cmd == 'e':
                 self._edit_config()
-            elif cmd == 'g':
-                self._compile()
             elif cmd == 'o':
                 self._stop()
             elif cmd == 's':
@@ -309,31 +305,6 @@ class Clate:
 
             print("")
 
-    def _compile_project(self, project):
-        try:
-            project_dir = project['directory']['Workspace']
-            cc_file = project_dir + 'compile_commands.json'
-            if self._dirMgr.exist(cc_file):
-                self._dirMgr.rmFile(cc_file)
-
-            cmake_option = project['cmake']
-            cmd = "cmake -H{0} -B{0}/CLATE -DCMAKE_EXPORT_COMPILE_COMMANDS=YES {1}".format(project_dir, cmake_option)
-            os.system(cmd)
-
-            cmd = "cp {0}/CLATE/compile_commands.json {0}".format(project_dir)
-            os.system(cmd)
-
-            cmd = "rm -rf  {0}/CLATE".format(project_dir)
-            os.system(cmd)
-            print("[ SUC ] generate: compile_commands.json")
-        except:
-            print("[ WAR ] cannot generate: compile_commands.json")
-            print("[ INF ] compile_commands.json is only available for cpp proejct with cmake")
-
-    def _compile(self):
-        project_num = self._select_project()
-        if project_num != -1:
-            self._compile_project(self._project[project_num])
 
     def _get_running_project(self):
         return self._docker.get_names()
@@ -462,21 +433,10 @@ Host {0}
 
         self._run_project(self._project[idx], is_debug)
 
-    def compile(self, project_name='clate'):
-        idx = None
-        try:
-            idx = self._project_names.index(project_name)
-        except ValueError:
-            print("[ WAR ] no project: {0}".format(project_name))
-            return
-
-        self._compile_project(self._project[idx])
-
 
 def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--active', help='active project', default=None)
-    parser.add_argument('-g', '--generate', help='generate compile_commands.json', default=None)
     parser.add_argument('-d', '--debug', help='run project with debug mode', action='store_true')
     parser.add_argument('-l', '--list', help='list all projects', action='store_true')
 
@@ -487,8 +447,6 @@ def check_param(params):
     cnt = 0
 
     if params.active:
-        cnt += 1
-    if params.generate:
         cnt += 1
     if params.debug:
         cnt += 1
@@ -505,11 +463,9 @@ def check_param(params):
 def clate_main(clate, params):
     if params.active:
         clate.run(params.active)
-    elif params.generate:
-        clate.compile(params.generate)
     elif params.debug:
         clate.run(is_debug=True)
     elif params.list:
-        clate.show_project()
+        clate.show_projects()
     else:
         clate.console()
