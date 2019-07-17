@@ -31,10 +31,12 @@ CONFIG_JSON      = "./config.json"
 CLATE_JSON       = os.getenv("HOME") + '/.clate.json'
 CLATE_EXEC       = '/usr/local/bin/clate'
 
-USER             = ""
-INSTALL_PATH     = ""
-VSCODE_PATH      = ""
-HOST_IP          = None
+
+class UserInfo:
+    def __init__(self):
+        self.name = None
+        self.install_path = None
+        self.host_ip = None
 
 def write_clate_json(clate_data):
     global CLATE_JSON
@@ -51,9 +53,8 @@ def mkdir(t_dir):
         print(e)
 
 
-def create_new_project(project_name, port):
+def create_new_project(project_name, port, vscode_path, uInfo):
     global TAG
-    global VSCODE_PATH
 
     project_dirs = dict()
     if project_name == "clate":
@@ -61,7 +62,7 @@ def create_new_project(project_name, port):
     else:
         project_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__)) + '/' + project_name + '/'
 
-    extension_dir = VSCODE_PATH + project_name + '/'
+    extension_dir = vscode_path + project_name + '/'
     project_dirs['extension'] = extension_dir
     mkdir(extension_dir)
 
@@ -80,32 +81,28 @@ Host {0}
     User {1}
     Hostname {2}
     Port {3}
-""".format(project_name, USER, HOST_IP, str(port))
+""".format(project_name, uInfo.name, uInfo.host_ip, str(port))
     os.system("echo '{0}' >> ~/.ssh/config".format(ssh_config))
 
     return clate_project
 
 
-def create_new_clate():
-    global USER
+def create_new_clate(uInfo):
     global VERSION
-    global INSTALL_PATH
-    global HOST_IP
-    global VSCODE_PATH
 
     print("create common and default project")
 
     # Common
     common_dict = dict()
-    common_dict['user'] = USER
+    common_dict['user'] = uInfo.name
     common_dict['version'] = VERSION
 
-    mkdir(INSTALL_PATH)
-    common_dict['install_path'] = INSTALL_PATH
-    VSCODE_PATH = INSTALL_PATH + 'vscode-server/'
-    mkdir(VSCODE_PATH)
+    mkdir(uInfo.install_path)
+    common_dict['install_path'] = uInfo.install_path
+    vscode_path = uInfo.install_path + 'vscode-server/'
+    mkdir(vscode_path)
 
-    common_dict['host_ip'] = HOST_IP
+    common_dict['host_ip'] = uInfo.host_ip
 
     # Clate
     clate_data = dict()
@@ -113,15 +110,15 @@ def create_new_clate():
 
     # Default project
     project_list = list()
-    project_list.append(create_new_project("clate", 5000))
-    project_list.append(create_new_project("cpilot", 5100))
+    project_list.append(create_new_project("clate", 5000, vscode_path, uInfo))
+    project_list.append(create_new_project("cpilot", 5100, vscode_path, uInfo))
 
     clate_data['project'] = project_list
 
     return clate_data
 
 
-def clate_manager():
+def clate_manager(uInfo):
     global CLATE_JSON
 
     clate_data = None
@@ -132,7 +129,7 @@ def clate_manager():
         clate_json = open(CLATE_JSON).read()
         clate_data = json.loads(clate_json)
     else:
-        clate_data = create_new_clate()
+        clate_data = create_new_clate(uInfo)
 
     write_clate_json(clate_data)
 
@@ -141,11 +138,7 @@ def clate_manager():
         os.system("sudo ln -s {0}/clate /usr/local/bin".format(os.getcwd()))
 
 
-def config():
-    global USER
-    global INSTALL_PATH
-    global HOST_IP
-
+def config(uInfo):
     # Build dockerfile
     config_json = open(CONFIG_JSON).read()
     config_info = json.loads(config_json)
@@ -158,8 +151,7 @@ def config():
         return False
 
     # User info
-    USER_ENV = \
-    """
+    USER_ENV = """
 # User info
 ENV UID="{0}" \\\n\
     UNAME="{1}" \\\n\
@@ -168,7 +160,6 @@ ENV UID="{0}" \\\n\
     SHELL="/bin/bash" \\\n\
     HOME=/home/{1}\n
     """.format(config_info['UID'], config_info['ID'], config_info['GID'], config_info['GROUP'])
-    USER = config_info['ID']
 
     user = open(DOCKERUSERDATA, "w")
     user.write(USER_ENV)
@@ -177,22 +168,25 @@ ENV UID="{0}" \\\n\
     path = config_info['INSTALL_PATH']
     if path[-1] != '/':
         path += '/'
-    INSTALL_PATH = path + 'clate/'
 
     # Network info
-    HOST_IP = config_info['HOST_IP']
-    if HOST_IP == "":
-        HOST_IP = socket.gethostbyname(socket.gethostname())
+    host_ip = config_info['HOST_IP']
+    if host_ip == "":
+        host_ip = socket.gethostbyname(socket.gethostname())
     pwd = getpass.getpass("ssh password: ")
-    NETWORK_ENV = \
-    """
+    NETWORK_ENV = """
 ENV HOST={0} \
     PASSWORD={1}
-    """.format(HOST_IP, pwd)
+    """.format(host_ip, pwd)
 
     network = open(DOCKERNETWORKENV, "w")
     network.write(NETWORK_ENV)
     network.close()
+
+    uInfo.name = config_info['ID']
+    given_path = config_info['INSTALL_PATH']
+    uInfo.install_path = given_path + 'clate/' if given_path[-1] == '/' else given_path + '/clate/'
+    uInfo.host_ip = host_ip
 
     os.system("cat {0} > {1}".format(DOCKERINIT,         DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERUSERDATA,    DOCKERFILE))
@@ -206,25 +200,34 @@ ENV HOST={0} \
     return True
 
 
+def check_running_image(tag):
+    from clate_core.clate_core import Docker
+    docker = Docker("clate")
+    if docker.is_using_image(tag):
+        print("cannot build new image. please stop containers from clate:{0}".format(tag))
+        return 0
+
+    return docker.get_current_image_id(tag)
+
+
+def remove_dangling_image(tag, image_id):
+    from clate_core.clate_core import Docker
+    docker = Docker("clate")
+    docker.remove_dangling_image(tag, image_id)
+
+
 def install():
     # Build docker image
     global TAG
     global DOCKERDIR
     global NAME
 
-    from clate_core.clate_core import Docker
-    docker = Docker("clate")
-    if docker.is_using_image(TAG):
-        print("cannot build new image. please stop containers from clate:{0}".format(TAG))
-        return
-
-    id = docker.get_current_image_id(TAG)
-
-    os.chdir(DOCKERDIR)
-    os.system("docker build . -t {0}:{1}".format(NAME, TAG))
-    os.chdir(WORKDIR)
-
-    docker.remove_dangling_image(TAG, id)
+    image_id = check_running_image(TAG)
+    if image_id != 0:
+        os.chdir(DOCKERDIR)
+        os.system("docker build . -t {0}:{1}".format(NAME, TAG))
+        os.chdir(WORKDIR)
+        remove_dangling_image(TAG, image_id)
 
 
 def install_framework():
@@ -233,11 +236,14 @@ def install_framework():
 
     for k, v in config_info['FRAMEWORKS'].items():
         if v:
-            framework_path = DOCKERFRAMEWORK + k + '/'
-            os.chdir(framework_path)
-            os.system("docker build . -t {0}:{1}".format(NAME, k.lower()))
+            image_id = check_running_image(k)
+            if image_id != 0:
+                framework_path = DOCKERFRAMEWORK + k + '/'
+                os.chdir(framework_path)
+                os.system("docker build . -t {0}:{1}".format(NAME, k.lower()))
+                os.chdir(WORKDIR)
+                remove_dangling_image(k, image_id)
 
-            os.chdir(WORKDIR)
 
 def cleanup():
     os.system("rm {0}".format(DOCKERUSERDATA))
@@ -246,8 +252,10 @@ def cleanup():
 
 
 if __name__ == "__main__":
-    if config():
-        clate_manager()
+    uInfo = UserInfo()
+
+    if config(uInfo):
+        clate_manager(uInfo)
         install()
         install_framework()
         cleanup()
