@@ -86,6 +86,13 @@ class Docker:
 
         return tags
 
+    def remove_all_images(self):
+        for image in self._docker.images.list():
+            name, tag = image.tags[0].split(':')
+            if name in ('clate', 'aeuveritas/clate'):
+                self._docker.images.remove(image=image.tags[0], force=True)
+
+
 class DirManager:
     def exist(self, new_dir):
         if os.path.exists(new_dir):
