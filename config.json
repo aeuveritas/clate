@@ -4,8 +4,5 @@
     "GROUP"          : "GROUP_ID",
     "GID"            : "GROUP_ID_NUMBER",
     "INSTALL_PATH"   : "DIRECTORY_FOR_CLATE",
-    "VERSION"        : {
-        "LLVM"       : "9.0.0"
-    },
     "HOST_IP"        : ""
 }

@@ -8,7 +8,7 @@ import getpass
 
 # Variables
 NAME             = "clate"
-VERSION          = "0.3"
+VERSION          = "dev"
 
 DOCKERDIR        = "./docker"
 DOCKERFILE       = "{}/Dockerfile".format(DOCKERDIR)
@@ -20,7 +20,6 @@ DOCKERNETWORK    = "{}/04_network.Dockerfile".format(DOCKERFILEDIR)
 DOCKERNODE       = "{}/05_node.Dockerfile".format(DOCKERFILEDIR)
 
 DOCKERUSERDATA   = "{}/userdata".format(DOCKERFILEDIR)
-DOCKERVERSION    = "{}/version".format(DOCKERFILEDIR)
 DOCKERNETWORKENV = "{}/network".format(DOCKERFILEDIR)
 CONFIG_JSON      = "./config.json"
 
@@ -119,7 +118,6 @@ def create_new_clate():
 
 
 def clate_manager():
-    global VERSION
     global CLATE_JSON
 
     clate_data = None
@@ -140,7 +138,6 @@ def clate_manager():
 
 
 def config():
-    global VERSION
     global USER
     global INSTALL_PATH
     global HOST_IP
@@ -178,18 +175,6 @@ ENV UID="{0}" \\\n\
         path += '/'
     INSTALL_PATH = path + 'clate/'
 
-    # Version info
-    VERSION_ENV = \
-    """
-# Version info
-ENV CLATE_VERSION={0} \
-    LLVM_VERSION={1}
-    """.format(VERSION, config_info['VERSION']['LLVM'])
-
-    version = open(DOCKERVERSION, "w")
-    version.write(VERSION_ENV)
-    version.close()
-
     # Network info
     HOST_IP = config_info['HOST_IP']
     if HOST_IP == "":
@@ -207,7 +192,6 @@ ENV HOST={0} \
 
     os.system("cat {0} > {1}".format(DOCKERINIT,         DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERUSERDATA,    DOCKERFILE))
-    os.system("cat {0} >> {1}".format(DOCKERVERSION,     DOCKERFILE))
     os.system("cat {0} >> {1}".format(DOCKERUSER,        DOCKERFILE))
 
     os.system("cat {0} >> {1}".format(DOCKERSETUP,       DOCKERFILE))
@@ -239,7 +223,6 @@ def install():
 
 def cleanup():
     os.system("rm {0}".format(DOCKERUSERDATA))
-    os.system("rm {0}".format(DOCKERVERSION))
     os.system("rm {0}".format(DOCKERNETWORKENV))
     os.system("rm {0}".format(DOCKERFILE))
 
