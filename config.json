@@ -5,7 +5,8 @@
     "GID"            : "GROUP_ID_NUMBER",
     "INSTALL_PATH"   : "DIRECTORY_FOR_CLATE",
     "HOST_IP"        : "",
-    "FRAMEWORKS"      : {
-	"VUE"        : true
+    "FRAMEWORKS"     : {
+        "CPP"        : true,
+        "VUE"        : true
     }
 }

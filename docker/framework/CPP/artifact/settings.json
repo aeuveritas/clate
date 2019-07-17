@@ -1,0 +1,21 @@
+{
+    "ccls.clang.extraArgs": [
+        "--gcc-toolchain=/usr"
+    ],
+    "ccls.clang.resourceDir": "/llvm/lib/clang/8.0.0",
+    "ccls.highlighting.enabled.types": true,
+    "ccls.highlighting.enabled.freeStandingFunctions": true,
+    "ccls.highlighting.enabled.memberFunctions": true,
+    "ccls.highlighting.enabled.freeStandingVariables": true,
+    "ccls.highlighting.enabled.memberVariables": true,
+    "ccls.highlighting.enabled.namespaces": true,
+    "ccls.highlighting.enabled.macros": true,
+    "ccls.highlighting.enabled.enums": true,
+    "ccls.highlighting.enabled.typeAliases": true,
+    "ccls.highlighting.enabled.enumConstants": true,
+    "ccls.highlighting.enabled.staticMemberFunctions": true,
+    "ccls.highlighting.enabled.parameters": true,
+    "ccls.highlighting.enabled.templateParameters": true,
+    "ccls.highlighting.enabled.staticMemberVariables": true,
+    "ccls.highlighting.enabled.globalVariables": true,
+}

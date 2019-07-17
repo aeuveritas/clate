@@ -54,7 +54,7 @@ def mkdir(t_dir):
         print(e)
 
 
-def create_new_project(project_name, port, vscode_path, uInfo):
+def create_new_project(project_name, tag, port, vscode_path, uInfo):
     global TAG
 
     project_dirs = dict()
@@ -72,7 +72,7 @@ def create_new_project(project_name, port, vscode_path, uInfo):
 
     clate_project = dict()
     clate_project['name'] = project_name
-    clate_project['tag'] = TAG
+    clate_project['tag'] = tag
     clate_project['directory'] = project_dirs
     clate_project['port'] = project_ports
 
@@ -110,8 +110,8 @@ def create_new_clate(uInfo):
 
     # Default project
     project_list = list()
-    project_list.append(create_new_project("clate", 5000, vscode_path, uInfo))
-    project_list.append(create_new_project("cpilot", 5100, vscode_path, uInfo))
+    project_list.append(create_new_project("clate", TAG, 5000, vscode_path, uInfo))
+    project_list.append(create_new_project("cpilot", 'cpp', 5100, vscode_path, uInfo))
 
     clate_data['project'] = project_list
 
