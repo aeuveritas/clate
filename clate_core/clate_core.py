@@ -414,6 +414,8 @@ Host {0}
                 if not self._docker.is_running(project_name):
                     confirm = self._interactor.binary_select()
                     if confirm:
+                        project = self._project[project_num]
+                        self._dirMgr.rmDir(project['directory']['extension'])
                         del self._project[project_num]
                         self._build_project_names()
                         self._build_ssh_ports()
