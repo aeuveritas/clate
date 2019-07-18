@@ -152,7 +152,7 @@ class Interactor:
 
     def print_list(self, items):
         for (i, item) in enumerate(items):
-            print("{0}: {1}".format(i, item))
+            print("{0:2}: {1}".format(i, item))
 
     def list_select(self, items):
         ret = -1
@@ -327,7 +327,7 @@ class Clate:
             elif cmd == 'o':
                 self._stop()
             elif cmd == 'i':
-                self._show_running_projects()
+                self.show_running_projects()
             elif cmd == 'h':
                 self._attach_project()
             elif cmd == 'x':
@@ -340,7 +340,8 @@ class Clate:
     def _get_running_project(self):
         return self._docker.get_names()
 
-    def _show_running_projects(self):
+    def show_running_projects(self):
+        print('[ INF ] Running projects')
         names = self._get_running_project()
         self._interactor.print_list(names)
 
@@ -359,6 +360,7 @@ class Clate:
             os.system(docker_cmd)
 
     def show_projects(self):
+        print('[ INF ] All projects')
         for idx, project in enumerate(self._project):
             print("{0:2}: {1}".format(idx, project['name']))
 
@@ -440,8 +442,9 @@ Host {0}
 
         dockercmd += "clate:{0}".format(project['tag'])
 
-        print("[ SUC ] run: {}".format(dockercmd))
+        print("[ SUC ] docker cmd: {}".format(dockercmd))
         os.system(dockercmd)
+        print("[ SUC ] activated: {0}".format(project['name']))
 
     def _select_project(self):
         return self._interactor.list_select(self._project_names)
@@ -490,8 +493,9 @@ def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--active', help='active project', default=None)
     parser.add_argument('-d', '--debug', help='run project with debug mode', default=None)
-    parser.add_argument('-l', '--list', help='list all projects', action='store_true')
+    parser.add_argument('-l', '--listproject', help='list all projects', action='store_true')
     parser.add_argument('-o', '--stop', help='stop project', default=None)
+    parser.add_argument('-i', '--listrunningproject', help='list running project', action='store_true')
 
     return parser.parse_args()
 
@@ -503,9 +507,11 @@ def check_param(params):
         cnt += 1
     if params.debug:
         cnt += 1
-    if params.list:
+    if params.listproject:
         cnt += 1
     if params.stop:
+        cnt += 1
+    if params.listrunningproject:
         cnt += 1
 
     if cnt > 1:
@@ -520,9 +526,11 @@ def clate_main(clate, params):
         clate.run(params.active)
     elif params.debug:
         clate.run(params.debug, is_debug=True)
-    elif params.list:
+    elif params.listproject:
         clate.show_projects()
     elif params.stop:
         clate.stop(params.stop)
+    elif params.listrunningproject:
+        clate.show_running_projects()
     else:
         clate.console()
