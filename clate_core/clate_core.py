@@ -80,6 +80,9 @@ class Docker:
         tags = list()
 
         for image in self._docker.images.list():
+            if len(image.tags) == 0:
+                continue
+
             name, tag = image.tags[0].split(':')
             if name == "clate":
                 tags.append(tag)
