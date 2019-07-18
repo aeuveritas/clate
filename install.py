@@ -16,7 +16,7 @@ WORKDIR          = os.getcwd()
 DOCKERDIR        = "./docker"
 DOCKERFILE       = "{}/Dockerfile".format(DOCKERDIR)
 DOCKERFILEDIR    = "{}/dockerfile".format(DOCKERDIR)
-DOCKERFRAMEWORK  = "{}/framework/".format(DOCKERDIR)
+DOCKERFRAMEWORK  = "./framework"
 
 DOCKERINIT       = "{}/01_init.Dockerfile".format(DOCKERFILEDIR)
 DOCKERUSER       = "{}/02_user.Dockerfile".format(DOCKERFILEDIR)
@@ -237,7 +237,7 @@ def install_framework():
         if v:
             image_id = check_running_image(k)
             if image_id != 0:
-                framework_path = DOCKERFRAMEWORK + k + '/'
+                framework_path = DOCKERFRAMEWORK + '/' + k + '/'
                 os.chdir(framework_path)
                 os.system("docker build . -t {0}:{1}".format(NAME, k.lower()))
                 os.chdir(WORKDIR)
