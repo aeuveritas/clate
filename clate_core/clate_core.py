@@ -358,18 +358,6 @@ class Clate:
             docker_cmd = "docker exec -ti clate_{0} /bin/bash".format(project_name)
             os.system(docker_cmd)
 
-    def _stop(self):
-        names = self._get_running_project()
-        num = self._interactor.list_select(names)
-
-        if num != -1:
-            project_name = names[num]
-            ret = self._docker.stop(project_name)
-            if ret:
-                print("[ SUC ] stopped: {}".format(project_name))
-            else:
-                print("[ WAR ] cannot find running clate: {}".format(project_name))
-
     def show_projects(self):
         for idx, project in enumerate(self._project):
             print("{0:2}: {1}".format(idx, project['name']))
@@ -468,10 +456,34 @@ Host {0}
         try:
             idx = self._project_names.index(project_name)
         except ValueError:
-            print("[ WAR ] no project: {0}".format(project_name))
+            print("[ ERR ] no project: {0}".format(project_name))
             return
 
         self._run_project(self._project[idx], is_debug)
+
+    def _stop_project(self, project_name):
+        ret = self._docker.stop(project_name)
+        if ret:
+            print("[ SUC ] stopped: {}".format(project_name))
+        else:
+            print("[ WAR ] cannot find running clate: {}".format(project_name))
+
+    def _stop(self):
+        names = self._get_running_project()
+        num = self._interactor.list_select(names)
+
+        if num != -1:
+            project_name = names[num]
+            self._stop_project(project_name)
+
+    def stop(self, project_name='clate'):
+        try:
+            self._project_names.index(project_name)
+        except ValueError:
+            print("[ ERR ] no project: {0}".format(project_name))
+            return
+
+        self._stop_project(project_name)
 
 
 def parse():
@@ -479,6 +491,7 @@ def parse():
     parser.add_argument('-a', '--active', help='active project', default=None)
     parser.add_argument('-d', '--debug', help='run project with debug mode', default=None)
     parser.add_argument('-l', '--list', help='list all projects', action='store_true')
+    parser.add_argument('-o', '--stop', help='stop project', default=None)
 
     return parser.parse_args()
 
@@ -491,6 +504,8 @@ def check_param(params):
     if params.debug:
         cnt += 1
     if params.list:
+        cnt += 1
+    if params.stop:
         cnt += 1
 
     if cnt > 1:
@@ -507,5 +522,7 @@ def clate_main(clate, params):
         clate.run(params.debug, is_debug=True)
     elif params.list:
         clate.show_projects()
+    elif params.stop:
+        clate.stop(params.stop)
     else:
         clate.console()
