@@ -133,12 +133,12 @@ class Interactor:
         print('     \x1b[1;32;40m' + "[C]" + '\x1b[0m' + "reate new project")
         print('     \x1b[1;32;40m' + "[L]" + '\x1b[0m' + "ist projects")
         print('     \x1b[1;32;40m' + "[A]" + '\x1b[0m' + "ctivate project")
-        print(' dele\x1b[1;32;40m' + "[T]" + '\x1b[0m' + "e proect")
+        print('    a\x1b[1;32;40m' + "[T]" + '\x1b[0m' + "tach running project")
         print('     \x1b[1;32;40m' + "[E]" + '\x1b[0m' + "dit project configs")
         print('')
         print('    l\x1b[1;32;40m' + "[I]" + '\x1b[0m' + "st running project")
-        print('attac\x1b[1;32;40m' + "[H]" + '\x1b[0m' + " running project")
         print('   st\x1b[1;32;40m' + "[O]" + '\x1b[0m' + "p running project")
+        print('     \x1b[1;32;40m' + "[D]" + '\x1b[0m' + "elete proect")
         print('')
         print('    e\x1b[1;32;40m' + "[X]" + '\x1b[0m' + "it")
 
@@ -321,15 +321,15 @@ class Clate:
             elif cmd == 'a':
                 self._run()
             elif cmd == 't':
-                self._delete()
+                self._attach()
             elif cmd == 'e':
                 self._edit_config()
             elif cmd == 'o':
                 self._stop()
             elif cmd == 'i':
                 self.show_running_projects()
-            elif cmd == 'h':
-                self._attach_project()
+            elif cmd == 'd':
+                self._delete()
             elif cmd == 'x':
                 return
             else:
@@ -349,15 +349,22 @@ class Clate:
         global CLATE_JSON
         os.system("vi {0}".format(CLATE_JSON))
 
-    def _attach_project(self):
+    def _attach_project(self, project_name):
+        docker_cmd = "docker exec -ti clate_{0} /bin/bash".format(project_name)
+        os.system(docker_cmd)
+
+    def _attach(self):
         names = self._get_running_project()
         num = self._interactor.list_select(names)
 
         if num != -1:
             project_name = names[num]
+            self._attach_project(project_name)
 
-            docker_cmd = "docker exec -ti clate_{0} /bin/bash".format(project_name)
-            os.system(docker_cmd)
+    def attach(self, project_name):
+        names = self._get_running_project()
+        if project_name in names:
+            self._attach_project(project_name)
 
     def show_projects(self):
         print('[ INF ] All projects')
@@ -493,8 +500,9 @@ def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--active', help='active project', default=None)
     parser.add_argument('-d', '--debug', help='run project with debug mode', default=None)
-    parser.add_argument('-l', '--listproject', help='list all projects', action='store_true')
+    parser.add_argument('-t', '--attach', help='attach to running project', default=None)
     parser.add_argument('-o', '--stop', help='stop project', default=None)
+    parser.add_argument('-l', '--listproject', help='list all projects', action='store_true')
     parser.add_argument('-i', '--listrunningproject', help='list running project', action='store_true')
 
     return parser.parse_args()
@@ -512,6 +520,8 @@ def check_param(params):
     if params.stop:
         cnt += 1
     if params.listrunningproject:
+        cnt += 1
+    if params.attach:
         cnt += 1
 
     if cnt > 1:
@@ -532,5 +542,7 @@ def clate_main(clate, params):
         clate.stop(params.stop)
     elif params.listrunningproject:
         clate.show_running_projects()
+    elif params.attach:
+        clate.attach(params.attach)
     else:
         clate.console()
