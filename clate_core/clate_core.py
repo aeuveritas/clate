@@ -72,7 +72,7 @@ class Docker:
 
         if current_image_id != id:
             try:
-                image = self._docker.images.remove(image=id, force=True)
+                self._docker.images.remove(image=id, force=True)
             except Exception as e:
                 pass
 
@@ -88,6 +88,8 @@ class Docker:
 
     def remove_all_images(self):
         for image in self._docker.images.list():
+            if len(image.tags) == 0:
+                continue
             name, tag = image.tags[0].split(':')
             if name in ('clate', 'aeuveritas/clate'):
                 self._docker.images.remove(image=image.tags[0], force=True)
@@ -134,8 +136,9 @@ class Interactor:
         print(' dele\x1b[1;32;40m' + "[T]" + '\x1b[0m' + "e proect")
         print('     \x1b[1;32;40m' + "[E]" + '\x1b[0m' + "dit project configs")
         print('')
+        print('    l\x1b[1;32;40m' + "[I]" + '\x1b[0m' + "st running project")
+        print('attac\x1b[1;32;40m' + "[H]" + '\x1b[0m' + " running project")
         print('   st\x1b[1;32;40m' + "[O]" + '\x1b[0m' + "p running project")
-        print('   li\x1b[1;32;40m' + "[S]" + '\x1b[0m' + "t running project")
         print('')
         print('    e\x1b[1;32;40m' + "[X]" + '\x1b[0m' + "it")
 
@@ -224,9 +227,14 @@ class Interactor:
 
             ports = dict()
             while True:
-                project_port = int(input("[ ASK ] project ssh port: "))
-                if str(project_port) in port_list:
-                    print("[ WAR ] already used port: {}".format(project_port))
+                project_port = None
+                try:
+                    project_port = int(input("[ ASK ] project ssh port: "))
+                    if str(project_port) in port_list:
+                        print("[ ERR ] already used port: {}".format(project_port))
+                        continue
+                except ValueError:
+                    print("[ ERR ] port must be a number")
                     continue
                 ports['ssh'] = str(project_port)
                 break
@@ -318,8 +326,10 @@ class Clate:
                 self._edit_config()
             elif cmd == 'o':
                 self._stop()
-            elif cmd == 's':
-                self._show_running_project()
+            elif cmd == 'i':
+                self._show_running_projects()
+            elif cmd == 'h':
+                self._attach_project()
             elif cmd == 'x':
                 return
             else:
@@ -330,13 +340,23 @@ class Clate:
     def _get_running_project(self):
         return self._docker.get_names()
 
-    def _show_running_project(self):
+    def _show_running_projects(self):
         names = self._get_running_project()
         self._interactor.print_list(names)
 
     def _edit_config(self):
         global CLATE_JSON
         os.system("vi {0}".format(CLATE_JSON))
+
+    def _attach_project(self):
+        names = self._get_running_project()
+        num = self._interactor.list_select(names)
+
+        if num != -1:
+            project_name = names[num]
+
+            docker_cmd = "docker exec -ti clate_{0} /bin/bash".format(project_name)
+            os.system(docker_cmd)
 
     def _stop(self):
         names = self._get_running_project()
@@ -408,7 +428,7 @@ Host {0}
                     print("[ WAR ] cannot delete, because it is still running: {}".format(project_name))
 
     def _run_project(self, project, is_debug=False):
-        dockercmd = "docker run -ti --rm "
+        dockercmd = "docker run -td --rm "
 
         dockercmd += "--name {0}_{1} ".format(self._client, project['name'])
 
