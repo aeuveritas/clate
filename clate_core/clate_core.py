@@ -252,8 +252,8 @@ class Interactor:
                     break
 
             return project_name, project_tag, dirs, ports
-        except KeyboardInterrupt:
-            pass
+        except Exception as e:
+            raise e
 
         return None
 
@@ -397,7 +397,11 @@ Host {0}
 
     def _create(self):
         tags = self._docker.get_tag_list()
-        name, tag, dirs, ports = self._interactor.fill_project(self._project_names, tags, self._ssh_ports)
+        try:
+            name, tag, dirs, ports = self._interactor.fill_project(self._project_names, tags, self._ssh_ports)
+        except:
+            print("[ ERR ] cancel to create new project")
+            return
         new_project = self._build_project(name, tag, dirs, ports)
 
         self._project.append(new_project)
