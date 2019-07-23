@@ -513,11 +513,11 @@ Host {0}
 def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--active', help='active project', default=None)
-    parser.add_argument('-d', '--debug', help='run project with debug mode', default=None)
+    parser.add_argument('-d', '--debug', help='attach to running project as root', default=None)
     parser.add_argument('-t', '--attach', help='attach to running project', default=None)
     parser.add_argument('-o', '--stop', help='stop project', default=None)
     parser.add_argument('-l', '--listproject', help='list all projects', action='store_true')
-    parser.add_argument('-i', '--listrunningproject', help='list running project', action='store_true')
+    parser.add_argument('-i', '--listrunningproject', help='list running projects', action='store_true')
 
     return parser.parse_args()
 
