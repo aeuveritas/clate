@@ -8,7 +8,7 @@ RUN echo "$UNAME:$PASSWORD" | chpasswd
 RUN mkdir -p $HOME/.ssh \
     && chown $UID:$GID $HOME/ \
     && chmod 700 $HOME/.ssh
-COPY artifact/id_rsa.pub $HOME
+COPY ssh_key/id_rsa.pub $HOME
 RUN cat $HOME/id_rsa.pub >> $HOME/.ssh/authorized_keys \
     && chown $UID:$GID $HOME/ -R \
     && chmod 600 $HOME/.ssh/authorized_keys

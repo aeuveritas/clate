@@ -1,0 +1,3 @@
+#!/bin/bash
+
+su -m - $UNAME -c "/bin/bash"

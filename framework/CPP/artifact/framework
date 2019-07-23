@@ -10,5 +10,3 @@ else
     chown $UID:$GID $DIR -R
     su -m - $UNAME -c "cp $HOME/settings.json $DIR/"
 fi
-
-/usr/local/bin/run

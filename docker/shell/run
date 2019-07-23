@@ -1,7 +1,8 @@
 #!/bin/bash
-service ssh start
 
-while :
-do
-    sleep 10
-done
+/usr/local/bin/prepare
+
+/usr/local/bin/framework
+
+/usr/local/bin/loop
+

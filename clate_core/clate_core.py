@@ -58,7 +58,6 @@ class Docker:
 
     def get_current_image_id(self, tag):
         target_image = "clate:{0}".format(tag)
-
         id = None
         try:
             id = self._docker.images.get(target_image).id
@@ -67,12 +66,12 @@ class Docker:
 
         return id
 
-    def remove_dangling_image(self, tag, id):
+    def remove_dangling_image(self, tag, image_id):
         current_image_id = self.get_current_image_id(tag)
 
-        if current_image_id != id:
+        if current_image_id != image_id:
             try:
-                self._docker.images.remove(image=id, force=True)
+                self._docker.images.remove(image=image_id, force=True)
             except Exception as e:
                 pass
 
@@ -352,8 +351,14 @@ class Clate:
         global CLATE_JSON
         os.system("vi {0}".format(CLATE_JSON))
 
-    def _attach_project(self, project_name):
-        docker_cmd = "docker exec -ti clate_{0} /bin/bash".format(project_name)
+    def _attach_project(self, project_name, is_debug=False):
+        docker_cmd = None
+
+        if is_debug:
+            docker_cmd = "docker exec -ti clate_{0} /bin/bash".format(project_name)
+        else:    
+            docker_cmd = "docker exec -ti clate_{0} /usr/local/bin/attach_shell".format(project_name)
+
         os.system(docker_cmd)
 
     def _attach(self):
@@ -364,10 +369,10 @@ class Clate:
             project_name = names[num]
             self._attach_project(project_name)
 
-    def attach(self, project_name):
+    def attach(self, project_name, is_debug=False):
         names = self._get_running_project()
         if project_name in names:
-            self._attach_project(project_name)
+            self._attach_project(project_name, is_debug)
 
     def show_projects(self):
         print('[ INF ] All projects')
@@ -470,7 +475,7 @@ Host {0}
         if project_num != -1:
             self._run_project(self._project[project_num])
 
-    def run(self, project_name='clate', is_debug=False):
+    def run(self, project_name='clate'):
         idx = None
         try:
             idx = self._project_names.index(project_name)
@@ -478,7 +483,7 @@ Host {0}
             print("[ ERR ] no project: {0}".format(project_name))
             return
 
-        self._run_project(self._project[idx], is_debug)
+        self._run_project(self._project[idx])
 
     def _stop_project(self, project_name):
         ret = self._docker.stop(project_name)
@@ -544,7 +549,7 @@ def clate_main(clate, params):
     if params.active:
         clate.run(params.active)
     elif params.debug:
-        clate.run(params.debug, is_debug=True)
+        clate.attach(params.debug, True)
     elif params.listproject:
         clate.show_projects()
     elif params.stop:

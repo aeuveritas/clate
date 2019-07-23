@@ -10,7 +10,7 @@ import getpass
 NAME             = "clate"
 VERSION          = "dev"
 
-TAG              = "user"
+TAG              = "base"
 
 WORKDIR          = os.getcwd()
 DOCKERDIR        = "./docker"
@@ -203,7 +203,7 @@ def check_running_image(tag):
     from clate_core.clate_core import Docker
     docker = Docker("clate")
     if docker.is_using_image(tag):
-        print("cannot build new image. please stop containers from clate:{0}".format(tag))
+        print("Cannot build new image. please stop containers from clate:{0}".format(tag))
         return 0
 
     return docker.get_current_image_id(tag)
@@ -235,13 +235,14 @@ def install_framework():
 
     for k, v in config_info['FRAMEWORKS'].items():
         if v:
-            image_id = check_running_image(k)
+            tag = k.lower()
+            image_id = check_running_image(tag)
             if image_id != 0:
                 framework_path = DOCKERFRAMEWORK + '/' + k + '/'
                 os.chdir(framework_path)
-                os.system("docker build . -t {0}:{1}".format(NAME, k.lower()))
+                os.system("docker build . -t {0}:{1}".format(NAME, tag))
                 os.chdir(WORKDIR)
-                remove_dangling_image(k, image_id)
+                remove_dangling_image(tag, image_id)
 
 
 def cleanup():
