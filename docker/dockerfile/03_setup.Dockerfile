@@ -11,6 +11,5 @@ RUN chmod 777 /usr/local/bin/prepare
 RUN chmod 777 /usr/local/bin/framework
 RUN chmod 777 /usr/local/bin/loop
 RUN chmod 777 /usr/local/bin/run
-RUN chmod 777 /usr/local/bin/attach_shell
 
 ENTRYPOINT [ "bash", "/usr/local/bin/run" ]

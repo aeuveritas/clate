@@ -356,8 +356,11 @@ class Clate:
 
         if is_debug:
             docker_cmd = "docker exec -ti clate_{0} /bin/bash".format(project_name)
-        else:    
-            docker_cmd = "docker exec -ti clate_{0} /usr/local/bin/attach_shell".format(project_name)
+        else:
+            idx = self._project_names.index(project_name)
+            project = self._project[idx]
+
+            docker_cmd = "ssh {0}@{1} -p {2}".format(self._common['user'], self._common['host_ip'], project['port']['ssh'])
 
         os.system(docker_cmd)
 
