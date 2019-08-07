@@ -378,9 +378,25 @@ class Clate:
             self._attach_project(project_name, is_debug)
 
     def show_projects(self):
-        print('[ INF ] All projects')
-        for idx, project in enumerate(self._project):
-            print("{0:2}: {1}".format(idx, project['name']))
+        repo = None
+        try:
+            import git
+
+            print('[ INF ] All projects')
+            for idx, project in enumerate(self._project):
+                directory = project['directory']['Workspace']
+                branch = None
+                try:
+                    branch = git.Repo(directory).active_branch.name
+                except git.exc.InvalidGitRepositoryError:
+                    branch = "NO GIT"
+                print("{0:2}: \x1b[32m{1:10}\x1b[0m \x1b[93m({2:10})\x1b[0m {3}".format(idx, project['name'], branch, project['directory']['Workspace']))
+        except ImportError:
+            print('[ INF ] All projects')
+            print('[ INF ] If you want to see branch name, please install gitpython')
+
+            for idx, project in enumerate(self._project):
+                print("{0:2}: \x1b[32m{1:10}\x1b[0m {2}".format(idx, project['name'], project['directory']['Workspace']))
 
     def _build_project(self, name, tag, dirs, ports):
         project = dict()
