@@ -480,6 +480,9 @@ Host {0}
         if is_debug:
             dockercmd += "--entrypoint /bin/bash "
 
+        if project.get('network'):
+            dockercmd += "--network {0} ".format(project['network'])
+
         dockercmd += "clate:{0}".format(project['tag'])
 
         print("[ SUC ] docker cmd: {}".format(dockercmd))
