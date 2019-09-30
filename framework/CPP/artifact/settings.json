@@ -2,7 +2,7 @@
     "ccls.clang.extraArgs": [
         "--gcc-toolchain=/usr"
     ],
-    "ccls.clang.resourceDir": "/llvm/lib/clang/8.0.0",
+    "ccls.clang.resourceDir": "/llvm/lib/clang/9.0.0",
     "ccls.highlighting.enabled.types": true,
     "ccls.highlighting.enabled.freeStandingFunctions": true,
     "ccls.highlighting.enabled.memberFunctions": true,
