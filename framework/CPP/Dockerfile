@@ -1,6 +1,5 @@
 # Clate
 FROM clate:base
-MAINTAINER Karl.Jeong <aeuveritas@gmail.com>
 
 COPY artifact/generate_compile_commands.sh /usr/local/bin
 RUN chmod 777 /usr/local/bin/generate_compile_commands.sh

@@ -1,6 +1,5 @@
 # Clate
 FROM clate:base
-MAINTAINER Karl.Jeong <aeuveritas@gmail.com>
 
 RUN npm install -g yarn \
     && yarn global add eslint \

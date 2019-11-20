@@ -1,3 +1,14 @@
 #!/bin/bash
 service ssh start
 
+DIR=/Workspace/.vscode/
+FILE=/Workspace/.vscode/settings.json
+if [ -d "$DIR" ]; then
+    if [ ! -f "$FILE" ]; then
+        su -m - $UNAME -c "cp $HOME/settings.json $DIR/"
+    fi
+else
+    mkdir $DIR
+    chown $UID:$GID $DIR -R
+    su -m - $UNAME -c "cp $HOME/settings.json $DIR/"
+fi
