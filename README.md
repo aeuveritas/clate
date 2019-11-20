@@ -7,9 +7,9 @@ Development sever for VS Code in Docker
 * v0.1
   - native vim + youcompleteme
 * v0.2
-  - neovim + coc.nvim + ccls
+  - neovim + coc.nvim + llvm + ccls
 * v0.3
-  - vs code server + ccls
+  - vs code server + llvm + ccls
 
 # Installation
 1. Install Python Docker SDK
@@ -86,7 +86,7 @@ optional arguments:
 # Installed SW
 * Ubuntu 18.04
 * gcc 8.3.0
-* llvm 8.0.0 (clang inclued)
+* llvm 9.0.0 (clang inclued)
 * python 3.6.7
 * node 10.16.0
 * cmake 3.10.2
