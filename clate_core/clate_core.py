@@ -19,7 +19,8 @@ class Docker:
         names = list()
         for container in self._docker.containers.list():
             if "{0}".format(self._client) in container.name:
-                names.append(container.name.replace("{0}_".format(self._client), ""))
+                names.append(container.name.replace(
+                    "{0}_".format(self._client), ""))
 
         return names
 
@@ -135,12 +136,13 @@ class Interactor:
         print('     \x1b[1;32;40m' + "[C]" + '\x1b[0m' + "reate new project")
         print('     \x1b[1;32;40m' + "[L]" + '\x1b[0m' + "ist projects")
         print('     \x1b[1;32;40m' + "[A]" + '\x1b[0m' + "ctivate project")
-        print('    a\x1b[1;32;40m' + "[T]" + '\x1b[0m' + "tach running project")
+        print('    a\x1b[1;32;40m' + "[T]" +
+              '\x1b[0m' + "tach running project")
         print('     \x1b[1;32;40m' + "[E]" + '\x1b[0m' + "dit project configs")
         print('')
         print('    l\x1b[1;32;40m' + "[I]" + '\x1b[0m' + "st running project")
         print('   st\x1b[1;32;40m' + "[O]" + '\x1b[0m' + "p running project")
-        print('     \x1b[1;32;40m' + "[D]" + '\x1b[0m' + "elete proect")
+        print('     \x1b[1;32;40m' + "[D]" + '\x1b[0m' + "elete project")
         print('')
         print('    e\x1b[1;32;40m' + "[X]" + '\x1b[0m' + "it")
 
@@ -196,6 +198,8 @@ class Interactor:
             val = int(input("[ ASK ] select framework: "))
             project_tag = tag_list[val]
 
+            # TODO: Set config directory for $HOME/.config (GO framework)
+
             import readline
             import glob
 
@@ -233,7 +237,8 @@ class Interactor:
                 try:
                     project_port = int(input("[ ASK ] project ssh port: "))
                     if str(project_port) in port_list:
-                        print("[ ERR ] already used port: {}".format(project_port))
+                        print("[ ERR ] already used port: {}".format(
+                            project_port))
                         continue
                 except ValueError:
                     print("[ ERR ] port must be a number")
@@ -355,12 +360,14 @@ class Clate:
         docker_cmd = None
 
         if is_debug:
-            docker_cmd = "docker exec -ti clate_{0} /bin/bash".format(project_name)
+            docker_cmd = "docker exec -ti clate_{0} /bin/bash".format(
+                project_name)
         else:
             idx = self._project_names.index(project_name)
             project = self._project[idx]
 
-            docker_cmd = "ssh {0}@{1} -p {2}".format(self._common['user'], self._common['host_ip'], project['port']['ssh'])
+            docker_cmd = "ssh {0}@{1} -p {2}".format(
+                self._common['user'], self._common['host_ip'], project['port']['ssh'])
 
         os.system(docker_cmd)
 
@@ -390,20 +397,23 @@ class Clate:
                     branch = git.Repo(directory).active_branch.name
                 except git.exc.InvalidGitRepositoryError:
                     branch = "NO GIT"
-                print("{0:2}: \x1b[32m{1:10}\x1b[0m \x1b[93m({2:10})\x1b[0m {3}".format(idx, project['name'], branch, project['directory']['Workspace']))
+                print("{0:2}: \x1b[32m{1:10}\x1b[0m \x1b[93m({2:10})\x1b[0m {3}".format(
+                    idx, project['name'], branch, project['directory']['Workspace']))
         except ImportError:
             print('[ INF ] All projects')
             print('[ INF ] If you want to see branch name, please install gitpython')
 
             for idx, project in enumerate(self._project):
-                print("{0:2}: \x1b[32m{1:10}\x1b[0m {2}".format(idx, project['name'], project['directory']['Workspace']))
+                print("{0:2}: \x1b[32m{1:10}\x1b[0m {2}".format(
+                    idx, project['name'], project['directory']['Workspace']))
 
     def _build_project(self, name, tag, dirs, ports):
         project = dict()
 
         project['name'] = name
         project['tag'] = tag
-        dirs['extension'] = self._common['install_path'] + 'vscode-server/' + name + '/'
+        dirs['extension'] = self._common['install_path'] + \
+            'vscode-server/' + name + '/'
         project['directory'] = dirs
         project['port'] = ports
 
@@ -422,7 +432,8 @@ Host {0}
     def _create(self):
         tags = self._docker.get_tag_list()
         try:
-            name, tag, dirs, ports = self._interactor.fill_project(self._project_names, tags, self._ssh_ports)
+            name, tag, dirs, ports = self._interactor.fill_project(
+                self._project_names, tags, self._ssh_ports)
         except:
             print("[ ERR ] cancel to create new project")
             return
@@ -455,7 +466,8 @@ Host {0}
                     else:
                         print("[ WAR ] canceled")
                 else:
-                    print("[ WAR ] cannot delete, because it is still running: {}".format(project_name))
+                    print("[ WAR ] cannot delete, because it is still running: {}".format(
+                        project_name))
 
     def _run_project(self, project, is_debug=False):
         dockercmd = "docker run -td --rm "
@@ -464,7 +476,8 @@ Host {0}
 
         for target, host in project['directory'].items():
             if target == 'extension':
-                dockercmd += "-v {0}:/home/{1}/.vscode-server ".format(host, self._common['user'])
+                dockercmd += "-v {0}:/home/{1}/.vscode-server ".format(
+                    host, self._common['user'])
             else:
                 dockercmd += "-v {0}:/{1} ".format(host, target)
 
@@ -535,11 +548,15 @@ Host {0}
 def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--active', help='active project', default=None)
-    parser.add_argument('-d', '--debug', help='attach to running project as root', default=None)
-    parser.add_argument('-t', '--attach', help='attach to running project', default=None)
+    parser.add_argument(
+        '-d', '--debug', help='attach to running project as root', default=None)
+    parser.add_argument(
+        '-t', '--attach', help='attach to running project', default=None)
     parser.add_argument('-o', '--stop', help='stop project', default=None)
-    parser.add_argument('-l', '--listproject', help='list all projects', action='store_true')
-    parser.add_argument('-i', '--listrunningproject', help='list running projects', action='store_true')
+    parser.add_argument('-l', '--listproject',
+                        help='list all projects', action='store_true')
+    parser.add_argument('-i', '--listrunningproject',
+                        help='list running projects', action='store_true')
 
     return parser.parse_args()
 

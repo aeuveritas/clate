@@ -1,2 +1,13 @@
 #!/bin/bash
 
+DIR=/Workspace/.vscode/
+FILE=/Workspace/.vscode/launch.json
+if [ -d "$DIR" ]; then
+    if [ ! -f "$FILE" ]; then
+        su -m - $UNAME -c "cp $HOME/launch.json $DIR/"
+    fi
+else
+    mkdir $DIR
+    chown $UID:$GID $DIR -R
+    su -m - $UNAME -c "cp $HOME/launch.json $DIR/"
+fi

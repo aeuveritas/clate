@@ -7,29 +7,29 @@ import getpass
 
 
 # Variables
-NAME             = "clate"
-VERSION          = "dev"
+NAME = "clate"
+VERSION = "dev"
 
-TAG              = "base"
+TAG = "base"
 
-WORKDIR          = os.getcwd()
-DOCKERDIR        = "./docker"
-DOCKERFILE       = "{}/Dockerfile".format(DOCKERDIR)
-DOCKERFILEDIR    = "{}/dockerfile".format(DOCKERDIR)
-DOCKERFRAMEWORK  = "./framework"
+WORKDIR = os.getcwd()
+DOCKERDIR = "./docker"
+DOCKERFILE = "{}/Dockerfile".format(DOCKERDIR)
+DOCKERFILEDIR = "{}/dockerfile".format(DOCKERDIR)
+DOCKERFRAMEWORK = "./framework"
 
-DOCKERINIT       = "{}/01_init.Dockerfile".format(DOCKERFILEDIR)
-DOCKERUSER       = "{}/02_user.Dockerfile".format(DOCKERFILEDIR)
-DOCKERSETUP      = "{}/03_setup.Dockerfile".format(DOCKERFILEDIR)
-DOCKERNETWORK    = "{}/04_network.Dockerfile".format(DOCKERFILEDIR)
+DOCKERINIT = "{}/01_init.Dockerfile".format(DOCKERFILEDIR)
+DOCKERUSER = "{}/02_user.Dockerfile".format(DOCKERFILEDIR)
+DOCKERSETUP = "{}/03_setup.Dockerfile".format(DOCKERFILEDIR)
+DOCKERNETWORK = "{}/04_network.Dockerfile".format(DOCKERFILEDIR)
 
-DOCKERUSERDATA   = "{}/userdata".format(DOCKERFILEDIR)
+DOCKERUSERDATA = "{}/userdata".format(DOCKERFILEDIR)
 DOCKERNETWORKENV = "{}/network".format(DOCKERFILEDIR)
 
-CONFIG_JSON      = "./config.json"
+CONFIG_JSON = "./config.json"
 
-CLATE_JSON       = os.getenv("HOME") + '/.clate.json'
-CLATE_EXEC       = '/usr/local/bin/clate'
+CLATE_JSON = os.getenv("HOME") + '/.clate.json'
+CLATE_EXEC = '/usr/local/bin/clate'
 
 
 class UserInfo:
@@ -59,9 +59,11 @@ def create_new_project(project_name, tag, port, vscode_path, uInfo):
 
     project_dirs = dict()
     if project_name == "clate":
-        project_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__)) + '/'
+        project_dirs['Workspace'] = os.path.dirname(
+            os.path.abspath(__file__)) + '/'
     else:
-        project_dirs['Workspace'] = os.path.dirname(os.path.abspath(__file__)) + '/' + project_name + '/'
+        project_dirs['Workspace'] = os.path.dirname(
+            os.path.abspath(__file__)) + '/' + project_name + '/'
 
     extension_dir = vscode_path + project_name + '/'
     project_dirs['extension'] = extension_dir
@@ -110,8 +112,10 @@ def create_new_clate(uInfo):
 
     # Default project
     project_list = list()
-    project_list.append(create_new_project("clate", TAG, 5000, vscode_path, uInfo))
-    project_list.append(create_new_project("cpilot", 'cpp', 5100, vscode_path, uInfo))
+    project_list.append(create_new_project(
+        "clate", TAG, 5000, vscode_path, uInfo))
+    project_list.append(create_new_project(
+        "cpilot", 'cpp', 5100, vscode_path, uInfo))
 
     clate_data['project'] = project_list
 
@@ -144,9 +148,9 @@ def config(uInfo):
     config_info = json.loads(config_json)
 
     if config_info['ID'] == "USER_ID" \
-        or config_info['UID'] == 'USER_ID_NUMBER' \
-        or config_info['GROUP'] == 'GROUP_ID' \
-        or config_info['GID'] == 'GROUP_ID_NUMBER':
+            or config_info['UID'] == 'USER_ID_NUMBER' \
+            or config_info['GROUP'] == 'GROUP_ID' \
+            or config_info['GID'] == 'GROUP_ID_NUMBER':
         print("Please fill your info in config_info.json")
         return False
 
@@ -203,7 +207,8 @@ def check_running_image(tag):
     from clate_core.clate_core import Docker
     docker = Docker("clate")
     if docker.is_using_image(tag):
-        print("Cannot build new image. please stop containers from clate:{0}".format(tag))
+        print(
+            "Cannot build new image. please stop containers from clate:{0}".format(tag))
         return 0
 
     return docker.get_current_image_id(tag)
