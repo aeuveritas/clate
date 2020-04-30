@@ -13,6 +13,9 @@ RUN wget https://dl.google.com/go/go1.13.3.linux-amd64.tar.gz && \
     rm go1.13.3.linux-amd64.tar.gz
 
 ENV PATH /usr/local/go/bin:$PATH
+ENV PATH /Workspace/bin/:$PATH
+
 RUN echo "PATH=\"$PATH\"" > /etc/environment
 
 RUN go env -w GOPATH=/Workspace
+
