@@ -1,3 +1,3 @@
 # Clate
-FROM aeuveritas/clate:base
+FROM aeuveritas/clate_base:0.1
 

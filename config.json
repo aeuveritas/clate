@@ -8,6 +8,7 @@
     "FRAMEWORKS"   : {
         "CPP"      : true,
         "GO"       : false,
-        "VUE"      : false
+        "VUE"      : false,
+        "PYTHON"   : false
     }
 }

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+su -m - $UNAME -c "pip3 install -r /Workspace/requirements.txt"

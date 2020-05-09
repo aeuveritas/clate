@@ -229,10 +229,14 @@ def install():
     image_id = check_running_image(TAG)
     if image_id != 0:
         os.chdir(DOCKERDIR)
-        os.system("docker build . -t {0}:{1}".format(NAME, TAG))
+        ret = os.system("docker build . -t {0}:{1}".format(NAME, TAG))
+        if ret == 256:
+            print("install clate base failed")
+            return False
         os.chdir(WORKDIR)
         remove_dangling_image(TAG, image_id)
 
+    return True
 
 def install_framework():
     config_json = open(CONFIG_JSON).read()
@@ -261,6 +265,6 @@ if __name__ == "__main__":
 
     if config(uInfo):
         clate_manager(uInfo)
-        install()
-        install_framework()
+        if install():
+            install_framework()
         cleanup()
