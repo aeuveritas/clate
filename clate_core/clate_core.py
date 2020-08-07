@@ -19,8 +19,12 @@ class Docker:
         names = list()
         for container in self._docker.containers.list():
             if "{0}".format(self._client) in container.name:
-                names.append(container.name.replace(
-                    "{0}_".format(self._client), ""))
+                name = ""
+                if container.name[:6] == "hclate":
+                    name = container.name.replace("hclate_", "")
+                elif container.name[:5] == "clate":
+                    name = container.name.replace("clate_", "")
+                names.append(name)
 
         return names
 
@@ -83,8 +87,8 @@ class Docker:
             if len(image.tags) == 0:
                 continue
 
-            name, tag = image.tags[0].split(':')
-            if name == "clate":
+            if image.tags[0][:5] == "clate":
+                _, tag = image.tags[0].split(':')
                 tags.append(tag)
 
         return tags
@@ -434,8 +438,8 @@ Host {0}
         try:
             name, tag, dirs, ports = self._interactor.fill_project(
                 self._project_names, tags, self._ssh_ports)
-        except:
-            print("[ ERR ] cancel to create new project")
+        except Exception as err:
+            print("[ ERR ] failed to create new project")
             return
         new_project = self._build_project(name, tag, dirs, ports)
 
